@@ -449,11 +449,11 @@ ggplot(filter(effort, year == 2016), aes(x = factor(group), y = Effort)) +
 ##################################
 
 ## sum across groups
-eff_all <- effort %>% group_by(year) %>%
+eff_all <- effort %>% group_by(year, quarter) %>%
 	summarise(Effort = sum(Effort)) %>% as.data.frame() 
 
-effort$total <- eff_all$Effort[match(effort$year,
-				     eff_all$year)]
+effort$total <- eff_all$Effort[match(paste(effort$year,effort$quarter),
+				     paste(eff_all$year,eff_all$quarter))]
 
 effort$effshare <- effort$Effort / effort$total
 
