@@ -449,22 +449,21 @@ ggplot(filter(effort, year == 2016), aes(x = factor(group), y = Effort)) +
 ##################################
 
 ## sum across groups
-eff_all <- effort %>% group_by(year, quarter) %>%
+eff_all <- effort %>% group_by(year) %>%
 	summarise(Effort = sum(Effort)) %>% as.data.frame() 
 
-effort$total <- eff_all$Effort[match(paste(effort$year, effort$quarter),
-				     paste(eff_all$year, eff_all$quarter))]
+effort$total <- eff_all$Effort[match(effort$year,
+				     eff_all$year)]
 
 effort$effshare <- effort$Effort / effort$total
 
 ## And the catches
 
-catch_all <- catch %>% group_by(year, quarter, species) %>%
+catch_all <- catch %>% group_by(year, species) %>%
 	summarise(landings = sum(landings)) %>% as.data.frame()
 
-catch$total <- catch_all$landings[match(paste(catch$year, catch$quarter, catch$species),
-					paste(catch_all$year, catch_all$quarter, 
-					      catch_all$species))]
+catch$total <- catch_all$landings[match(paste(catch$year, catch$species),
+					paste(catch_all$year, catch_all$species))]
 
 catch$catchshare <- catch$landings / catch$total
 
