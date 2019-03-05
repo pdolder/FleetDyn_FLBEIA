@@ -467,6 +467,8 @@ catch$total <- catch_all$landings[match(paste(catch$year, catch$species),
 
 catch$catchshare <- catch$landings / catch$total
 
+catch <- catch[!is.na(catch$group),]
+
 save(catch, effort, file = file.path("..", "data", "Processed_catch.RData"))
 
 

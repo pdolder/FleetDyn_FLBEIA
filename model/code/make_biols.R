@@ -4,6 +4,7 @@
 ########################################################
 
 library(FLBEIA)
+library(fishmethods)
 
 ## Paths
 stk.path <- file.path("..", "FCube", "stocks")
@@ -53,7 +54,6 @@ lines(1:7, predict(fit3, data.frame(age = 1:7)), col = "red")
 lines(1:7, predict(fit4, data.frame(age = 1:7)), col = "green")
 
 ## can do better
-library(fishmethods)
 
 ## Note Sinf, K and t0 are starting values for optimiser
 fit <- growth(intype = 2, unit = 2, size = wts$data, age = wts$age,
@@ -129,7 +129,7 @@ for(n. in stks) {
 
 		## fit the growth model and predict the increments
 		fit <- growth(intype = 2, unit = 2, size = wt, age = age,
-	        Sinf = 200, K = 0.3, t0 = -1, graph = TRUE)
+	        Sinf = 200, K = 0.3, t0 = 0, graph = TRUE)
 
 		preds <-data.frame(age = rep(age, each = 4), 
 		season = rep(1:4, times = length(age)),
@@ -149,7 +149,8 @@ for(n. in stks) {
 
 ## Fill the biol for the year
 for(i in 1:4) { 
-	biols[[n.]]@wt[,ac(y),,i][] <- preds$data[preds$season == i] 
+	biols[[n.]]@wt[,ac(y),,i][] <- preds$data[preds$season == i]
+	biols[[n.]]@wt[biols[[n.]]@wt<0] <- 0.001
 }
 
 }
