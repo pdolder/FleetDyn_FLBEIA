@@ -106,6 +106,12 @@ fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
 crew  <- window(crew, first.yr, last.yr)
 
+## set correct units
+units(eff) <- "000 kwdays"
+units(fcost) <- "000 euros"
+units(cap) <- "000 kwdays"
+units(crew) <-  "NA"
+
 ## Now we generate the FLMetier and FLCatches
 
 ## Let's rename the metier a bit
@@ -136,9 +142,6 @@ effort_met <- effort %>% filter(year %in% first.yr:last.yr,
 		      fill = list(effshare = 0)) %>%
 	     as.data.frame()
 
-
-
-
 ## effshare
 effsh <- Q
 effsh[,,,1] <- effort_met[effort_met$quarter == 1,"effshare"]
@@ -151,6 +154,9 @@ effsh<- window(effsh, first.yr, last.yr)
 ## vcost
 vcost <- Q  ## none at moment
 vcost <- window(vcost, first.yr, last.yr)
+
+units(effsh) <- "NA"
+units(vcost) <- "000 euros"
 
 ###############
 ## FLCatches
@@ -190,10 +196,10 @@ mt2 <- fleets[[fl2]]@metiers@names
 ## landings ##
 ##############
 
-catch_met <- catch %>% filter(year %in% first.yr:last.yr, 
+catch_met <- catch %>% filter(year %in% 2014:2016, 
 			      group == met, species == S) %>%
 	     select(-landings, - total) %>%
-	     complete(group, year = first.yr:last.yr, 
+	     complete(group, year = 2014:2016, 
 		      quarter = 1:4, species,
 		      fill = list(catchshare = 0)) %>%
 	     as.data.frame()
@@ -376,6 +382,16 @@ q <- ((land_age * land_wt) +
       eff_a^be)
 
 
+## Units
+
+units(land) <- "tonnes"
+units(disc) <- "tonnes"
+units(land_age) <- '1000'
+units(disc_age) <- '1000'
+units(land_wt) <- "kg"
+units(disc_wt) <- "kg"
+units(pr) <- "000 euros"
+
 ca <- FLCatchExt(name = S, landings = land, landings.n = land_age, 
 		 landings.wt = land_wt, discards = disc, discards.n = disc_age,
 		 discards.wt = disc_wt, landings.sel = land.sel, discards.sel = disc.sel,
@@ -385,14 +401,265 @@ return(ca)
 
 }))
 
-m <- FLMetierExt(name = ac(met), catches = catchMet, effshare = effsh, vcost = vcost)
+names(catchMet) <- stks 
+
+m <- FLMetierExt(name = as.character(met), 
+		 catches = catchMet, 
+		 effshare = effsh, vcost = vcost)
 return(m)
 
 
 	}))
 
+names(metiers) <- mets
 
 IE_Otter <- FLFleetExt(metiers = metiers, name = "IE_Otter",
 		       effort = eff, capacity = cap, fcost = fcost,
 		       crewshare = crew)
 
+IE_Otter@range["minyear"] <- 2015
+IE_Otter@range["maxyear"] <- 2017
+
+unique(catch$species)
+catchNames(IE_Otter)
+
+#################################
+### Now we make the others fleets
+###################################
+
+## quant dims are 1,3,1,4,1,1
+Q             <- FLQuant(NA, dim = c(1,3,1,4,1,1), 
+		dimnames = list(year = 2015:2017))
+eff <- Q
+eff[] <- 1e5
+eff <- window(eff, first.yr, last.yr)
+
+fcost <- cap <- crew <- Q ## empty, no data - could use AER
+
+fcost <- window(fcost, first.yr, last.yr)
+cap   <- window(cap, first.yr, last.yr)
+crew  <- window(crew, first.yr, last.yr)
+
+## set correct units
+units(eff) <- "000 kwdays"
+units(fcost) <- "000 euros"
+units(cap) <- "000 kwdays"
+units(crew) <-  "NA"
+
+## Metier
+
+effsh <- Q
+effsh<- window(effsh, first.yr, last.yr)
+effsh[] <- 1
+
+## vcost
+vcost <- Q  ## none at moment
+vcost <- window(vcost, first.yr, last.yr)
+
+units(effsh) <- "NA"
+units(vcost) <- "000 euros"
+
+
+##########################
+##
+## Now for the residual catch
+## from fleets
+##
+##########################
+## We can loop this...
+
+for(S in catchNames(IE_Otter)) {
+
+print(S)
+
+## Fix mismatch between names
+if(S == "COD") { s <- "COD-CS" }
+if(S == "HAD") { s <- "HAD-CS" }
+if(S == "WHG") { s <- "WHG-CS" }
+if(S == "NHKE") { s <- "N-HKE" }
+if(S == "MON") { s <- "MON-CS" }
+if(S == "NMEG") { s <- "N-MEG" }
+if(S == "NEP16") {s <- "NEP16"}
+if(S == "NEP17") {s <- "NEP17"}
+if(S == "NEP19") {s <- "NEP19"}
+if(S == "NEP2021") {s <- "NEP2021"}
+if(S == "NEP22") {s <- "NEP22"}
+
+## Empty quants
+Q_age   <- biols[[S]]@n; Q_age[] <- NA 
+Q_bio   <- ssb(biols[[S]]); Q_bio[] <- NA
+
+## landings ##
+land <- Q_bio
+
+## residual landings weight
+flt	<- apply(landWStock.f(IE_Otter, S),c(2), sum)
+res	<- stocks[[s]]@landings[,ac(first.yr:last.yr)] - flt
+
+land[,ac(2015:2017),,] <- res / 4
+land <- window(land, first.yr, last.yr)
+
+## landings.n
+land_age <- Q_age
+
+flt	<- apply(landStock.f(IE_Otter, S), c(1,2), sum)
+res	<- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] - flt
+
+land_age[,ac(2015:2017),,] <- res / 4
+land_age <- window(land_age, first.yr, last.yr)
+
+## landings.wt - from the biols
+land_wt <- Q_age
+land_wt <- biols[[S]]@wt[,ac(2015:2017)]
+land_wt <- window(land_wt,  , 2017) 
+
+land_wt <- window(land_wt, first.yr, last.yr)
+
+## discards
+
+disc <- Q_bio
+
+flt	<- apply(discWStock.f(IE_Otter, S),c(2), sum)
+res	<- stocks[[s]]@discards[,ac(first.yr:last.yr)] - flt
+
+disc[,ac(2015:2017),,] <- res / 4 
+disc <- window(disc, first.yr, last.yr)
+
+## discards.n
+disc_age <- Q_age
+
+flt	<- apply(discStock.f(IE_Otter, S), c(1,2), sum)
+res	<- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] - flt
+
+disc_age[,ac(2015:2017),,] <- res / 4
+disc_age[is.na(disc_age)] <- 0
+disc_age <- window(disc_age, first.yr, last.yr)
+
+## discards.wt - from biols
+disc_wt <- Q_age
+disc_wt <- biols[[S]]@wt[,ac(2015:2017)]
+
+disc_wt <- window(disc_wt, first.yr, last.yr)
+
+## price
+
+## just take from fleet 1
+pr <- Q_age
+pr[] <- 100
+
+pr <- window(pr, first.yr, last.yr)
+
+## alpha
+
+al <- Q_age
+al[] <- 1
+
+al <- window(al, first.yr, last.yr)
+## beta
+
+be <- Q_age
+be[] <- 1
+
+be <- window(be, first.yr, last.yr)
+
+## landings.sel
+land.sel <- land_age / (land_age + disc_age)
+land.sel <- window(land.sel, first.yr, last.yr)
+
+## discards.sel
+disc.sel <- 1 - land.sel 
+disc.sel <- window(disc.sel, first.yr, last.yr)
+
+## q -calculate
+eff_a <- Q_age
+eff_a[] <- 1000
+
+eff_a <- window(eff_a, first.yr, last.yr)
+
+q <- ((land_age * land_wt) + 
+     (disc_age * disc_wt))/
+      (biomass[[S]][,ac(2015:2017)]^al * 
+      eff_a^be)
+
+
+## Units
+units(land) <- "tonnes"
+units(disc) <- "tonnes"
+units(land_age) <- '1000'
+units(disc_age) <- '1000'
+units(land_wt) <- "kg"
+units(disc_wt) <- "kg"
+units(pr) <- "000 euros"
+
+ca <- FLCatchExt(name = S, landings = land, landings.n = land_age, 
+		 landings.wt = land_wt, discards = disc, discards.n = disc_age,
+		 discards.wt = disc_wt, landings.sel = land.sel, discards.sel = disc.sel,
+		 price = pr, catch.q = q, alpha = al, beta = be)
+
+## Metier
+m <- FLMetiersExt(FLMetierExt(name = "Z", 
+		 catches = ca, 
+		 effshare = effsh, vcost = vcost))
+names(m) <- "Z"
+## Fleet
+
+assign(paste0(S, "_fleet"),
+       FLFleetExt(metiers = m, name = paste0(S, "_fleet"),
+		       effort = eff, capacity = cap, fcost = fcost,
+		       crewshare = crew)
+       )
+
+}
+
+
+
+## set ranges
+
+MON_fleet@range["minyear"]  <- 2015
+MON_fleet@range["maxyear"]  <- 2017
+COD_fleet@range["minyear"]  <- 2015
+COD_fleet@range["maxyear"]  <- 2017
+HAD_fleet@range["minyear"]  <- 2015
+HAD_fleet@range["maxyear"]  <- 2017
+WHG_fleet@range["minyear"]  <- 2015
+WHG_fleet@range["maxyear"]  <- 2017
+NMEG_fleet@range["minyear"]  <- 2015
+NMEG_fleet@range["maxyear"]  <- 2017
+NHKE_fleet@range["maxyear"]  <- 2017
+NHKE_fleet@range["minyear"]  <- 2015
+NEP16_fleet@range["maxyear"]  <- 2017
+NEP16_fleet@range["minyear"]  <- 2015
+NEP17_fleet@range["maxyear"]  <- 2017
+NEP17_fleet@range["minyear"]  <- 2015
+NEP19_fleet@range["maxyear"]  <- 2017
+NEP19_fleet@range["minyear"]  <- 2015
+NEP2021_fleet@range["maxyear"]  <- 2017
+NEP2021_fleet@range["minyear"]  <- 2015
+NEP22_fleet@range["maxyear"]  <- 2017
+NEP22_fleet@range["minyear"]  <- 2015
+
+
+
+
+fleets <- FLFleetsExt(IE_Otter, MON_fleet, COD_fleet, HAD_fleet, NHKE_fleet,
+		      NMEG_fleet, NEP16_fleet, NEP17_fleet, NEP19_fleet, NEP22_fleet,
+		      WHG_fleet, NEP2021_fleet)
+
+names(fleets) <- c("IE_Otter", "MON_Fleet", "COD_fleet", "HAD_fleet", "NHKE_fleet",
+		      "NMEG_fleet", "NEP16_fleet", "NEP17_fleet", "NEP19_fleet", "NEP22_fleet",
+		      "WHG_fleet", "NEP2021_fleet")
+
+## range in fleets
+lapply(fleets, range)
+
+## range in metiers
+
+lapply(fleets, function(fl) {
+	       lapply(fl@metiers, range) 
+		      })
+
+lapply(fleets, function(fl) lapply(fl@metiers, function(m) lapply(m@catches, range)))
+
+
+
+save(fleets, file = file.path("..", "fleets", "fleets.RData"))

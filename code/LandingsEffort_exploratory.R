@@ -408,7 +408,7 @@ nepfus <- grep("NEP", unique(dat.comb$species), value = T)
 
 catch <- dat.comb %>% filter(vessel.length %in% c("O15M", "O10T15M"),
 			     species %in% c("ANF", "COD", "HAD", "WHG",
-					    "LEZ", nepfus))  %>%
+					    "HKE","LEZ", nepfus))  %>%
 	group_by(ICES.rectangle, year, quarter, species) %>%
 	summarise(landings = sum(landings)) %>% ungroup() %>%
 	as.data.frame()
@@ -423,7 +423,7 @@ catch <- catch %>% group_by(group, year, quarter, species) %>%
 
 ggplot(filter(catch, year ==2016), aes(x = factor(group), y = landings)) +
 	geom_bar(aes(fill = species),stat = "identity") +
-	facet_wrap(~quarter, ncol = 1) + scale_fill_manual(values = col)
+	facet_wrap(~quarter, ncol = 1)# + scale_fill_manual(values = col)
 
 ## And the effort
 

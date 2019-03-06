@@ -237,9 +237,15 @@ geom_line(aes(group = season, colour = season))
 
 
 ## rename
+
 names(biols)<-gsub("CS","",names(biols))
 names(biols)<-gsub("-","",names(biols))
 names(biols)
+
+
+for(s in names(biols)) {
+biols[[s]]@name <- s
+}
 
 
 save(biols,file=file.path("..", "biols",'biols.RData'))
