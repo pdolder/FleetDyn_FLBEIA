@@ -13,7 +13,7 @@ setGeneric('Sums', function(object, ...)
 setMethod('Sums', signature(object='FLQuants'),
           function(object, na.rm=FALSE, ...) {
             if(length(object) == 1)
-              return(object[[1]])
+              eturn(object[[1]])
             eval(parse(text=paste('object[[', paste(seq(length(object)),
                                                     collapse=']] + object[['), ']]', sep='')))
           }
@@ -162,8 +162,8 @@ units(vcost) <- "000 euros"
 ## FLCatches
 ###############
 
-stks <- unique(catch[catch$group == met & 
-	       catch$year %in% 2015:2017,"species"])
+stks <- sort(unique(catch[catch$group == met & 
+	       catch$year %in% 2015:2017,"species"]))
 
 catchMet <- FLCatchesExt(lapply(stks, function(S) {
 
@@ -493,7 +493,7 @@ Q_bio   <- ssb(biols[[S]]); Q_bio[] <- NA
 land <- Q_bio
 
 ## residual landings weight
-flt	<- apply(landWStock.f(IE_Otter, S),c(2), sum)
+flt     <- apply(landWStock.f(IE_Otter, S),c(2), sum)
 res	<- stocks[[s]]@landings[,ac(first.yr:last.yr)] - flt
 
 land[,ac(2015:2017),,] <- res / 4
@@ -645,9 +645,12 @@ fleets <- FLFleetsExt(IE_Otter, MON_fleet, COD_fleet, HAD_fleet, NHKE_fleet,
 		      NMEG_fleet, NEP16_fleet, NEP17_fleet, NEP19_fleet, NEP22_fleet,
 		      WHG_fleet, NEP2021_fleet)
 
-names(fleets) <- c("IE_Otter", "MON_Fleet", "COD_fleet", "HAD_fleet", "NHKE_fleet",
+names(fleets) <- c("IE_Otter", "MON_fleet", "COD_fleet", "HAD_fleet", "NHKE_fleet",
 		      "NMEG_fleet", "NEP16_fleet", "NEP17_fleet", "NEP19_fleet", "NEP22_fleet",
 		      "WHG_fleet", "NEP2021_fleet")
+
+
+fleets <- fleets[sort(names(fleets))]
 
 ## range in fleets
 lapply(fleets, range)

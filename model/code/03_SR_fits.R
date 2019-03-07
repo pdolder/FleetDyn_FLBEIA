@@ -82,5 +82,7 @@ sr.fits <- list("COD.sr" = COD.SR,
 		"NMEG.sr" = NMEG.SR,
 		"NHKE.sr" = NHKE.SR)
 
+sr.fits <- sr.fits[sort(names(sr.fits))]
+
 
 save(sr.fits, file = file.path("..", "biols", "SR_fits.RData"))
