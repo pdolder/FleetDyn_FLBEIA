@@ -254,7 +254,7 @@ land_age[,ac(2015:2017),,3] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
 land_age[,ac(2015:2017),,4] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
 			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(2015:2017)]), each = dim_q[1]),
 				       dim = dim_q) *
-			   FLQuant(rep(catch_met[catch$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
+			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
 land_age <- window(land_age, first.yr, last.yr)
 

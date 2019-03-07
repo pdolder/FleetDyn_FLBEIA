@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5
+n.proj.yrs <- 3
 ni <- 1
 ns <- 4
 
@@ -69,7 +69,7 @@ restriction  <- rep("catch",n.fls) ;                     names(restriction) <-fl
 ## Can change for each fleet/stock
 c.mod<-stack(lapply(fleets,catchNames))
 c.mod$catch.mod<-sapply(c.mod$values,function(x) {
-  if(x %in% c("COD","HAD","WHG","MON","NHKE","NHKE")) return("CobbDouglasAge") else
+  if(x %in% c("COD","HAD","MON","NHKE","NMEG", "WHG")) return("CobbDouglasAge") else
   return("CobbDouglasBio")
 })
 catch.models     <- c.mod$catch.mod ; names(catch.models)<-paste(c.mod$ind,c.mod$values,sep=".")
@@ -364,7 +364,7 @@ WHG_proportion.flq[,,,2]  <- 1
 WHG_prop.avg.yrs    <- ac(2015:2017)
 
 ## age at rec, season
-age.rec<-0
+age.rec<-1
 WHG_timelag.matrix  <- matrix(c(age.rec,ns),2,ns, dimnames = list(c('year', 'season'),season = 1:ns)) 
 
 ## these will be defined elsewhere
@@ -409,7 +409,7 @@ MON_proportion.flq[,,,2] <- 1
 MON_prop.avg.yrs    <- ac(2015:2017)
 
 ## age at rec, season
-age.rec<-0
+age.rec<-1
 MON_timelag.matrix  <- matrix(c(age.rec,ns),2,ns, dimnames = list(c('year', 'season'),season = 1:ns)) 
 
 ## these will be defined elsewhere
@@ -454,7 +454,7 @@ NHKE_proportion.flq[,,,2] <- 1
 NHKE_prop.avg.yrs    <- ac(2015:2017)
 
 ## age at rec, season
-age.rec<-0
+age.rec<-1
 NHKE_timelag.matrix  <- matrix(c(age.rec,ns),2,ns, dimnames = list(c('year', 'season'),season = 1:ns)) 
 
 ## these will be defined elsewhere
@@ -661,7 +661,13 @@ stks.data <- list(COD =ls(pattern="^COD"),
 advice   <- create.advice.data(yrs = c(first.yr = first.yr, proj.yr = proj.yr, last.yr = last.yr), ns = ns, ni = ni, stks.data = stks.data,
                                fleets = fleets)
 
-for(st in stks) advice$quota.share[[st]][is.na(advice$quota.share[[st]])] <- 0
+for(st in stks) {
+	advice$quota.share[[st]][is.na(advice$quota.share[[st]])] <- 0
+	advice$quota.share[[st]][advice$quota.share[[st]]> 1 ] <- 1 ## fix as Irish landings higher than stock
+	advice$quota.share[[st]][advice$quota.share[[st]]< 0 ] <- 0 ## fix as Irish landings higher than stock
+
+
+}
 
 save(advice,file=file.path("..", "model_inputs",'advice.RData'))
 
@@ -676,6 +682,7 @@ HCR.models       <- c(COD = "IcesHCR", HAD = "IcesHCR", MON = 'IcesHCR',
 		      NEP22 = "fixedAdvice",
                       WHG = "IcesHCR"
                       ) 
+HCR.models <- HCR.models[sort(names(HCR.models))]
 
 ref.pts.cod        <- matrix(c(0.35, 7300, 10300), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
 ref.pts.had        <- matrix(c(0.4, 6700, 10000), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
@@ -683,8 +690,6 @@ ref.pts.mon        <- matrix(c(0.28, 16032, 22278), 3,ni, dimnames = list(c('Fms
 ref.pts.nhke       <- matrix(c(0.28, 32000, 45000), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
 ref.pts.nmeg       <- matrix(c(0.191, 37100, 41800), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
 ref.pts.whg        <- matrix(c(0.52, 25000, 35000), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
-
-
 
 advice.ctrl      <- create.advice.ctrl(stksnames = stks, HCR.models =  HCR.models, 
                                        ref.pts.COD = ref.pts.cod, ref.pts.HAD = ref.pts.had,
