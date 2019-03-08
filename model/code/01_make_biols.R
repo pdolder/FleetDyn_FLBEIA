@@ -29,6 +29,12 @@ biols <- FLBiols(lapply(stocks, function(x) {
     as(x, "FLBiol")
 }))
 
+## Want to ensure the fbar ranges carry across. For some reason not automatic
+for(s in names(biols)) {
+biols[[s]]@range <- stocks[[s]]@range
+}
+
+
 # 3. expand the biols for a seasonal component 
 biols <- FLBiols(lapply(biols, function(x) expand(x, season = 1:4)))
 

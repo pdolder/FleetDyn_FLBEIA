@@ -102,6 +102,8 @@ eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
 
+cap <- eff * 2  ## For now, high limit 
+
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
 crew  <- window(crew, first.yr, last.yr)
@@ -435,6 +437,8 @@ eff[] <- 1e5
 eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
+
+cap <- eff * 2
 
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
