@@ -136,10 +136,10 @@ metiers <- FLMetiersExt(lapply(mets, function(met) {
 
 print(met)
 
-effort_met <- effort %>% filter(year %in% first.yr:last.yr, 
+effort_met <- effort %>% filter(year %in% 2014:2016, 
 			      group == met) %>%
 	     select(-Effort, - total) %>%
-	     complete(group, year = first.yr:last.yr, 
+	     complete(group, year = 2014:2016, 
 		      quarter = 1:4, 
 		      fill = list(effshare = 0)) %>%
 	     as.data.frame()

@@ -10,6 +10,10 @@ load(file.path("..", "model", "fleets", "fleets.RData"))
 fl <- fleets[["IE_Otter"]]
 
 
+#################
+### processing 
+#################
+
 ## effort
 eff <- as.data.frame(fl@effort)
 
@@ -25,8 +29,10 @@ eff_met$effort <- eff_met$data * eff_met$tot
 
 choices <- eff_met
 
-## simplest model...
 
+###############################################################
+## simplest model...
+##################################################################
 library(mlogit)
 
 ## For each month and year for each choice, 
@@ -79,12 +85,17 @@ f####################################
 #####################################
 
 res.df <- lapply(unique(choices$year), function(y) {
+			 print(y)
 
 	season_res <- lapply(unique(choices$season), function(s) {
+				     print(s)
 			      
-df <- filter(choices, year == y, season == s)
+df <- filter(choices, year == y, season == s, data > 0)
 
-metiers <- sample(df$metier, round(mean(df$tot),0), 
+#metiers <- sample(df$metier, round(mean(df$tot),0), 
+#		  prob = df$data, replace = T)
+
+metiers <- sample(df$metier, 1000, 
 		  prob = df$data, replace = T)
 
 ## Now we need these metiers to make up the choice, and an alternative of each
@@ -108,6 +119,7 @@ return(rbind(choice_set[choice_set$index == x,],
 
 choice_set2 <- do.call(rbind, choice_set2)
 choice_set2$choice <- factor(choice_set2$choice)
+return(choice_set2)
 
 			     })
 
@@ -116,5 +128,34 @@ choice_set2$choice <- factor(choice_set2$choice)
 	return(res)
 
 		  })
+
+
+res <- do.call(rbind, res.df)
+
+res$season <- as.numeric(as.character(res$season))
+
+## unique index
+
+res$index <- paste(res$index, res$year, res$season, sep = "_")
+
+
+LD <- mlogit.data(res, choice = "choice", shape = "long",
+		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
+
+
+m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
+summary(m0)
+
+m1 <- mlogit(choice ~ 1 | season , data = LD, print.level = 5)
+summary(m1)
+
+m2 <- mlogit(choice ~ 1 | season + I(season^2), data = LD, print.level = 5)
+summary(m1)
+
+predictions <- predict(m1, newdata = LD, type = "probs")
+
+predictions <- predict(m1, newdata = expand.grid(metier = unique(res$metier),
+						 season = 1:4),
+		       type = "probs")
 
 
