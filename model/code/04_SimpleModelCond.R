@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5 
+n.proj.yrs <- 10 
 ni <- 1
 ns <- 4
 
@@ -138,6 +138,7 @@ for(i in 1:l.fls){
       fleets[[i]]@metiers[[j]]@catches[[k]]@alpha[, ac(proj.yrs)]        <- yearMeans(fleets[[i]]@metiers[[j]]@catches[[k]]@alpha[,fl.proj.avg.yrs])
       fleets[[i]]@metiers[[j]]@catches[[k]]@beta[, ac(proj.yrs)]         <- yearMeans(fleets[[i]]@metiers[[j]]@catches[[k]]@beta[,fl.proj.avg.yrs])
       fleets[[i]]@metiers[[j]]@catches[[k]]@catch.q[,ac(proj.yrs) ]     <- yearMeans(fleets[[i]]@metiers[[j]]@catches[[k]]@catch.q[,fl.proj.avg.yrs])
+      fleets[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)][is.na(fleets[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)])]<-0
       fleets[[i]]@metiers[[j]]@catches[[k]]@price[, ac(proj.yrs)]  <- yearMeans(fleets[[i]]@metiers[[j]]@catches[[k]]@price[,fl.proj.avg.yrs])
       
     }
@@ -709,5 +710,4 @@ advice.ctrl$WHG$AdvCatch[]      <- TRUE
 
 advice.ctrl <- advice.ctrl[sort(names(advice.ctrl))]
 save(advice.ctrl,file=file.path("..", "model_inputs", 'advice_ctrl.RData'))
-
 

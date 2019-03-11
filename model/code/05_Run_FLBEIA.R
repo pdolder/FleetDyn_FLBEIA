@@ -66,7 +66,7 @@ head(s0_vesselStk); unique(s0_vesselStk$indicator)
 head(s0_risk); unique(s0_risk$indicator)
 
 
-s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2022))            
+s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2027))            
 head(s0_bio_l)
 
 ggplot(s0_bio_l, aes(x = year, y = f)) + 
