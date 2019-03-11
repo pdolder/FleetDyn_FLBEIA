@@ -72,5 +72,4 @@ fl@metiers[[1]]@effshare[,,,4]
 
 
 
-lapply(met@catches, function(x) x@price[,ac(2018)])
 

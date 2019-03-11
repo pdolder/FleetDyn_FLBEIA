@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5
+n.proj.yrs <- 5 
 ni <- 1
 ns <- 4
 
@@ -178,39 +178,7 @@ save(fleets.ctrl, file = file.path("..", "model_inputs", "fleets_ctrl.RData"))
 
 #### Expand and save objects
 
-## This function is not in package, for some reason....
-
-propagateFLF <- function(object, iter, fill.iter){
-  
-  nmet <- length(object@metiers)
-  
-  catches <- lapply(object@metiers, function(x) 
-    lapply(x@catches, propagate, iter = iter, fill.iter = fill.iter))
-  
-  metiers <- vector('list', nmet)
-  
-  for(mt in 1:nmet){
-    
-    metiers[[mt]] <- FLMetierExt(name = object[[mt]]@name, desc = object[[mt]]@desc, range = object[[mt]]@range, gear = object[[mt]]@gear,
-                                 effshare = propagate(object@metiers[[mt]]@effshare, iter = iter, fill.iter = fill.iter),
-                                 vcost = propagate(object@metiers[[mt]]@vcost, iter = iter, fill.iter = fill.iter),
-                                 catches = FLCatchesExt(catches[[mt]]))  
-  }
-  
-  names(metiers) <- names(object@metiers)
-  
-  fleet <- FLFleetExt(name = object@name, desc = object@desc, range = object@range,
-                      effort = propagate(object@effort, iter = iter, fill.iter = fill.iter), 
-                      fcost = propagate(object@fcost, iter = iter, fill.iter = fill.iter),
-                      capacity = propagate(object@capacity, iter = iter, fill.iter = fill.iter),
-                      crewshare = propagate(object@crewshare, iter = iter, fill.iter = fill.iter),
-                      metiers = FLMetiersExt(metiers))
-  
-  return(fleet)
-}
-
-
-fleets <- FLFleetsExt(lapply(fleets, propagateFLF, iter = ni, fill.iter= T))
+fleets <- FLFleetsExt(lapply(fleets, FLBEIA:::propagateFLF, iter = ni, fill.iter= T))
 save(fleets,file=file.path("..", "model_inputs", 'FLFleetsExt_expanded.RData'))
 
 

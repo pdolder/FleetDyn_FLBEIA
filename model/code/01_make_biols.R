@@ -210,9 +210,16 @@ biols <- FLBiols(lapply(biols, function(x) {
 				ages  <- seq_len(dim(x@n)[1])
 				years <- seq_len(dim(x@n)[2])
 
-				for(a in ages) {
-					for(y in years) {
+				for(y in years) {
+					
+				# recruitment at season 2, so move the ns over
+				x@n[1,y,,2] <- x@n[1,y,,1]
+				# first age is always 0 at season 0
+				x@n[1,y,,1] <- 0
+				# now loop over rest
+					for(a in ages) {
 						for(s in 2:4) {
+				if(!(s == 2 & a == 1)) {  ## don't want to overwrite these ns
 				if(!grepl("NEP", n.)) {
 				x@n[a,y,,s] <- x@n[a,y,,s-1] *
 				exp(-(stocks[[n.]]@harvest[a,y,,1]/4 + 
@@ -226,7 +233,8 @@ biols <- FLBiols(lapply(biols, function(x) {
 						}
 				}
 				}
-
+				}
+		
 				return(x)
 }))
 

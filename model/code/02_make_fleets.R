@@ -258,6 +258,10 @@ land_age[,ac(2015:2017),,4] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
+## redistribute the first age and season to the others
+land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector((land_age[1,ac(2015:2017),,1])))
+land_age[1,ac(2015:2017),,1]  <- 0
+
 land_age <- window(land_age, first.yr, last.yr)
 
 ## landings.wt - from the biols
@@ -319,6 +323,11 @@ disc_age[,ac(2015:2017),,4] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
 			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
 disc_age[is.na(disc_age)] <- 0
+
+## redistribute the first age and season to the others
+disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
+disc_age[1,ac(2015:2017),,1]  <- 0
+
 
 disc_age <- window(disc_age, first.yr, last.yr)
 
@@ -514,7 +523,11 @@ land_age <- Q_age
 flt	<- apply(landStock.f(IE_Otter, S), c(1,2), sum)
 res	<- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] - flt
 
+## For first age, only split among seasons 2 - 4
 land_age[,ac(2015:2017),,] <- res / 4
+land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + as.vector(1/3 * (land_age[1,ac(2015:2017),,1]))
+land_age[1,ac(2015:2017),,1]  <- 0
+
 land_age <- window(land_age, first.yr, last.yr)
 
 ## landings.wt - from the biols
@@ -541,6 +554,9 @@ flt	<- apply(discStock.f(IE_Otter, S), c(1,2), sum)
 res	<- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] - flt
 
 disc_age[,ac(2015:2017),,] <- res / 4
+disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
+disc_age[1,ac(2015:2017),,1]  <- 0
+
 disc_age[is.na(disc_age)] <- 0
 disc_age <- window(disc_age, first.yr, last.yr)
 

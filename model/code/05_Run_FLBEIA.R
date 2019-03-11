@@ -4,6 +4,7 @@
 
 library(FLBEIA)
 
+
 ## Load in all files
 lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
@@ -30,12 +31,16 @@ names(SC1)
 library(ggplotFL)
 plot(SC1[["stocks"]][["COD"]])
 fbar(SC1[["stocks"]][["COD"]])
-
-fbar(SC1[["stocks"]][["HAD"]])
 SC1[["stocks"]][["COD"]]@landings 
+
+plot(SC1[["stocks"]][["HAD"]])
+fbar(SC1[["stocks"]][["HAD"]])
+SC1[["stocks"]][["HAD"]]@landings 
 
 plotFLBiols(SC1$biols)
 plotFLFleets(SC1$fleets)
+
+
 
 s1_bio    <- bioSum(SC1)           # Data frame (DF) of biological indicators.
 s0_adv    <- advSum(SC1)           # DF of management advice (TAC). 
@@ -61,7 +66,8 @@ head(s0_vesselStk); unique(s0_vesselStk$indicator)
 head(s0_risk); unique(s0_risk$indicator)
 
 
-s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2020))            
+s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2022))            
+head(s0_bio_l)
 
 ggplot(s0_bio_l, aes(x = year, y = f)) + 
 	geom_line() + facet_wrap(~stock)
