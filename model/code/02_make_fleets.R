@@ -102,7 +102,7 @@ eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
 
-cap <- eff * 2  ## For now, high limit 
+cap <- eff * 1.2  ## For now, high limit 
 
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
@@ -330,7 +330,7 @@ disc_wt <- window(disc_wt, first.yr, last.yr)
 
 ## price
 
-## just take from fleet 1
+## just take from metier 1
 pr <- Q_age
 
 tot <- FLQuants(lapply(mt1, function(x) {
@@ -338,6 +338,11 @@ tot <- FLQuants(lapply(mt1, function(x) {
 		fleets[[fl1]]@metiers[[x]]@catches[[s]]@price} else
 		FLQuant(0, dim = c(1,dim_q[2],1,1,1,1))
 		}))
+
+for(i in 1:length(tot)) {
+tot[[i]][is.na(tot[[i]])] <- 5  ## remove any NAs, replace with mean val
+}
+
 tot = Sums(tot) / length(tot)
 pr <- FLQuant(rep(as.vector(tot), each = dim_q[1]), dim = dim(land_age),
 	      dimnames = list(age = dimnames(biols[[S]])$age, 
@@ -438,7 +443,7 @@ eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
 
-cap <- eff * 2
+cap <- eff * 1.2
 
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)

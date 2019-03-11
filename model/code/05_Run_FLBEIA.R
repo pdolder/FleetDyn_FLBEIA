@@ -29,6 +29,7 @@ names(SC1)
 
 library(ggplotFL)
 plot(SC1[["stocks"]][["COD"]])
+fbar(SC1[["stocks"]][["COD"]])
 
 fbar(SC1[["stocks"]][["HAD"]])
 SC1[["stocks"]][["COD"]]@landings 
