@@ -102,7 +102,7 @@ eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
 
-cap <- eff * 1.2  ## For now, high limit 
+cap <- eff * 2  ## For now, high limit 
 
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
@@ -394,8 +394,8 @@ eff_a <- window(eff_a, first.yr, last.yr)
 
 q <- ((land_age * land_wt) + 
      (disc_age * disc_wt))/
-      (biomass[[S]][,ac(2015:2017)]^al * 
-      eff_a^be)
+      (biomass[[S]][,ac(2015:2017)]^be * 
+      eff_a^al)
 
 
 ## Units
@@ -452,7 +452,7 @@ eff <- window(eff, first.yr, last.yr)
 
 fcost <- cap <- crew <- Q ## empty, no data - could use AER
 
-cap <- eff * 1.2
+cap <- eff * 2
 
 fcost <- window(fcost, first.yr, last.yr)
 cap   <- window(cap, first.yr, last.yr)
@@ -597,7 +597,7 @@ disc.sel <- window(disc.sel, first.yr, last.yr)
 
 ## q -calculate
 eff_a <- Q_age
-eff_a[] <- 1000
+eff_a[] <- 1e5 
 
 eff_a <- window(eff_a, first.yr, last.yr)
 

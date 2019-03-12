@@ -4,6 +4,7 @@
 
 library(FLBEIA)
 library(tidyverse)
+library(mlogit)
 
 load(file.path("..", "model", "fleets", "fleets.RData"))
 
@@ -33,56 +34,17 @@ choices <- eff_met
 ###############################################################
 ## simplest model...
 ##################################################################
-library(mlogit)
 
 ## For each month and year for each choice, 
 ## we need the alternatives that weren't chosen
 ## We only have proportions data, not individual trips/fishing activities...
 ## let's use the number of choices in 1000, so we effectively simulate
 ## 1000 trip choices from the probabilities each quarter and year
-
-test <- filter(choices, year == 2015, season == 1)
-
-metiers <- sample(test$metier, round(mean(test$tot),0), 
-		  prob = test$data, replace = T)
-table(metiers)
-
-## Now we need these metiers to make up the choice, and an alternative of each
-## of the other values
-
-choice_set <- data.frame(index = seq_len(length(metiers)),
-			 metier = metiers, choice = "yes")
-
-## now we stitch the choices that weren't made
-
-mets <- unique(metiers)
-
-choice_set2 <- lapply(choice_set$index, function(x) {
-
-choice_set_alt <- data.frame(index = x,  
-			     metier = mets[mets != choice_set[choice_set$index == x,"metier"]],
-			     choice = "no")
-return(rbind(choice_set[choice_set$index == x,],
-	     choice_set_alt))
-
-})
-
-choice_set2 <- do.call(rbind, choice_set2)
-
-choice_set2$choice <- factor(choice_set2$choice)
-
-LD <- mlogit.data(choice_set2, choice = "choice", shape = "long",
-		  chid.var = "index", alt.var = "metier", drop.index = FALSE)
-
-m1 <- mlogit(choice ~ 1, data = LD, print.level = 5)
-summary(m1)
-
-predictions <- predict(m1, newdata = LD, type = "probs")
-
-
-f####################################
-## Now over all years and seasons
+## over all years and seasons
 #####################################
+
+choices$season <- as.numeric(as.character(choices$season))
+
 
 res.df <- lapply(unique(choices$year), function(y) {
 			 print(y)
@@ -90,7 +52,7 @@ res.df <- lapply(unique(choices$year), function(y) {
 	season_res <- lapply(unique(choices$season), function(s) {
 				     print(s)
 			      
-df <- filter(choices, year == y, season == s, data > 0)
+df <- filter(choices, year == y, season == s)
 
 #metiers <- sample(df$metier, round(mean(df$tot),0), 
 #		  prob = df$data, replace = T)
@@ -132,30 +94,47 @@ return(choice_set2)
 
 res <- do.call(rbind, res.df)
 
-res$season <- as.numeric(as.character(res$season))
-
 ## unique index
-
+#res$season <- as.factor(res$season)
 res$index <- paste(res$index, res$year, res$season, sep = "_")
-
 
 LD <- mlogit.data(res, choice = "choice", shape = "long",
 		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
 
 
-m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
-summary(m0)
+#m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
+#summary(m0)
 
 m1 <- mlogit(choice ~ 1 | season , data = LD, print.level = 5)
 summary(m1)
+m1
 
-m2 <- mlogit(choice ~ 1 | season + I(season^2), data = LD, print.level = 5)
 summary(m1)
+apply(fitted(m1, outcome = FALSE),2,mean)
 
-predictions <- predict(m1, newdata = LD, type = "probs")
+fit <- fitted(m1, type = "probabilities")
+fit <- as.data.frame(fit)
 
-predictions <- predict(m1, newdata = expand.grid(metier = unique(res$metier),
-						 season = 1:4),
-		       type = "probs")
+## add season variable
+fit$season <- sapply(strsplit(rownames(fit), "_"), "[[", 3)
+fit$season <- as.factor(fit$season)
 
+fit_l <- fit %>% gather(metier, prob, -season)
+
+fit_mean <- fit_l %>% group_by(season, metier) %>%
+	summarise(prob.mean = mean(prob),sd = sd(prob)) %>% 
+	as.data.frame()
+
+
+choice_mean <- choices %>% group_by(season, metier) %>%
+	summarise(prob = mean(data)) %>% as.data.frame()
+
+choice_mean$season <- as.factor(choice_mean$season)
+
+ggplot(fit_mean, aes(x = paste(metier,season), y = prob.mean, fill = season)) +
+	geom_bar(stat="identity") + geom_errorbar(aes(ymin = prob.mean - (1.96 * sd), 
+						      ymax = prob.mean + (1.96 * sd))) +
+geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour = "red")
+
+## These aren't very different by season!!
 

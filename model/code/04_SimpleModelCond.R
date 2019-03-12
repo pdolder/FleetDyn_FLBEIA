@@ -94,11 +94,12 @@ covars<-NULL
 # Expand the fleet.....
 
 ## Takes a long time, so load if already generated
-if('FLFleetsExt_expanded.RData' %in% list.files(file.path("..", "model_inputs"))) { 
-  load(file.path("..", "model_inputs", 'FLFleetsExt_expanded.RData'))
-}
+#if('FLFleetsExt_expanded.RData' %in% list.files(file.path("..", "model_inputs"))) { 
+#  load(file.path("..", "model_inputs", 'FLFleetsExt_expanded.RData'))
+#}
 
-if(!'FLFleetsExt_expanded.RData' %in% list.files(file.path("..", "model_inputs"))) {
+#if(!'FLFleetsExt_expanded.RData' %in% list.files(file.path("..", "model_inputs"))) {
+
 
 print("############  Expanding the FLFleet object to projection years ############")
 
@@ -147,7 +148,7 @@ for(i in 1:l.fls){
 
 save(fleets,file=file.path("..", "model_inputs",'FLFleetsExt_expanded.RData'))
 
-}
+#}
 
 ###########################
 ##### Fleet controls ######
@@ -710,4 +711,16 @@ advice.ctrl$WHG$AdvCatch[]      <- TRUE
 
 advice.ctrl <- advice.ctrl[sort(names(advice.ctrl))]
 save(advice.ctrl,file=file.path("..", "model_inputs", 'advice_ctrl.RData'))
+
+
+fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, 2015:2017, 2018:2022) 
+
+fleets[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 
+fleets2[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 
+
+
+## use the inbuilt function calcs - not sure why different
+fleets <- fleets2
+
+save(fleets,file=file.path("..", "model_inputs", 'FLFleetsExt_expanded.RData'))
 

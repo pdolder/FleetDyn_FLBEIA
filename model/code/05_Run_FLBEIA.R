@@ -27,6 +27,8 @@ save(SC1, file = file.path("..", "outputs", "BaseModel.RData"))
 
 names(SC1)
 
+SC1$fleets[["IE_Otter"]]@effort
+
 
 library(ggplotFL)
 plot(SC1[["stocks"]][["COD"]])
@@ -66,11 +68,12 @@ head(s0_vesselStk); unique(s0_vesselStk$indicator)
 head(s0_risk); unique(s0_risk$indicator)
 
 
-s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2027))            
+s0_bio_l    <- bioSum(SC1, long = FALSE, years = ac(2016:2022))            
 head(s0_bio_l)
 
 ggplot(s0_bio_l, aes(x = year, y = f)) + 
-	geom_line() + facet_wrap(~stock)
+	geom_line() + facet_wrap(~stock, scale = "free_y") + 
+	geom_vline(xintercept = 2018, linetype = 2)
 
 s0_adv_l    <- advSum(SC1, long = FALSE, years = ac(2016:2020))             
 s0_flt_l    <- fltSum(SC1, long = FALSE, years = ac(2016:2020))
