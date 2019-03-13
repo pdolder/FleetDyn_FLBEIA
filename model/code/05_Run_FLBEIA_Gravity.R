@@ -32,6 +32,42 @@ save(SC2, file = file.path("..", "outputs", "GravityModel.RData"))
 
 names(SC2)
 
+load(file.path("..", "outputs", "GravityModel.RData"))
+
+### Check effort share calc working correctly
+
+fl <- SC2$fleets[["IE_Otter"]]
+
+## predicted effort shares from gravity model
+## Not sure this is quite right, q * (sel * N
+
+met_vals <- lapply(fl@metiers, function(met) {
+	      
+	  res <- lapply(met@catches, function(s) {
+		n. <- s@name
+		if(grepl("NEP", n.)) { SC2$biols[[n.]]@m[] <- 0  }
+	        st.val <- as.data.frame(apply(
+					      (s@catch.q[,49,,1] * 
+					      (s@landings.wt[,49,,1] *  
+						(SC2$biols[[n.]]@n[,49,,1]* 
+					      exp(-SC2$biols[[n.]]@m[,49,,1]/2))^s@beta[,49,,1]) * 
+					      s@landings.sel[,49,,1] * 
+					      s@price[,49,,1]), c(2), sum))
+		
+
+		return(st.val)
+})
+	  res2 <- do.call(rbind,res)
+	  val <- sum(res2$data)
+	  return(val)
+	      
+	      })
+
+met_vals <- do.call(rbind, met_vals)
+
+cbind(met_vals/colSums(met_vals),
+as.matrix(unlist(lapply(fl@metiers, function(x) x@effshare[,49,,1])), ncol = 1))
+
 
 load(file.path("..", "outputs", "BaseModel.RData"))
 

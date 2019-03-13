@@ -1,4 +1,4 @@
-###############################################################
+#n##############################################################
 ## A simplified RUM fit to the IE_Otter data
 ###############################################################
 
@@ -28,8 +28,31 @@ eff_met$tot <- eff$data[match(paste(eff_met$year, eff_met$season),
 			      paste(eff$year, eff$season))]
 eff_met$effort <- eff_met$data * eff_met$tot
 
-choices <- eff_met
+## Now catches
 
+res <- lapply(fl@metiers, function(m) {
+			      
+			res <-   lapply(m@catches, function(ca) {
+			return(cbind(stock = ca@name, as.data.frame(ca@landings)))
+})
+			res2 <- do.call(rbind, res)
+			res2 <- cbind(metier = m@name, res2)
+
+			      })
+
+catch_met <- do.call(rbind, res)
+
+## make choice set by combining data
+catch_met_wide <- catch_met %>% select(-age, -unit, -area, -iter) %>% 
+	reshape2::dcast(metier + year + season ~ stock, value.var = "data")
+
+catch_met_wide[is.na(catch_met_wide)]  <- 0
+
+choices <- merge(eff_met, catch_met_wide)
+
+## covert catch to catch rates
+choices[,11:ncol(choices)]  <- (choices[,11:ncol(choices)] / choices[,"effort"] ) * 1000 ## multiply to make more meaningful unit
+choices[is.na(choices)] <- 0
 
 ###############################################################
 ## simplest model...
@@ -65,6 +88,8 @@ metiers <- sample(df$metier, 1000,
 choice_set <- data.frame(index = seq_len(length(metiers)),
 			 year = y, season = s,
 			 metier = metiers, choice = "yes")
+choice_set <- left_join(choice_set, df[,c(1:3, 11:ncol(df))],
+			by = c("year", "season", "metier"))
 
 ## now we stitch the choices that weren't made
 mets <- unique(metiers)
@@ -74,6 +99,9 @@ choice_set2 <- lapply(choice_set$index, function(x) {
 choice_set_alt <- data.frame(index = x, year = y, season = s, 
 			     metier = mets[mets != choice_set[choice_set$index == x,"metier"]],
 			     choice = "no")
+choice_set_alt <- left_join(choice_set_alt, df[,c(1:3, 11:ncol(df))],
+			    by = c("year", "season", "metier"))
+
 return(rbind(choice_set[choice_set$index == x,],
 	     choice_set_alt))
 
@@ -105,14 +133,43 @@ LD <- mlogit.data(res, choice = "choice", shape = "long",
 #m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
 #summary(m0)
 
+## This is a multinomial model
 m1 <- mlogit(choice ~ 1 | season , data = LD, print.level = 5)
 summary(m1)
 m1
 
-summary(m1)
+## The mean probabilities
 apply(fitted(m1, outcome = FALSE),2,mean)
 
-fit <- fitted(m1, type = "probabilities")
+
+## This is mixed, conditional | multinomial
+m2 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season, data = LD, print.level = 5)
+summary(m2)
+
+
+##############################################
+### How you make predictions with different ##
+### covariate values
+### from https://cran.r-project.org/web/packages/mlogit/vignettes/c3.rum.html 
+##############################################
+LD.cod <- LD
+LD.cod$COD <- LD.cod$COD * 1.2  ## increase cod catch rate by 20 %
+
+## The original fitted probabilities 
+p0 <- fitted(m2, type = "probabilities")
+
+## the new predictions with higher catch rates
+p <- predict(m2, newdata = LD.cod, type = "probabilities")
+
+cbind(p0[1,1], p[1,1])  ## example difference in metier A
+
+##
+## Example of plotting the means by season
+## Not sure this is right, really need to get the marginal effect of season
+## TO DO
+## 
+
+fit <- fitted(m2, type = "probabilities")
 fit <- as.data.frame(fit)
 
 ## add season variable
@@ -137,4 +194,7 @@ ggplot(fit_mean, aes(x = paste(metier,season), y = prob.mean, fill = season)) +
 geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour = "red")
 
 ## These aren't very different by season!!
+
+## How does COD catch rate affect choice....
+
 
