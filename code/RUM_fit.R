@@ -248,8 +248,28 @@ mat1 <- model.matrix(m2)
 
 bm   <- mat1 %*% Beta
 
-fit2 <- fitted(m2) 
 
+###################################################
+###################################################
+## Let's try our own predictions
+
+exp(sum(Beta[,1] %*% mat1[1,]))/  ## prob first row, in this case choice F 
+sum(exp(apply(mat1[1:12,],1,function(x) x %*% Beta[,1])))  ## over all the rest)
+
+## over all 12
+pred_own <- sapply(1:12, function(y) {
+exp(sum(Beta[,1] %*% mat1[y,]))/  ## prob first row, in this case choice F 
+sum(exp(apply(mat1[1:12,],1,function(x) x %*% Beta[,1])))  ## over all the rest)
+	})
+
+names(pred_own) <- sapply(strsplit(rownames(mat1[1:12,]), ".", fixed = TRUE), "[[", 2)
+
+pred_own <- pred_own[order(names(pred_own))]
+sum(pred_own)
+
+pred_own
+fitted(m2, type = "probabilities")[1,]
+### Hmmm...missing something -- is it the linear predictor ??
 
 ###############################
 ### Marginal effects
@@ -290,18 +310,4 @@ effects(m2, covariate = "COD", type = "aa")
 
 effects(m3, covariate = "season")
 
-###################################################
-###################################################
-## Someone else developed some functions to help
-#source('https://github.com/gregmacfarlane/MLogitTools/blob/master/predictfunction.R')
 
-source('https://raw.githubusercontent.com/gregmacfarlane/MLogitTools/master/predictfunction.R')
-
-utils <- utilities.mlogit(m2, list("B", "C","D","E","F","G","H","J","K","L")) 
-
-mf <- cbind(alt = LETTERS[1:12], LD[1,-c(1,3,7:11)])
-mf <- mf[,c(1:5,9,6:8)]
-
-compute.Utility(mf = mf, utilities = utils, type = "P")
-
-## Doesn't seem to work...
