@@ -55,6 +55,7 @@ choices[is.na(choices)] <- 0
 
 head(choices)
 
+table(choices$year, choices$metier, choices$season)
 
 ## Exclude F as causing fitting problems....
 ## choices <- filter(choices, metier != "F") 
@@ -129,6 +130,8 @@ res <- do.call(rbind, res.df)
 res$index <- paste(res$index, res$year, res$season, sep = "_")
 
 
+table(res$year, res$metier)
+table(res$year, res$metier, res$season)
 
 
 LD <- mlogit.data(res, choice = "choice", shape = "long",
@@ -139,7 +142,7 @@ LD <- mlogit.data(res, choice = "choice", shape = "long",
 #summary(m0)
 
 ## This is a multinomial model
-m1 <- mlogit(choice ~ 1 | season , data = LD, print.level = 5)
+m1 <- mlogit(choice ~ 1 | season , data = LD, print.level = 2)
 summary(m1)
 m1
 
@@ -152,9 +155,9 @@ apply(fitted(m1, outcome = FALSE),2,mean)
 LD$NEP_all <- LD$NEP16 + LD$NEP17 + LD$NEP19 + LD$NEP2021 + LD$NEP22
 
 ## This is mixed, conditional | multinomial
-m2 <- mlogit(choice ~ COD + HAD + MON + NEP_all + NHKE + NMEG + WHG | season, data = LD, print.level = 5)
+m2 <- mlogit(choice ~ COD + HAD + MON + NEP_all + NHKE + NMEG + WHG | season, data = LD, 
+	     print.level = 2)
 summary(m2)
-
 
 ##############################################
 ### How you make predictions with different ##
@@ -177,8 +180,37 @@ cbind(p0[1,1], p[1,1])  ## example difference in metier A
 ##
 ## Example of plotting the means by season
 ## Not sure this is right, really need to get the marginal effect of season
-## TO DO
+## TO DO !!
 ## 
+
+
+## I am confused here which is the right approach...here are the outcome
+## probabilities
+
+fit <- fitted(m2, type = "outcome")
+fit <- as.data.frame(fit)
+
+LD_check <- LD
+LD_check$metier <- sapply(strsplit(rownames(LD_check), ".", fixed = T), "[[", 2)
+
+LD_check <- filter(LD_check, choice == TRUE)
+LD_check$pred <- fit$fit
+
+LD_check <- LD_check %>% group_by(season, metier) %>%
+	summarise(prob = mean(pred)) %>% as.data.frame()
+
+choice_mean <- choices %>% group_by(season, metier) %>%
+	summarise(prob = mean(data)) %>% as.data.frame()
+
+choice_mean$season <- as.factor(choice_mean$season)
+
+## Better on seasonal variability...but doesn't sum to one ??
+LD_check2 <- LD_check %>% spread(metier, prob)
+rowSums(LD_check2[,2:ncol(LD_check2)])
+
+ggplot(LD_check, aes(x = paste(metier,season), y = prob , fill = factor(season))) +
+	geom_bar(stat="identity")  +
+geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour = "red")
 
 fit <- fitted(m2, type = "probabilities")
 fit <- as.data.frame(fit)
@@ -204,6 +236,7 @@ ggplot(fit_mean, aes(x = paste(metier,season), y = prob.mean, fill = season)) +
 						      ymax = prob.mean + (1.96 * sd))) +
 geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour = "red")
 
+
 ## These aren't very different by season!!
 
 ## But maybe this can be done with a model matrix approach ??
@@ -216,3 +249,59 @@ mat1 <- model.matrix(m2)
 bm   <- mat1 %*% Beta
 
 fit2 <- fitted(m2) 
+
+
+###############################
+### Marginal effects
+###############################
+
+## By default computed at the sample mean
+effects(m2, covariate = "season")
+
+## Can interpret at there being this % increase or decrease in prob
+## of choice given 100% increase in season...i.e. as %
+100 * effects(m2, covariate = "season")
+
+## So...stands to reason that the mean of the prob of season 1 area A *
+## effects(m2, covariates) for A * 2 == season 2 area A...
+
+fit_mean[fit_mean$metier == "A" & fit_mean$season %in% 1:2,]
+
+fit_mean[fit_mean$metier == "A" & fit_mean$season %in% 1, "prob.mean"] +
+(fit_mean[fit_mean$metier == "A" & fit_mean$season %in% 1, "prob.mean"] *
+	(effects(m2, covariate = "season", type = "aa")[["A"]]))
+
+fit_mean[fit_mean$metier == "A" & fit_mean$season %in% 2, "prob.mean"] 
+
+# note options are a for absolute change, and r for relative change.
+# these can be any combined so ar is absolute variate in probability for a relative
+# change in the covariate. aa is default
+100 * effects(m2, covariate = "season", type = "aa")
+100 * effects(m2, covariate = "season", type = "ar")
+
+## and for alternative specific covariates....
+
+## This is metier by metier matrix, so for example the change in cod catch rate in metier a
+## on probability of choosing metier a - l etc...
+effects(m2, covariate = "COD", type = "aa")
+
+## This is mixed, conditional | multinomial  - and we want choice to interact
+## with season...
+
+effects(m3, covariate = "season")
+
+###################################################
+###################################################
+## Someone else developed some functions to help
+#source('https://github.com/gregmacfarlane/MLogitTools/blob/master/predictfunction.R')
+
+source('https://raw.githubusercontent.com/gregmacfarlane/MLogitTools/master/predictfunction.R')
+
+utils <- utilities.mlogit(m2, list("B", "C","D","E","F","G","H","J","K","L")) 
+
+mf <- cbind(alt = LETTERS[1:12], LD[1,-c(1,3,7:11)])
+mf <- mf[,c(1:5,9,6:8)]
+
+compute.Utility(mf = mf, utilities = utils, type = "P")
+
+## Doesn't seem to work...
