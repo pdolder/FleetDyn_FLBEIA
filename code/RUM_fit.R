@@ -54,6 +54,11 @@ choices[,11:ncol(choices)]  <- (choices[,11:ncol(choices)] / choices[,"effort"] 
 choices[is.na(choices)] <- 0
 
 head(choices)
+
+
+## Exclude F as causing fitting problems....
+## choices <- filter(choices, metier != "F") 
+
 ###############################################################
 ## simplest model...
 ##################################################################
@@ -123,6 +128,9 @@ res <- do.call(rbind, res.df)
 #res$season <- as.factor(res$season)
 res$index <- paste(res$index, res$year, res$season, sep = "_")
 
+
+
+
 LD <- mlogit.data(res, choice = "choice", shape = "long",
 		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
 
@@ -139,8 +147,12 @@ m1
 apply(fitted(m1, outcome = FALSE),2,mean)
 
 
+## Let's combine Nephrops to make simpler
+
+LD$NEP_all <- LD$NEP16 + LD$NEP17 + LD$NEP19 + LD$NEP2021 + LD$NEP22
+
 ## This is mixed, conditional | multinomial
-m2 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season, data = LD, print.level = 5)
+m2 <- mlogit(choice ~ COD + HAD + MON + NEP_all + NHKE + NMEG + WHG | season, data = LD, print.level = 5)
 summary(m2)
 
 
@@ -151,7 +163,6 @@ summary(m2)
 ##############################################
 
 ## How does COD catch rates affect choice...
-
 LD.cod <- LD
 LD.cod$COD <- LD.cod$COD * 1.2  ## increase cod catch rate by 20 %
 
