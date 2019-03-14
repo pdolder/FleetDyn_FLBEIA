@@ -6,7 +6,12 @@ library(FLBEIA)
 library(tidyverse)
 library(mlogit)
 
-load(file.path("..", "model", "fleets", "fleets.RData"))
+if(length(grep("coilin", getwd())) > 0){
+    load(file.path("~", "Dropbox", "FLeetDyn_FLBEIA", "model", "fleets", "fleets.RData"))
+}else{
+    load(file.path("..", "model", "fleets", "fleets.RData"))
+}
+
 
 fl <- fleets[["IE_Otter"]]
 
