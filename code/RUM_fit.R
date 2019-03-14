@@ -10,7 +10,6 @@ load(file.path("..", "model", "fleets", "fleets.RData"))
 
 fl <- fleets[["IE_Otter"]]
 
-
 #################
 ### processing 
 #################
@@ -54,6 +53,7 @@ choices <- merge(eff_met, catch_met_wide)
 choices[,11:ncol(choices)]  <- (choices[,11:ncol(choices)] / choices[,"effort"] ) * 1000 ## multiply to make more meaningful unit
 choices[is.na(choices)] <- 0
 
+head(choices)
 ###############################################################
 ## simplest model...
 ##################################################################
@@ -76,9 +76,6 @@ res.df <- lapply(unique(choices$year), function(y) {
 				     print(s)
 			      
 df <- filter(choices, year == y, season == s)
-
-#metiers <- sample(df$metier, round(mean(df$tot),0), 
-#		  prob = df$data, replace = T)
 
 metiers <- sample(df$metier, 1000, 
 		  prob = df$data, replace = T)
@@ -152,6 +149,9 @@ summary(m2)
 ### covariate values
 ### from https://cran.r-project.org/web/packages/mlogit/vignettes/c3.rum.html 
 ##############################################
+
+## How does COD catch rates affect choice...
+
 LD.cod <- LD
 LD.cod$COD <- LD.cod$COD * 1.2  ## increase cod catch rate by 20 %
 
@@ -195,6 +195,13 @@ geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour 
 
 ## These aren't very different by season!!
 
-## How does COD catch rate affect choice....
+## But maybe this can be done with a model matrix approach ??
 
+## Over to you Cóilín....
 
+Beta <- as.matrix(coef(m2))
+mat1 <- model.matrix(m2)
+
+bm   <- mat1 %*% Beta
+
+fit2 <- fitted(m2) 

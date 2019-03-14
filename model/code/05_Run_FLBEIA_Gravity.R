@@ -3,6 +3,7 @@
 ###################################################
 
 library(FLBEIA)
+library(ggplot2)
 
 
 ## Load in all files
@@ -32,7 +33,13 @@ save(SC2, file = file.path("..", "outputs", "GravityModel.RData"))
 
 names(SC2)
 
+###############
+## Check the effect
+###############
+
+
 load(file.path("..", "outputs", "GravityModel.RData"))
+load(file.path("..", "outputs", "BaseModel.RData"))
 
 ### Check effort share calc working correctly
 
@@ -68,18 +75,21 @@ met_vals <- do.call(rbind, met_vals)
 cbind(met_vals/colSums(met_vals),
 as.matrix(unlist(lapply(fl@metiers, function(x) x@effshare[,49,,1])), ncol = 1))
 
-
-load(file.path("..", "outputs", "BaseModel.RData"))
-
-SC1$fleets[["IE_Otter"]]@effort
-SC2$fleets[["IE_Otter"]]@effort
-
-SC1$fleets[["NHKE_fleet"]]@effort
-SC2$fleets[["NHKE_fleet"]]@effort
+## Success!
 
 
+## Effort in each scenario
+df <- rbind(cbind(scenario = "base", as.data.frame(SC1$fleets[["IE_Otter"]]@effort)),
+      cbind(scenario = "gravity", as.data.frame(SC2$fleets[["IE_Otter"]]@effort))
+)
+df <- df[df$year > 2014,]
 
 
+ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario)) +
+	facet_wrap(~season, scale = "free")
+## in multi-stock example, total effort quite different by season 
+
+## Compare effort predictions with fixed effort dist and gravity model
 SC1$fleets[["IE_Otter"]][[3]]@effshare[,ac(2018:2022)]
 SC2$fleets[["IE_Otter"]][[3]]@effshare[,ac(2018:2022)]
 
@@ -88,6 +98,18 @@ library(ggplotFL)
 plot(FLStocks("base" = SC1[["stocks"]][["HAD"]], "gravity" = SC2[["stocks"]][["HAD"]]))
 fbar(SC1[["stocks"]][["COD"]])
 fbar(SC2[["stocks"]][["COD"]])
+## F higher under the gravity model
+
+s1_adv_l    <- advSum(SC1, long = FALSE, years = ac(2016:2022))             
+s2_adv_l    <- advSum(SC2, long = FALSE, years = ac(2016:2022))             
+
+adv <- rbind(cbind(sc = "base", s1_adv_l),
+	     cbind(sc = "gravity", s2_adv_l))
+
+ggplot(adv, aes(x = paste(year, sc), y = quotaUpt, fill = sc)) +
+	geom_bar(stat= "identity") +
+	facet_wrap(~stock) + ggtitle("quota uptake")
+
 
 SC1[["stocks"]][["COD"]]@landings 
 
@@ -111,7 +133,6 @@ ggplot(s_bio_l, aes(x = year, y = landings)) +
 	geom_line(aes(colour = sc)) + facet_wrap(~stock) 
 
 
-s0_adv_l    <- advSum(SC1, long = FALSE, years = ac(2016:2020))             
 
 
 
