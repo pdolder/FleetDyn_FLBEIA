@@ -154,14 +154,14 @@ save(fleets,file=file.path("..", "model_inputs",'FLFleetsExt_expanded.RData'))
 ##### Fleet controls ######
 ###########################
 
-eff.res <- "min"
+eff.res <- "prev"
 
 flq   <- FLQuant(dimnames = list(quant = 'all', year = data.yrs[1]:proj.yrs[length(proj.yrs)], season = 1:ns), iter = ni)
 
 fleets.ctrl      <- create.fleets.ctrl(fls = fls,n.fls.stks=n.flts.stks,fls.stksnames=flts.stksnames,
                                          effort.models= effort.models,catch.models=catch.models,
                                          capital.models=capital.models, price.models=price.models,flq=flq,
-                                       "effort.restr.IE_otter" = eff.res,
+                                       "effort.restr.IE_Otter" = eff.res,
 				       "effort.restr.COD_fleet" = eff.res,
 				       "effort.restr.HAD_fleet" = eff.res,
 				       "effort.restr.WHG_fleet" = eff.res,

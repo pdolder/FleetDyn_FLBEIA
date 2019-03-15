@@ -138,10 +138,8 @@ res$index <- paste(res$index, res$year, res$season, sep = "_")
 table(res$year, res$metier)
 table(res$year, res$metier, res$season)
 
-
 LD <- mlogit.data(res, choice = "choice", shape = "long",
 		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
-
 
 #m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
 #summary(m0)
@@ -242,40 +240,6 @@ ggplot(fit_mean, aes(x = paste(metier,season), y = prob.mean, fill = season)) +
 geom_point(data = choice_mean, aes(x = paste(metier, season), y = prob), colour = "red")
 
 
-## These aren't very different by season!!
-
-## But maybe this can be done with a model matrix approach ??
-
-## Over to you Cóilín....
-
-Beta <- as.matrix(coef(m2))
-mat1 <- model.matrix(m2)
-
-bm   <- mat1 %*% Beta
-
-
-###################################################
-###################################################
-## Let's try our own predictions
-
-exp(sum(Beta[,1] %*% mat1[1,]))/  ## prob first row, in this case choice F 
-sum(exp(apply(mat1[1:12,],1,function(x) x %*% Beta[,1])))  ## over all the rest)
-
-## over all 12
-pred_own <- sapply(1:12, function(y) {
-exp(sum(Beta[,1] %*% mat1[y,]))/  ## prob first row, in this case choice F 
-sum(exp(apply(mat1[1:12,],1,function(x) x %*% Beta[,1])))  ## over all the rest)
-	})
-
-names(pred_own) <- sapply(strsplit(rownames(mat1[1:12,]), ".", fixed = TRUE), "[[", 2)
-
-pred_own <- pred_own[order(names(pred_own))]
-sum(pred_own)
-
-pred_own
-fitted(m2, type = "probabilities")[1,]
-### Hmmm...missing something -- is it the linear predictor ??
-
 ###############################
 ### Marginal effects
 ###############################
@@ -310,9 +274,206 @@ fit_mean[fit_mean$metier == "A" & fit_mean$season %in% 2, "prob.mean"]
 ## on probability of choosing metier a - l etc...
 effects(m2, covariate = "COD", type = "aa")
 
-## This is mixed, conditional | multinomial  - and we want choice to interact
-## with season...
 
-effects(m3, covariate = "season")
+#########################################################################
+## Cóilín's code = by hand predictions
+#########################################################################
+
+## probabilities from mlogit
+p_hat <- fitted(m1, outcome = FALSE)
+
+## coefficient vector
+beta <- as.matrix(coef(m1))
+
+## model matrix
+X <- model.matrix(m1)
+
+## linear predictor long
+eta_long <- X %*% beta
+
+##eta_long <-apply(X, 1, function(x) x %*% beta)
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+## check
+options(scipen = 4)
+range(p_hat - own_p_hat)
+
+## note some large numbers exponentiated to guard against computational infinities perhaps use Brobdingnag
+
+#############################################################################
+### Full method for predictions
+#############################################################################
+
+## 1. Generate own data frame similar to res with the data
+
+res2<- data.frame(season = rep(1:4, each = 12), metier = rep(LETTERS[1:12],4), choice = "yes")
+
+## Use mFormula to define model form
+LD2 <- mlogit.data(res2, choice = "choice", shape = "long",
+		   alt.var = "metier")
+
+mod.mat <- model.matrix(m1$formula, data = LD2)
+beta <- as.matrix(coef(m1))
+
+## linear predictor long
+eta_long <- mod.mat %*% beta
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+own_p_hat
+
+## So this would be the probabilities for each season
+colnames(own_p_hat) <- LETTERS[1:12]
+rownames(own_p_hat) <- 1:4
+
+own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+own_p_hat$season = rep(1:4, times = 12)
+
+ggplot(own_p_hat, aes(x = paste(metier, season), y = prob)) +
+	geom_bar(stat = "identity", aes(fill = factor(season))) +
+	ggtitle("Seasonal probabilities from m1 model")
+ggsave("season_probs_m1.png")
+
+
+#######################################################
+### Now let's try with m2 -
+########################################################
+
+
+## How does HAD catch rate affect probabilities
+
+cr <- seq(0, max(LD$HAD), 1)
+
+res3<- data.frame(season = 1, metier = rep(LETTERS[1:12], times = length(cr)), choice = "yes", 
+		   "COD" = 1, "HAD" = rep(cr, each = 12), "MON" = 1, "NEP_all" = 1, "NHKE" = 1, "NMEG" = 1,
+		   "WHG" = 1)
+
+res3$index <- paste(res3$metier, res3$HAD, sep ="_")
+## Use mFormula to define model form
+LD3 <- mlogit.data(res3, choice = "choice", shape = "long",
+		   alt.var = "metier", chid.var = "index")
+
+mod.mat <- model.matrix(m2$formula, data = LD3)
+beta <- as.matrix(coef(m2))
+
+## linear predictor long
+eta_long <- mod.mat %*% beta
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+head(own_p_hat)
+
+## So this would be the probabilities for each season
+colnames(own_p_hat) <- LETTERS[1:12]
+rownames(own_p_hat) <- cr 
+
+own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+own_p_hat$cr = rep(cr, times = 12)
+
+ggplot(own_p_hat, aes(x = cr, y = prob)) +
+	geom_line(stat = "identity") +
+	facet_wrap(~metier, scale = "free_y") +
+	ggtitle("HAD catch rate affecting prob.png")
+ggsave("HAD_probs_m2.png")
+
+
+## Well, it doesn't - as the catch rate in all areas goes up, the probabilities
+## are affected equally which neutralises when we divide by rowSums....
+## So let's use some of the "real" catch rates and increase them by a %% 
+
+## How does catch rate affect probabilities
+
+## Let's loop this over all species
+
+
+res_stock <- lapply(c("COD", "HAD", "MON", "NEP_all", "NHKE", "NMEG", "WHG"), function(x) {
+
+cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
+
+## Increase in %s
+
+## 0% to 100% higher CPUE 
+cr <- lapply(seq(1,2,0.1), function(y) {
+       cr <- cr_spp$cr  * y
+       return(cr)
+})
+
+cr <- do.call(rbind, cr) ## matrix
+
+if(x != "COD") {COD = 1}
+if(x != "HAD") {HAD = 1}
+if(x != "MON") {MON = 1}
+if(x != "NEP_all") {NEP_all = 1}
+if(x != "NHKE") {NHKE = 1}
+if(x != "NMEG") {NMEG = 1}
+if(x != "WHG") {WHG = 1}
+
+assign(x, as.vector(t(cr)))
+
+res3<- data.frame(season = 1, metier = rep(LETTERS[1:12], times = nrow(cr)), choice = "yes", 
+		   "COD" = COD, "HAD" = HAD, "MON" = MON, "NEP_all" = NEP_all, "NHKE" = NHKE, "NMEG" = NMEG,
+		   "WHG" = WHG)
+
+res3$index <- paste(res3$metier, get(x), sep ="_")
+## Use mFormula to define model form
+LD3 <- mlogit.data(res3, choice = "choice", shape = "long",
+		   alt.var = "metier", chid.var = "index")
+
+mod.mat <- model.matrix(m2$formula, data = LD3)
+beta <- as.matrix(coef(m2))
+
+## linear predictor long
+eta_long <- mod.mat %*% beta
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+head(own_p_hat)
+
+## So this would be the probabilities for each season
+colnames(own_p_hat) <- LETTERS[1:12]
+rownames(own_p_hat) <- seq(1, 2, 0.1)
+
+own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+own_p_hat$percIncrease = seq(1,2,0.1) 
+
+own_p_hat$stock <- x
+
+return(own_p_hat)
+
+})
+
+
+res_all <- do.call(rbind, res_stock)
+
+ggplot(res_all, aes(x = percIncrease, y = prob)) +
+	geom_line(stat = "identity", aes(colour = stock)) +
+	facet_wrap(~metier) + theme_bw() +
+	ggtitle("Catch rate multiplier effect on choice probabilities \n 
+		in season 1 from m2 model") +
+		xlab("Catch Rate multiplier") +
+		ylab("Choice probability / share")
+ggsave("Catch_Rate_Multi.png")
+
 
 
