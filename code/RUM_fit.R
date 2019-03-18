@@ -6,6 +6,8 @@ library(FLBEIA)
 library(tidyverse)
 library(mlogit)
 
+set.seed(111)
+
 if(length(grep("coilin", getwd())) > 0){
     load(file.path("~", "Dropbox", "FLeetDyn_FLBEIA", "model", "fleets", "fleets.RData"))
 }else{
@@ -130,10 +132,13 @@ return(choice_set2)
 
 res <- do.call(rbind, res.df)
 
+## Let's combine Nephrops to make simpler when fitting a model with species
+res$NEP_all <- res$NEP16 + res$NEP17 + res$NEP19 + res$NEP2021 + res$NEP22
+
+
 ## unique index
 #res$season <- as.factor(res$season)
 res$index <- paste(res$index, res$year, res$season, sep = "_")
-
 
 table(res$year, res$metier)
 table(res$year, res$metier, res$season)
@@ -151,11 +156,6 @@ m1
 
 ## The mean probabilities
 apply(fitted(m1, outcome = FALSE),2,mean)
-
-
-## Let's combine Nephrops to make simpler
-
-LD$NEP_all <- LD$NEP16 + LD$NEP17 + LD$NEP19 + LD$NEP2021 + LD$NEP22
 
 ## This is mixed, conditional | multinomial
 m2 <- mlogit(choice ~ COD + HAD + MON + NEP_all + NHKE + NMEG + WHG | season, data = LD, 
@@ -404,6 +404,8 @@ ggsave("HAD_probs_m2.png")
 
 res_stock <- lapply(c("COD", "HAD", "MON", "NEP_all", "NHKE", "NMEG", "WHG"), function(x) {
 
+print(x)
+
 cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
 
 ## Increase in %s
@@ -474,6 +476,5 @@ ggplot(res_all, aes(x = percIncrease, y = prob)) +
 		xlab("Catch Rate multiplier") +
 		ylab("Choice probability / share")
 ggsave("Catch_Rate_Multi.png")
-
 
 
