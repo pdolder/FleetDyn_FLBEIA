@@ -1,4 +1,4 @@
-#n##############################################################
+fn##############################################################
 ## A simplified RUM fit to the IE_Otter data
 ###############################################################
 
@@ -502,7 +502,7 @@ make_predict_df <- function(model = NULL, fleet = NULL, season = s) {
 ## Pass mlogit model object
 ## Pass fleet object
 
-mod.coefs <- names(coef(mod)) ## Model coefficients
+mod.coefs <- names(coef(model)) ## Model coefficients
 
 ## 1. season - note, just return the season for which we're predicting
 seas <- if(any(grepl("season", mod.coefs))) { season } else { NA }
@@ -556,7 +556,7 @@ predict.df <- make_predict_df(model = m2, fleet = fl, s = 1)
 ########################
 
 
-update_RUM <- function(model = mod, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
+update_RUM <- function(model = NULL, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) {
 
 ## Update the values in the predict.df
@@ -566,7 +566,7 @@ update_RUM <- function(model = mod, predict.df = predict.df, fleet = fl, covars 
 ## similar calculation as for the gravity model
 ## Here have to be careful as not all metiers may catch all stocks...
 	
-if(any(sapply(catchNames(fl), grepl, coef(mod)))) {
+if(any(sapply(catchNames(fl), grepl, names(coef(model))))) {
 
 N0 <- lapply(names(N), function(x) array(N[[x]], dim = dim(N[[x]])[c(1,3,6)]))
       names(N0) <- names(N)
@@ -620,7 +620,7 @@ updated.df <- update_RUM(model = mod, predict.df = predict.df, fleet = fl, covar
 ## Make predictions
 ########################
 
-predict.RUM <- function(model = mod, updated.df = updated.df) {
+predict_RUM <- function(model = mod, updated.df = updated.df) {
 
 mod.mat <- model.matrix(model$formula, data = updated.df)
 beta <- as.matrix(coef(model))
@@ -630,18 +630,35 @@ eta_long <- mod.mat %*% beta
 
 ## linear predictor wide
 eta_wide <- matrix(eta_long, ncol = length(unique(updated.df$metier)), byrow = TRUE)
-names(eta_wide) <- mtnms
+names(eta_wide) <- updated.df$metier 
 
 ## convert to a probability
-own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
 
 ## So this would be the probabilities 
-colnames(own_p_hat) <- mtnms 
+colnames(p_hat) <- updated.df$metier 
 
-own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+p_hat <- as.data.frame(t(p_hat))
 
-
+return(p_hat)
 
 }
+
+
+## Fit a model with all the species
+m3 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season, data = LD, 
+	     print.level = 2)
+summary(m3)
+
+
+## step 1 
+predict.df <- make_predict_df(model = m3, fleet = fl, s = 1)
+
+## step 2 
+updated.df <- update_RUM(model = m2, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = 1,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+## step 3 
+predict_RUM(model = m3, updated.df = updated.df)
 
 
