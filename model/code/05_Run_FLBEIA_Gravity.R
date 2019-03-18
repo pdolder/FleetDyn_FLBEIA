@@ -41,12 +41,13 @@ names(SC2)
 load(file.path("..", "outputs", "GravityModel.RData"))
 load(file.path("..", "outputs", "BaseModel.RData"))
 
+###############################################
 ### Check effort share calc working correctly
+#################################################
 
 fl <- SC2$fleets[["IE_Otter"]]
 
 ## predicted effort shares from gravity model
-## Not sure this is quite right, q * (sel * N
 
 met_vals <- lapply(fl@metiers, function(met) {
 	      
@@ -78,6 +79,11 @@ as.matrix(unlist(lapply(fl@metiers, function(x) x@effshare[,49,,1])), ncol = 1))
 ## Success!
 
 
+################################
+### Compare the 'base' model and
+### Gravity model
+################################
+
 ## Effort in each scenario
 df <- rbind(cbind(scenario = "base", as.data.frame(SC1$fleets[["IE_Otter"]]@effort)),
       cbind(scenario = "gravity", as.data.frame(SC2$fleets[["IE_Otter"]]@effort))
@@ -86,7 +92,7 @@ df <- df[df$year > 2014,]
 
 
 ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario)) +
-	facet_wrap(~season, scale = "free")
+	facet_wrap(~season, scale = "free") + ggtitle("Effort by quarter")
 ## in multi-stock example, total effort quite different by season 
 
 ## Compare effort predictions with fixed effort dist and gravity model
@@ -108,7 +114,8 @@ adv <- rbind(cbind(sc = "base", s1_adv_l),
 
 ggplot(adv, aes(x = paste(year, sc), y = quotaUpt, fill = sc)) +
 	geom_bar(stat= "identity") +
-	facet_wrap(~stock) + ggtitle("quota uptake")
+	facet_wrap(~stock) + ggtitle("quota uptake") +
+	theme(axis.text.x = element_text(angle = -90))
 
 
 SC1[["stocks"]][["COD"]]@landings 
@@ -132,51 +139,4 @@ ggplot(s_bio_l, aes(x = year, y = f)) +
 ggplot(s_bio_l, aes(x = year, y = landings)) + 
 	geom_line(aes(colour = sc)) + facet_wrap(~stock) 
 
-
-
-
-
-
-
-
-
-s0_adv_l    <- advSum(SC1, long = FALSE, years = ac(2016:2020))             
-s0_flt_l    <- fltSum(SC1, long = FALSE, years = ac(2016:2020))
-s0_fltStk_l <- fltStkSum(s0, long = FALSE, years = ac(2016:2020))          
-s0_mt_l     <- mtSum(s0, long = FALSE, years = ac(2016:2020))             
-s0_mtStk_l  <- mtStkSum(s0, long = FALSE, years = ac(2016:2020))           
-s0_vessel_l <- vesselSum(s0, long = FALSE, years = ac(2016:2020))
-s0_vesselStk_l <- vesselStkSum(s0, long = FALSE, years = ac(2016:2020))       
-
-# Exploring data frames
-head(s0_bio_l, 2)
-head(s0_adv_l, 2)
-head(s0_flt_l, 2)
-head(s0_fltStk_l, 2)
-head(s0_mt_l, 2)
-head(s0_mtStk_l, 2)
-head(s0_vessel_l, 2)
-head(s0_vesselStk_l, 2)
-
-plot(s0$biols[[1]])
-plot(s0$stocks[[1]])
-
-plotFLBiols(s0$biols, pdfnm="s0")
-plotFLBiols(s0$biols, pdfnm="s0")
-plotFLFleets(s0$fleets, pdfnm="s0")
-plotEco(s0, pdfnm="s0")
-plotfltStkSum(s0, pdfnm="s0")
-plotFLFleets(s0$fleets, pdfnm="s0")
-plotEco(s0, pdfnm="s0")
-plotfltStkSum(s0, pdfnm="s0")
-
-aux <- subset(s0_bio, indicator=="catch" )
-
-p <- ggplot(data=aux, aes(x=year, y=value, color=stock))+ geom_line()+
-geom_vline(xintercept = 2016, linetype = "longdash")+ theme_bw()+
-theme(text=element_text(size=10), title=element_text(size=10,face="bold"),
-strip.text=element_text(size=10))+
-ylab("Catch (t)")
-
-print(p)
 

@@ -213,9 +213,12 @@ biols <- FLBiols(lapply(biols, function(x) {
 				for(y in years) {
 					
 				# recruitment at season 2, so move the ns over
+					
+				if(!grepl("NEP", n.)) {
 				x@n[1,y,,2] <- x@n[1,y,,1]
 				# first age is always 0 at season 0
 				x@n[1,y,,1] <- 0
+				}
 				# now loop over rest
 					for(a in ages) {
 						for(s in 2:4) {

@@ -548,13 +548,12 @@ return(LD.predict)
 }
 
 
-make_predict_df(model = m2, fleet = fl, s = 1)
+predict.df <- make_predict_df(model = m2, fleet = fl, s = 1)
 
 
 ########################
 ## Update parameters
 ########################
-
 
 
 update_RUM <- function(model = mod, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
@@ -567,22 +566,26 @@ update_RUM <- function(model = mod, predict.df = predict.df, fleet = fl, covars 
 ## similar calculation as for the gravity model
 ## Here have to be careful as not all metiers may catch all stocks...
 	
-if(any(sapply(catchNames(fl), grepl, mod.coefs))) {
+if(any(sapply(catchNames(fl), grepl, coef(mod)))) {
 
 N0 <- lapply(names(N), function(x) array(N[[x]], dim = dim(N[[x]])[c(1,3,6)]))
       names(N0) <- names(N)
 
 ## This should be the catch rate per stock per metier ??
 CR.m   <- lapply(names(q.m), function(x) 
-	cbind(metier = q.m@name,
+	cbind(stock = x,
 	as.data.frame(
 	apply(q.m[[x]]*(sweep(wl.m[[x]], 2:4, N0[[x]], "*")^beta.m[[x]])*ret.m[[x]]*pr.m[[x]],c(1,4),sum)
 	)
 	)
 	)
 
-CR <- do.call(rbind, CR)
+CR <- do.call(rbind, CR.m)
 
+for(st in unique(CR$stock)) {
+	predict.df[,st] <- CR[CR$stock == st,2] 
+}
+predict.df[is.na(predict.df)] <- 0
 
 }
 
@@ -598,6 +601,7 @@ if("effshare" %in% colnames(predict.df)) {
 predict.df$effshare <- e$data
 }
 
+return(predict.df)
 
 }
 
@@ -605,177 +609,39 @@ predict.df$effshare <- e$data
 ##########################
 ##
 ## For testing the function!!
-load(file.path("RUM_test.RData"))
-
+load(file.path("RUMtestData.RData"))
 ##########################
-load(file.path("..", "model", "model_inputs", "biols_expanded.RData"))
-load(file.path("..", "model", "model_inputs", "biols_ctrl.RData"))
-load(file.path("..", "model", "model_inputs", "FLFleetsExt_expanded.RData"))
-load(file.path("..", "model", "model_inputs", "advice.RData"))
 
 
-fl <- fleets[["IE_Otter"]]
-
-stnms <- catchNames(fl)
-yr <- 47
-ss <- 1
-
-TAC <- advice$TAC
-QS <- advice$quota.share
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-N   <- lapply(stnms, function(x){   # biomass at age in the middle  of the season, list elements: [na,1,nu,1,1,it]
-                                if(dim(biols[[x]]@n)[1] > 1)
-                                    return((biols[[x]]@n*exp(-biols[[x]]@m/2))[,yr,,ss, drop = FALSE])
-                                else{
-                                  if(biols.ctrl[[x]] == 'fixedPopulation'){
-                                    return((biols[[x]]@n)[,yr,,ss, drop=F])
-                                  }
-                                  else{
-                                    return((biols[[x]]@n + BDs[[x]]@gB)[,yr,,ss, drop=F])
-                                  } } })
-    
-    names(N) <- stnms
-
-
-sts <- stnms
-
-flnm <- "IE_Otter"
-fl. <- FLFleetsExt(fl)
-names(fl.) <- "IE_Otter"
-flinfo     <- stock.fleetInfo(fl.)
-flinfo <-  strsplit(apply(flinfo, 1,function(x) names(which(x == 1))[1]), '&&')
-
-mtnms <- names(fl@metiers)
-
-it <- 1
-
-
-Cr.f <- matrix(NA, length(sts), it, dimnames = list(sts, 1:it))
-
-
-
-q.m <- alpha.m <- beta.m  <- ret.m <- wd.m <- wl.m <- pr.m <- vector('list', length(sts))
-    names(q.m) <- names(alpha.m) <- names(beta.m) <- names(ret.m) <- names(wl.m) <- names(wd.m) <- names(pr.m) <-sts
-
-    for(st in sts){     # q.m, alpha.m.... by metier but stock specific
-
-        # identify the first metier that catch stock st
-        mtst <- flinfo[[st]][2]
-            
-        age.q     <- dimnames(fl@metiers[[mtst]]@catches[[st]]@catch.q)[[1]]
-        age.alpha <- dimnames(fl@metiers[[mtst]]@catches[[st]]@alpha)[[1]]
-        age.beta  <- dimnames(fl@metiers[[mtst]]@catches[[st]]@beta)[[1]]
-
-        unit.q     <- dimnames(fl@metiers[[mtst]]@catches[[st]]@catch.q)[[3]]
-        unit.alpha <- dimnames(fl@metiers[[mtst]]@catches[[st]]@alpha)[[3]]
-        unit.beta  <- dimnames(fl@metiers[[mtst]]@catches[[st]]@beta)[[3]]
-
-        q.m[[st]]     <- array(0, dim = c(length(mtnms), length(age.q), length(unit.q),it),     dimnames = list(metier = mtnms, age = age.q, unit = unit.q, iter = 1:it))
-        alpha.m[[st]] <- array(0, dim = c(length(mtnms), length(age.alpha), length(unit.alpha), it), dimnames = list(metier = mtnms, age = age.q, unit = unit.alpha, iter = 1:it))
-        beta.m[[st]]  <- array(0, dim = c(length(mtnms), length(age.beta), length(unit.beta), it),  dimnames = list(metier = mtnms, age = age.beta,unit = unit.beta,  iter = 1:it))
-        ret.m[[st]]   <- array(0, dim = c(length(mtnms), length(age.beta), length(unit.beta), it),  dimnames = list(metier = mtnms, age = age.beta,unit = unit.beta,  iter = 1:it))
-        wl.m[[st]]    <- array(0, dim = c(length(mtnms), length(age.beta), length(unit.beta), it),  dimnames = list(metier = mtnms, age = age.beta,unit = unit.beta,  iter = 1:it))
-        wd.m[[st]]    <- array(0, dim = c(length(mtnms), length(age.beta), length(unit.beta), it),  dimnames = list(metier = mtnms, age = age.beta,unit = unit.beta,  iter = 1:it))
-        pr.m[[st]]    <- array(0, dim = c(length(mtnms), length(age.beta), length(unit.beta), it),  dimnames = list(metier = mtnms, age = age.beta,unit = unit.beta,  iter = 1:it))
-        
-
-        for(mt in mtnms){
-
-            if(!(st %in% names(fl@metiers[[mt]]@catches))) next
-                    
-            q.m[[st]][mt,,,]     <- fl@metiers[[mt]]@catches[[st]]@catch.q[,yr,,ss, drop = TRUE] 
-            alpha.m[[st]][mt,,,] <- fl@metiers[[mt]]@catches[[st]]@alpha[,yr,,ss, drop = TRUE] 
-            beta.m[[st]][mt,,,]  <- fl@metiers[[mt]]@catches[[st]]@beta[,yr,,ss, drop = TRUE] 
-            ret.m[[st]][mt,,,]   <- fl@metiers[[mt]]@catches[[st]]@landings.sel[,yr,,ss, drop = TRUE] 
-            wl.m[[st]][mt,,,]    <- fl@metiers[[mt]]@catches[[st]]@landings.wt[,yr,,ss, drop = TRUE]
-            wd.m[[st]][mt,,,]    <- fl@metiers[[mt]]@catches[[st]]@discards.wt[,yr,,ss, drop = TRUE]
-            pr.m[[st]][mt,,,]    <- fl@metiers[[mt]]@catches[[st]]@price[,yr,,ss, drop = TRUE]
-        }    
-        
-        Cr.f[st,] <- TAC[st,]*QS[[st]][flnm,]
-        
-        if (length(fleets.ctrl[[flnm]]$LandObl)==1){
-          LO<-fleets.ctrl[[flnm]]$LandObl
-        }else{
-          LO<-fleets.ctrl[[flnm]]$LandObl[yr]
-        }
-        
-        if(LO){
-          if(fleets.ctrl[[flnm]]$LandObl_yearTransfer[yr-1] == TRUE){ # If landing Obligation = TRUE discount possible quota transfer from previous year.
-            Cr.f[st,] <- Cr.f[st,] - fleets.ctrl[[flnm]]$LandObl_discount_yrtransfer[st,yr-1,]
-            Cr.f[st,] <- ifelse(Cr.f[st,]<0, 0, Cr.f[st,])  # if lower than 0 , set it to 0.
-          }
-        }
-        
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+updated.df <- update_RUM(model = mod, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ########################
 ## Make predictions
 ########################
 
-mod.mat <- model.matrix(m2$formula, data = LD3)
-beta <- as.matrix(coef(m2))
+predict.RUM <- function(model = mod, updated.df = updated.df) {
+
+mod.mat <- model.matrix(model$formula, data = updated.df)
+beta <- as.matrix(coef(model))
 
 ## linear predictor long
 eta_long <- mod.mat %*% beta
 
 ## linear predictor wide
-eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
-names(eta_wide) <- toupper(letters[1:12])
+eta_wide <- matrix(eta_long, ncol = length(unique(updated.df$metier)), byrow = TRUE)
+names(eta_wide) <- mtnms
 
 ## convert to a probability
 own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
 
-head(own_p_hat)
-
-## So this would be the probabilities for each season
-colnames(own_p_hat) <- LETTERS[1:12]
-rownames(own_p_hat) <- seq(1, 2, 0.1)
+## So this would be the probabilities 
+colnames(own_p_hat) <- mtnms 
 
 own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
-own_p_hat$percIncrease = seq(1,2,0.1) 
 
-own_p_hat$stock <- x
 
-return(own_p_hat)
+
+}
 
 
