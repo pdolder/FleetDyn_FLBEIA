@@ -99,6 +99,14 @@ ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario)) +
 SC1$fleets[["IE_Otter"]][[3]]@effshare[,ac(2018:2022)]
 SC2$fleets[["IE_Otter"]][[3]]@effshare[,ac(2018:2022)]
 
+eff_tot <- rbind(cbind(sc="base", as.data.frame(apply(SC1$fleets[["IE_Otter"]]@effort,c(1,2),sum))),
+		 cbind(sc="gravity", as.data.frame(apply(SC2$fleets[["IE_Otter"]]@effort,c(1,2),sum)))
+		 )
+
+ggplot(eff_tot[eff_tot$year > 2010,], aes(x = year, y = data)) +
+	geom_line(aes(colour = sc)) +
+	expand_limits(y = 0)
+
 
 library(ggplotFL)
 plot(FLStocks("base" = SC1[["stocks"]][["HAD"]], "gravity" = SC2[["stocks"]][["HAD"]]))

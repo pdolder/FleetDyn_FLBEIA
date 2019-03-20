@@ -64,9 +64,6 @@ head(choices)
 
 table(choices$year, choices$metier, choices$season)
 
-## Exclude F as causing fitting problems....
-## choices <- filter(choices, metier != "F") 
-
 ###############################################################
 ## simplest model...
 ##################################################################
