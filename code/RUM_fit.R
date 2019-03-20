@@ -57,7 +57,7 @@ catch_met_wide[is.na(catch_met_wide)]  <- 0
 choices <- merge(eff_met, catch_met_wide)
 
 ## covert catch to catch rates
-choices[,11:ncol(choices)]  <- (choices[,11:ncol(choices)] / choices[,"effort"] ) * 1000 ## multiply to make more meaningful unit
+choices[,11:ncol(choices)]  <- (choices[,11:ncol(choices)] / choices[,"effort"] )# * 1000 ## multiply to make more meaningful unit
 choices[is.na(choices)] <- 0
 
 head(choices)
@@ -351,7 +351,7 @@ ggsave("season_probs_m1.png")
 ########################################################
 
 ## How does HAD catch rate affect probabilities
-cr <- seq(0, max(LD$HAD), 1)
+cr <- seq(0, max(LD$HAD), 0.01)
 
 res3<- data.frame(season = 1, metier = rep(LETTERS[1:12], times = length(cr)), choice = "yes", 
 		   "COD" = 1, "HAD" = rep(cr, each = 12), "MON" = 1, "NEP_all" = 1, "NHKE" = 1, "NMEG" = 1,
@@ -385,7 +385,7 @@ own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
 own_p_hat$cr = rep(cr, times = 12)
 
 ggplot(own_p_hat, aes(x = cr, y = prob)) +
-	geom_line(stat = "identity") +
+	geom_line() +
 	facet_wrap(~metier, scale = "free_y") +
 	ggtitle("HAD catch rate affecting prob.png")
 ggsave("HAD_probs_m2.png")
@@ -483,21 +483,22 @@ ggsave("Catch_Rate_Multi.png")
 ##############################################################################
 ##############################################################################
 
-## 1. Pass the function an mlogit object
-mod <- m2
-
-## 2. Make a dataframe over which to predict
-## This will be the areas
+## 1. Make a dataframe over which to predict
 ## However, it depends on the coefficients of the model
 ## Lets assume the options are:
 ####### 1. Season
 ####### 2. Catch or catch rate
 ####### 3. Variable costs
-####### 4. Previous effort (effshare)
+####### 4. Previous effort (effshare, y-1,s) - this is a common predictor.
+## Notes: this could be extended to include parameters from the covars object
+## Maybe we also want to include option for the predictors to be on the log
+## scale ??
+## 2. Update the predictions - this comes from the internal FLBEIA functions
+## 3. Make the predictions - this should return a vector of effort shares
+## 4. Update and pass back the fleets object
 
-## Note this could be extended to include parameters from the covars object
 
-make_predict_df <- function(model = NULL, fleet = NULL, season = s) {
+make_RUM_predict_df <- function(model = NULL, fleet = NULL, season = s) {
 
 ## Pass mlogit model object
 ## Pass fleet object
@@ -548,7 +549,7 @@ return(LD.predict)
 }
 
 
-predict.df <- make_predict_df(model = m2, fleet = fl, s = 1)
+predict.df <- make_RUM_predict_df(model = m2, fleet = fl, s = 1)
 
 
 ########################
@@ -556,7 +557,7 @@ predict.df <- make_predict_df(model = m2, fleet = fl, s = 1)
 ########################
 
 
-update_RUM <- function(model = NULL, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
+update_RUM_params <- function(model = NULL, predict.df = predict.df, fleet = fl, covars = covars, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) {
 
 ## Update the values in the predict.df
@@ -597,7 +598,7 @@ predict.df$vcost <- v$data
 
 # 4. effort share - past effort share, y-1
 if("effshare" %in% colnames(predict.df)) {
- e <- do.call(rbind, lapply(fl@metiers, function(x) cbind(metier = x@name,as.data.frame(x@effshare[,yr,,s]))))
+ e <- do.call(rbind, lapply(fl@metiers, function(x) cbind(metier = x@name,as.data.frame(x@effshare[,yr-1,,s]))))
 predict.df$effshare <- e$data
 }
 
@@ -612,8 +613,7 @@ return(predict.df)
 load(file.path("RUMtestData.RData"))
 ##########################
 
-
-updated.df <- update_RUM(model = mod, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = s,
+updated.df <- update_RUM_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ########################
@@ -622,8 +622,14 @@ updated.df <- update_RUM(model = mod, predict.df = predict.df, fleet = fl, covar
 
 predict_RUM <- function(model = mod, updated.df = updated.df) {
 
+## Extract the model matrix and parameter coefficients
 mod.mat <- model.matrix(model$formula, data = updated.df)
 beta <- as.matrix(coef(model))
+
+## Check the model matrix and coefficients are ordered correctly
+if(any(!colnames(mod.mat) == rownames(beta))) {
+stop("Model matrix and coefficients are not the same")
+}
 
 ## linear predictor long
 eta_long <- mod.mat %*% beta
@@ -634,31 +640,35 @@ names(eta_wide) <- updated.df$metier
 
 ## convert to a probability
 p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
-
-## So this would be the probabilities 
 colnames(p_hat) <- updated.df$metier 
-
 p_hat <- as.data.frame(t(p_hat))
 
 return(p_hat)
 
 }
 
-
+#####################################
 ## Fit a model with all the species
+#####################################
+
 m3 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season, data = LD, 
 	     print.level = 2)
 summary(m3)
 
 
 ## step 1 
-predict.df <- make_predict_df(model = m3, fleet = fl, s = 1)
+predict.df <- make_RUM_predict_df(model = m3, fleet = fl, s = 1)
 
 ## step 2 
-updated.df <- update_RUM(model = m2, predict.df = predict.df, fleet = fl, covars = covars, year = yr, season = 1,
+updated.df <- update_RUM_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ## step 3 
-predict_RUM(model = m3, updated.df = updated.df)
+predicted.share <- predict_RUM(model = m3, updated.df = updated.df)
 
+real_share <- filter(eff_met, year == 2017, season == 1)$data
+
+data.frame("metier" = rownames(predicted.share),
+	   "pred" = predicted.share[,1], 
+	   "real" = real_share)
 
