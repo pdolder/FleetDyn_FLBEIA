@@ -379,8 +379,10 @@ test <- data.frame("metier" = names(predicted.share),
 	   "pred" = round(predicted.share,8), 
 	   "real" = real_share)
 print(test)
+#png("Markov_predictions_with_catch_rates.png")
 matplot(test[,2:3], type = "l", xlab = "Metier", ylab = "Share")
 legend(x  = 2, y = 0.4, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
+#dev.off()
 colSums(test[,2:3])
 
 ## Metier K is very high compared to the observations
@@ -409,9 +411,98 @@ test <- data.frame("metier" = names(predicted.share),
 	   "real" = real_share)
 print(test)
 colSums(test[,2:3])
+
+#png("Markov_predictions_seasonal_only.png")
 matplot(test[,2:3], type = "l", xlab = "Metier", ylab = "Share")
 legend(x  = 1.5, y = 0.18, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
-
+#dev.off()
 ## Nice,....so maybe the catch rates are throwing off the predictions ??
 ## Could be they need to be transformed to be more informative. Might want to
 ## include log transformation as an optional input
+
+
+##############
+## Let's explore some of the effects...
+
+seasonal_preds <- lapply(1:4, function(s) {
+
+predict.df <- make_Markov_predict_df(model = m2, fleet = fl, s = s)
+updated.df <- update_Markov_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+predicted.share <- predict_Markov(model = m2, updated.df = updated.df, fleet = fl, year = 3, season = s)
+	   })
+
+seasonal_preds <- do.call(rbind, seasonal_preds)
+seasonal_preds <- as.data.frame(seasonal_preds)
+seasonal_preds$season <- 1:4
+
+seasonal_preds <- seasonal_preds %>% gather(metier, probs, -season)
+seasonal_preds$season <- as.factor(seasonal_preds$season)
+
+ggplot(seasonal_preds, aes(x = metier, y = probs, group = season)) +
+	geom_point(aes(shape = season, colour = season), size = 3) +
+	geom_line(aes(colour = season), size = 1.5) +
+	ggtitle("Predicted seasonal shares of effort by metier") 
+ggsave("Markov_seasonal_shares.png")
+
+
+
+############################ 
+####  Catch rate effect ####
+############################
+
+## Seem to be some issues here where out of bag predictions result in
+## total effort shares > 1
+## Need to think why...
+
+res_stock <- lapply(c("COD", "HAD", "MON", 
+		      "NEP16", "NEP17", "NEP19", "NEP2021", "NEP22",
+		      "NHKE", "NMEG", "WHG"), function(x) {
+
+print(x)
+
+cr_spp <- sim_data %>% group_by(state) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
+
+## Increase in %s
+
+## 0% to 100% higher CPUE 
+cr <- lapply(seq(0.1,1,0.1), function(y) {
+       cr <- cr_spp$cr  * y
+       return(cr)
+})
+
+cr <- do.call(rbind, cr) ## matrix
+
+for(i in 1:nrow(cr)) {
+print(i)
+cr_sub <- cr[i,]
+
+if(x != "COD") {COD = 0.01}
+if(x != "HAD") {HAD = 0.01}
+if(x != "MON") {MON = 0.01}
+if(x != "NEP16") {NEP16 = 0.01}
+if(x != "NEP17") {NEP17 = 0.01}
+if(x != "NEP19") {NEP19 = 0.01}
+if(x != "NEP2021") {NEP2021 = 0.01}
+if(x != "NEP22") {NEP22 = 0.01}
+if(x != "NHKE") {NHKE = 0.01}
+if(x != "NMEG") {NMEG = 0.01}
+if(x != "WHG") {WHG = 0.01}
+
+assign(x, cr_sub)
+
+updated.df  <- data.frame(state.tminus1 = LETTERS[1:12], season = as.factor(1), 
+		   "COD" = COD, "HAD" = HAD, "MON" = MON,
+		   "NEP16" = NEP16,"NEP17" = NEP17,"NEP19" = NEP19,"NEP2021" = NEP2021,"NEP22" = NEP22,
+		   "NHKE" = NHKE, "NMEG" = NMEG,
+		   "WHG" = WHG)
+
+predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
+
+}i
+
+	   })
+
+
+
+
