@@ -99,7 +99,7 @@ n_trans <- 1e4
 sim_data <- NULL
 
 ## loop over year and season with separate probabilities
-for(y in 2015:2017) {
+for(y in 2015:2016) {
 print(y)
 
 for(i in 1:4) {
@@ -127,7 +127,7 @@ head(sim_data)
 ## Add state t-1, except for first obs for each "vessel"
 colnames(sim_data)[4] <- "state"
 sim_data$state.tminus1 <- c(NA, sim_data$state[1:(nrow(sim_data)-1)])
-sim_data[seq(1,nrow(sim_data), 12),"state.tminus1"] <- NA
+sim_data[seq(1,nrow(sim_data), 8),"state.tminus1"] <- NA
 
 sim_data$state         <- as.factor(sim_data$state) 
 sim_data$state.tminus1 <- as.factor(sim_data$state.tminus1) 
@@ -356,6 +356,13 @@ return(new.share)
 
 }
 
+
+########################################
+########################################
+## Full procedure 
+########################################
+########################################
+
 ## step 1 
 predict.df <- make_Markov_predict_df(model = m3, fleet = fl, s = 1)
 
@@ -372,6 +379,39 @@ test <- data.frame("metier" = names(predicted.share),
 	   "pred" = round(predicted.share,8), 
 	   "real" = real_share)
 print(test)
+matplot(test[,2:3], type = "l", xlab = "Metier", ylab = "Share")
+legend(x  = 2, y = 0.4, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
 colSums(test[,2:3])
 
+## Metier K is very high compared to the observations
+## Metier I is very low compared to the observations
+test[test$metier == "K",]
+test[test$metier == "I",]
 
+table(sim_data$state, sim_data$season)
+round(table(sim_data$state, sim_data$season) / colSums(table(sim_data$state, sim_data$season)),2)
+
+## 43% predicted vs 8 % observed!!
+
+################
+###############
+## Let's try with model 2 (season only)
+
+predict.df <- make_Markov_predict_df(model = m2, fleet = fl, s = 1)
+updated.df <- update_Markov_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+predicted.share <- predict_Markov(model = m2, updated.df = updated.df, fleet = fl, year = 3, season = 1)
+
+real_share <- filter(eff_met, year == 2017, season == 1)$data
+
+test <- data.frame("metier" = names(predicted.share),
+	   "pred" = round(predicted.share,8), 
+	   "real" = real_share)
+print(test)
+colSums(test[,2:3])
+matplot(test[,2:3], type = "l", xlab = "Metier", ylab = "Share")
+legend(x  = 1.5, y = 0.18, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
+
+## Nice,....so maybe the catch rates are throwing off the predictions ??
+## Could be they need to be transformed to be more informative. Might want to
+## include log transformation as an optional input
