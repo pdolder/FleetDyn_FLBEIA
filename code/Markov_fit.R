@@ -67,15 +67,16 @@ table(choices$year, choices$metier, choices$season)
 
 choices$season <- as.numeric(as.character(choices$season))
 
-seas1 <- filter(choices, year == 2015, season == 1)
 
 #### we need some way of simulating a chain of fishing events with these
 #### proportions of observations....
 
-set.seed(111)
+## choose season 1
+seas1 <- filter(choices, year == 2015, season == 1)
 
-n_trans <- 1e3
+n_trans <- 1e3  ## number of observed transitions / number of vessels
 
+# sample metier
 metiers <- sample(seas1$metier, n_trans,
 		  prob = seas1$data, replace = T)
 
@@ -89,13 +90,15 @@ metiers$state.tminus1[2:nrow(metiers)] <- metiers$state[-1]
 
 plot(seq_len(nrow(metiers)), metiers$state, type = "l")
 ## This isn't very realistic - needs to be more autocorrelation
+## but gives some data at least...
+
 
 ### Let's do this by season
-
 n_trans <- 1e4
 
 sim_data <- NULL
 
+## loop over year and season with separate probabilities
 for(y in 2015:2017) {
 print(y)
 
@@ -113,7 +116,7 @@ sim_data <- rbind(sim_data,
 
 }
 
-## Add on the catch info
+## Add on the catch info - covariates which affected probs
 sim_data <- left_join(sim_data, choices, by = c("year", "season", "metier")) %>%
 	select(-quant, -unit, -area, -iter, -tot, -effort)
 
@@ -121,7 +124,7 @@ sim_data <- sim_data[order(sim_data$vessel, sim_data$year, sim_data$season),]
 
 head(sim_data)
 
-## Remove first obs from data for each "vessel"
+## Add state t-1, except for first obs for each "vessel"
 colnames(sim_data)[4] <- "state"
 sim_data$state.tminus1 <- c(NA, sim_data$state[1:(nrow(sim_data)-1)])
 sim_data[seq(1,nrow(sim_data), 12),"state.tminus1"] <- NA
@@ -165,8 +168,12 @@ image(as.matrix(seas[,2:ncol(seas)]))
 }
 
 ## with season and species predictors...
-
 m3 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + 
 	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
 	       NHKE + NMEG + WHG, data = sim_data)
 
+AIC(m1, m2, m3)
+
+## m3 is way better ??
+## the summary function with nnet is no good though, takes forever to return
+## anything
