@@ -177,3 +177,201 @@ AIC(m1, m2, m3)
 ## m3 is way better ??
 ## the summary function with nnet is no good though, takes forever to return
 ## anything
+
+##############################################################################
+##############################################################################
+## What we want to do in FLBEIA -
+## treat as if implemented internally
+##############################################################################
+##############################################################################
+
+## 1. Make a dataframe over which to predict
+## However, it depends on the coefficients of the model
+## Lets assume the options are:
+####### 1. Season
+####### 2. Catch or catch rate
+####### 3. Variable costs
+####### 4. Previous effort (effshare, y-1,s) - this is a common predictor.
+## Notes: this could be extended to include parameters from the covars object
+## Maybe we also want to include option for the predictors to be on the log
+## scale ??
+## 2. Update the predictions - this comes from the internal FLBEIA functions
+## 3. Make the predictions - this should return a matrix of transition
+## probabilities 
+## 4. Now multiply the current effort shares (s-1) by the transition probs
+## 5. Return a vector of effort share by metier
+
+
+make_Markov_predict_df <- function(model = NULL, fleet = NULL, season = s) {
+
+## Pass multinom model object
+## Pass fleet object
+
+mod.coefs <- model$coefnames ## Model coefficients
+
+## 1. season - note, just return the season for which we're predicting
+seas <- if(any(grepl("season", mod.coefs))) { season } else { NA }
+
+## 2. catch or catch rates
+C <- if(any(sapply(catchNames(fl), grepl, mod.coefs))) {
+
+## Return the catchnames that are in the coefficients
+catchNames(fl)[unlist(sapply(catchNames(fl), function(n) { any(grepl(n, mod.coefs))}))]
+
+} else { NA }
+
+## 3. vcost 
+v    <- if(any(grepl("vcost", mod.coefs))) { -1 } else { NA }
+
+## 4. effshare 
+e    <- if(any(grepl("effshare", mod.coefs))) { -1 } else { NA }
+
+## Construct the dataframe
+## Note, we need the state from which vessels are coming
+predict.df <- expand.grid(state.tminus1 = fl@metiers@names,
+			  season = as.numeric(seas), 
+			  vcost = v, 
+			  effshare = e,
+			  stringsAsFactors = FALSE)
+## Remove any columns with NAs, indicating variable not used
+predict.df <- predict.df[,which(sapply(predict.df, function(x) all(!is.na(x))))]
+
+## Correct attributes for prediction data
+if(!is.na(seas)) { 
+	if(attr(model$terms, "dataClasses")[["season"]] == "factor") {
+	predict.df$season <- as.factor(predict.df$season)
+	}
+}
+
+## Combine with the catch rate columns
+if(!all(is.na(C))) {	
+C.df <- as.data.frame(matrix(-1, ncol = length(C), nrow = nrow(predict.df)))
+colnames(C.df) <- C
+
+predict.df <- cbind(predict.df, C.df)
+}
+
+return(predict.df)
+}
+
+
+predict.df <- make_Markov_predict_df(model = m3, fleet = fl, s = 1)
+
+
+
+########################
+## Update parameters
+########################
+
+
+update_Markov_params <- function(model = NULL, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) {
+
+## Update the values in the predict.df
+
+## 2. catch / catch rates - on same scale.
+## Note, these should be updated based on the biomass increases, so we do a
+## similar calculation as for the gravity model
+## Here have to be careful as not all metiers may catch all stocks...
+	
+if(any(sapply(catchNames(fl), grepl, model$coefnames))) {
+
+N0 <- lapply(names(N), function(x) array(N[[x]], dim = dim(N[[x]])[c(1,3,6)]))
+      names(N0) <- names(N)
+
+## This should be the catch rate per stock per metier ??
+CR.m   <- lapply(names(q.m), function(x) 
+	cbind(stock = x,
+	as.data.frame(
+	apply(q.m[[x]]*(sweep(wl.m[[x]], 2:4, N0[[x]], "*")^beta.m[[x]])*ret.m[[x]]*pr.m[[x]],c(1,4),sum)
+	)
+	)
+	)
+
+CR <- do.call(rbind, CR.m)
+
+for(st in unique(CR$stock)) {
+	predict.df[,st] <- CR[CR$stock == st,2]  ## This will repeat, to ensure we get for each metier combinations
+}
+predict.df[is.na(predict.df)] <- 0
+
+}
+
+# 3. vcost
+if("vcost" %in% colnames(predict.df)) {
+v <- do.call(rbind, lapply(fl@metiers, function(x) cbind(metier = x@name,as.data.frame(x@vcost[,yr,,s]))))
+predict.df$vcost <- v$data
+}
+
+# 4. effort share - past effort share, y-1
+if("effshare" %in% colnames(predict.df)) {
+ e <- do.call(rbind, lapply(fl@metiers, function(x) cbind(metier = x@name,as.data.frame(x@effshare[,yr-1,,s]))))
+predict.df$effshare <- e$data
+}
+
+return(predict.df)
+
+}
+
+
+
+##########################
+##
+## For testing the function!!
+load(file.path("RUMtestData.RData"))
+##########################
+
+updated.df <- update_Markov_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+
+########################
+## Make predictions
+########################
+
+predict_Markov <- function(model = mod, updated.df = updated.df, fleet = fl, season, year) {
+
+# Transition probs
+p_hat <- cbind(updated.df[c("state.tminus1")], predict(model, updated.df, type = "probs"))
+p_hat_mat <- as.matrix(p_hat[,2:ncol(p_hat)])
+
+# past effort
+
+# New year
+if(season == 1) {
+last.season <- dims(fl)[["season"]]
+cur.eff <- as.matrix(sapply(fl@metiers, function(x) x@effshare[,year-1, , last.season]))
+}
+
+# Same year
+if(season > 1) {
+cur.eff <- as.matrix(sapply(fl@metiers, function(x) x@effshare[, year, , season-1]))
+}
+
+new.share <- apply(p_hat_mat, 2, function(x) x %*% cur.eff)
+
+if(sum(new.share) != 1) {stop("Error - effort share does not sum to 1")}
+
+return(new.share)
+
+}
+
+## step 1 
+predict.df <- make_Markov_predict_df(model = m3, fleet = fl, s = 1)
+
+## step 2 
+updated.df <- update_Markov_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+## step 3 
+predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
+
+real_share <- filter(eff_met, year == 2017, season == 1)$data
+
+test <- data.frame("metier" = names(predicted.share),
+	   "pred" = round(predicted.share,8), 
+	   "real" = real_share)
+print(test)
+colSums(test[,2:3])
+
+
