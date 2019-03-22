@@ -669,3 +669,10 @@ data.frame("metier" = rownames(predicted.share),
 	   "pred" = predicted.share[,1], 
 	   "real" = real_share)
 
+###################################
+## Save model as input to FLBEIA  #
+###################################
+
+RUM_model_fit <- m3
+
+save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

@@ -499,7 +499,7 @@ updated.df  <- data.frame(state.tminus1 = LETTERS[1:12], season = as.factor(1),
 
 predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
 
-}i
+}
 
 	   })
 
