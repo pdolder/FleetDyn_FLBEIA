@@ -657,7 +657,7 @@ summary(m3)
 predict.df <- make_RUM_predict_df(model = m3, fleet = fl, s = 1)
 
 ## step 2 
-updated.df <- update_RUM_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+updated.df <- update_RUM_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ## step 3 
