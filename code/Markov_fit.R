@@ -1,4 +1,4 @@
-fn##############################################################
+################################################################
 ## A simplified Markov fit to the IE_Otter data
 ###############################################################
 
@@ -424,12 +424,18 @@ legend(x  = 1.5, y = 0.18, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
 ##############
 ## Let's explore some of the effects...
 
+## Make sure the fit is best possible
+m2 <- multinom(state ~ state.tminus1:season, data = sim_data, maxit = 1e3)
+
+Markov_fit <- m2
+save(Markov_fit, file = "Markov_fit.RData")
+
 seasonal_preds <- lapply(1:4, function(s) {
 
-predict.df <- make_Markov_predict_df(model = m2, fleet = fl, s = s)
-updated.df <- update_Markov_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+predict.df <- make_Markov_predict_df(model = Markov_fit, fleet = fl, s = s)
+updated.df <- update_Markov_params(model = Markov_fit, predict.df = predict.df, fleet = fl, covars = covars, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
-predicted.share <- predict_Markov(model = m2, updated.df = updated.df, fleet = fl, year = 3, season = s)
+predicted.share <- predict_Markov(model = Markov_fit, updated.df = updated.df, fleet = fl, year = 3, season = s)
 	   })
 
 seasonal_preds <- do.call(rbind, seasonal_preds)

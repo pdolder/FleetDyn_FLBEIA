@@ -258,16 +258,18 @@ land_age[,ac(2015:2017),,4] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-## redistribute the first age and season to the others
+## redistribute the first age and season to the others - not nephrops
+
+if(!grepl("NEP", S)) {
 land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector((land_age[1,ac(2015:2017),,1])))
 land_age[1,ac(2015:2017),,1]  <- 0
+}
 
 land_age <- window(land_age, first.yr, last.yr)
 
 ## landings.wt - from the biols
 land_wt <- Q_age
 land_wt <- biols[[S]]@wt[,ac(2015:2017)]
-land_wt <- window(land_wt,  , 2017) 
 
 land_wt <- window(land_wt, first.yr, last.yr)
 
@@ -325,9 +327,11 @@ disc_age[,ac(2015:2017),,4] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
 disc_age[is.na(disc_age)] <- 0
 
 ## redistribute the first age and season to the others
+
+if(!grepl("NEP", S)) {
 disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
 disc_age[1,ac(2015:2017),,1]  <- 0
-
+}
 
 disc_age <- window(disc_age, first.yr, last.yr)
 
@@ -374,7 +378,7 @@ be <- window(be, first.yr, last.yr)
 
 ## landings.sel
 land.sel <- land_age / (land_age + disc_age)
-
+land.sel[is.na(land.sel)] <- 0
 land.sel <- window(land.sel, first.yr, last.yr)
 
 ## discards.sel
@@ -525,8 +529,11 @@ res	<- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] - flt
 
 ## For first age, only split among seasons 2 - 4
 land_age[,ac(2015:2017),,] <- res / 4
+
+if(!grepl("NEP", S)) {
 land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + as.vector(1/3 * (land_age[1,ac(2015:2017),,1]))
 land_age[1,ac(2015:2017),,1]  <- 0
+}
 
 land_age <- window(land_age, first.yr, last.yr)
 
@@ -554,8 +561,11 @@ flt	<- apply(discStock.f(IE_Otter, S), c(1,2), sum)
 res	<- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] - flt
 
 disc_age[,ac(2015:2017),,] <- res / 4
+
+if(!grepl("NEP", S)) {
 disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
 disc_age[1,ac(2015:2017),,1]  <- 0
+}
 
 disc_age[is.na(disc_age)] <- 0
 disc_age <- window(disc_age, first.yr, last.yr)
@@ -615,6 +625,16 @@ units(disc_age) <- '1000'
 units(land_wt) <- "kg"
 units(disc_wt) <- "kg"
 units(pr) <- "000 euros"
+units(al) <- "1"
+units(be) <- "1"
+
+if(grepl("NEP", S)) {
+units(land_age) <- 'million'
+units(disc_age) <- 'million'
+units(land_wt) <- "g"
+units(disc_wt) <- "g"
+}
+
 
 ca <- FLCatchExt(name = S, landings = land, landings.n = land_age, 
 		 landings.wt = land_wt, discards = disc, discards.n = disc_age,
@@ -688,6 +708,5 @@ lapply(fleets, function(fl) {
 
 lapply(fleets, function(fl) lapply(fl@metiers, function(m) lapply(m@catches, range)))
 
-
-
 save(fleets, file = file.path("..", "fleets", "fleets.RData"))
+

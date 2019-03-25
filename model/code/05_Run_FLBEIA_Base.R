@@ -3,17 +3,12 @@
 ###################################################
 
 library(FLBEIA)
+library(ggplot2)
 
 ## Load in all files
 lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
-## Change the effort share model
-
-fleets.ctrl[['IE_Otter']][['effort.model']]   <- 'SMFB_ES'
-fleets.ctrl[['IE_Otter']][['effshare.model']] <- 'gravity'
-
-
-SC2 <- FLBEIA(biols = biols, 
+SC1 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
 	      BDs = NULL, 
 	      fleets=fleets, 
@@ -28,6 +23,5 @@ SC2 <- FLBEIA(biols = biols,
               assess.ctrl = assess.ctrl, 
 	      advice.ctrl = advice.ctrl) 
 
-save(SC2, file = file.path("..", "outputs", "Gravity_Model.RData"))
-
+save(SC1, file = file.path("..", "outputs", "Base_Model.RData"))
 

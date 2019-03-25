@@ -608,6 +608,9 @@ return(predict.df)
 ##
 ## For testing the function!!
 load(file.path("RUMtestData.RData"))
+
+## NOTE: This is old and missing nephrops catch
+
 ##########################
 
 updated.df <- update_RUM_params(model = m2, predict.df = predict.df, fleet = fl, covars = covars, season = s,

@@ -154,7 +154,7 @@ save(fleets,file=file.path("..", "model_inputs",'FLFleetsExt_expanded.RData'))
 ##### Fleet controls ######
 ###########################
 
-eff.res <- "prev"
+eff.res <- "min"
 
 flq   <- FLQuant(dimnames = list(quant = 'all', year = data.yrs[1]:proj.yrs[length(proj.yrs)], season = 1:ns), iter = ni)
 
@@ -504,7 +504,7 @@ nep.stks <- grep("NEP", stks, value = T)
 for (i in nep.stks) {
   biols[[i]]@n[,ac(proj.yrs)]<-biols[[i]]@n[,ac(data.yrs[2])]  # fill the population n with last
    ## if its a non UWTV survey Nephrop stock, fill with an arbritary large number
-  if(is.na(biols[[i]]@n[,ac(data.yrs[2])])) {
+  if(any(is.na(biols[[i]]@n[,ac(data.yrs[2])]))) {
     biols[[i]]@n[,ac(proj.yrs)]<- 1e6
   }
   SRs[[i]]<-SRs[["COD"]]
@@ -635,8 +635,6 @@ for(st in stks) {
 	advice$quota.share[[st]][is.na(advice$quota.share[[st]])] <- 0
 	advice$quota.share[[st]][advice$quota.share[[st]]> 1 ] <- 1 ## fix as Irish landings higher than stock
 	advice$quota.share[[st]][advice$quota.share[[st]]< 0 ] <- 0 ## fix as Irish landings higher than stock
-
-
 }
 
 save(advice,file=file.path("..", "model_inputs",'advice.RData'))
