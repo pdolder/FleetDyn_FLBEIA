@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 12 
+n.proj.yrs <- 5 
 ni <- 1
 ns <- 4
 
@@ -61,7 +61,6 @@ n.avg.yrs<-3     ;  fl.proj.avg.yrs<- ac((data.yrs[2]-(n.avg.yrs-1)):data.yrs[2]
 ## SMFB, min equivilent to FCube min
 effort.models    <- rep("SMFB",n.fls) ;          names(effort.models)<-fls
 ## using SMFB set the effort limitation by fleet, i.e. vector with n.fl values with min, max etc..
-effort.restr <- rep("min",n.fls) ;                     names(effort.restr) <-fls 
 ## using SMFB, set a rest]riction on 'catch' or 'landings' by fleet
 restriction  <- rep("catch",n.fls) ;                     names(restriction) <-fls 
 
@@ -154,7 +153,7 @@ save(fleets,file=file.path("..", "model_inputs",'FLFleetsExt_expanded.RData'))
 ##### Fleet controls ######
 ###########################
 
-eff.res <- "min"
+eff.res <- "prev"
 
 flq   <- FLQuant(dimnames = list(quant = 'all', year = data.yrs[1]:proj.yrs[length(proj.yrs)], season = 1:ns), iter = ni)
 
@@ -636,6 +635,30 @@ for(st in stks) {
 	advice$quota.share[[st]][advice$quota.share[[st]]> 1 ] <- 1 ## fix as Irish landings higher than stock
 	advice$quota.share[[st]][advice$quota.share[[st]]< 0 ] <- 0 ## fix as Irish landings higher than stock
 }
+
+
+### NEED TO CHANGE THE TACS FOR 2018 !!!!
+## Use same as WG assumption
+### Else assumes the average of last 3 years TACs!!
+
+## Nephrops don't really matter as fixed pop
+
+advice$TAC["COD","2018"][] <- 2354 
+advice$TAC["HAD","2018"][] <- 8225 
+advice$TAC["MON","2018"][] <- 28414  
+advice$TAC["NHKE","2018"][] <- 94812
+advice$TAC["NMEG","2018"][] <- 14397
+#advice$TAC["NEP16","2018"][] <- 
+#advice$TAC["NEP17","2018"][] <- 
+#advice$TAC["NEP19","2018"][] <- 
+#advice$TAC["NEP2021","2018"][] <- 
+#advice$TAC["NEP22","2018"][] <- 
+advice$TAC["WHG","2018"][] <- 10332
+
+
+
+## Take the int year TAC from single stock advice!!
+
 
 save(advice,file=file.path("..", "model_inputs",'advice.RData'))
 
