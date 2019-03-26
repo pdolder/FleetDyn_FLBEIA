@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5 
+n.proj.yrs <- 12 
 ni <- 1
 ns <- 4
 

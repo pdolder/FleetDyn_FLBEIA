@@ -25,3 +25,4 @@ SC1 <- FLBEIA(biols = biols,
 
 save(SC1, file = file.path("..", "outputs", "Base_Model.RData"))
 
+rm(list=ls())

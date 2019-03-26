@@ -34,4 +34,4 @@ SC3 <- FLBEIA(biols = biols,
 
 save(SC3, file = file.path("..", "outputs", "RUM_Model.RData"))
 
-
+rm(list=ls())
