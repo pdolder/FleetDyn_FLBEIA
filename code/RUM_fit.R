@@ -132,6 +132,12 @@ res <- do.call(rbind, res.df)
 ## Let's combine Nephrops to make simpler when fitting a model with species
 res$NEP_all <- res$NEP16 + res$NEP17 + res$NEP19 + res$NEP2021 + res$NEP22
 
+## Lagged effort share
+
+res$effshare <- NA
+
+res$effshare <- choices$data[match(paste(res$year-1, res$season, res$metier),
+				   paste(choices$year, choices$season, choices$metier))]
 
 ## unique index
 #res$season <- as.factor(res$season)
@@ -672,10 +678,48 @@ data.frame("metier" = rownames(predicted.share),
 	   "pred" = predicted.share[,1], 
 	   "real" = real_share)
 
+#########################
+## Including lagged effshare
+########################
+
+m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season:effshare, data = LD, 
+	     print.level = 2)
+
+AIC(m1, m2, m3, m4)
+
+
+
+## Test
+
+
+## step 1 
+predict.df <- make_RUM_predict_df(model = m4, fleet = fl, s = 1)
+
+## step 2 
+yr <- 3
+s <- 1
+updated.df <- update_RUM_params(model = m4, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+## step 3 
+predicted.share <- predict_RUM(model = m4, updated.df = updated.df)
+
+real_share <- filter(eff_met, year == 2017, season == 1)$data
+
+data.frame("metier" = rownames(predicted.share),
+	   "pred" = predicted.share[,1], 
+	   "real" = real_share)
+
+
+
+
+
+
+
 ###################################
 ## Save model as input to FLBEIA  #
 ###################################
 
-RUM_model_fit <- m3
+RUM_model_fit <- m4
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

@@ -107,6 +107,7 @@ col2<-brewer.pal(12, "Set3")
 eff_q <- eff %>% group_by(ICES.rectangle, lat, lon) %>%
 	summarise(Effort = sum(Effort)) %>% as.data.frame()
 
+png(file.path("..", "plots", "CatchComp_scaled.png"))
 par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
 basemap(c(we, ea), c(so, no))
 draw.rect()
@@ -118,7 +119,9 @@ axis(1,at=seq(we,ea,2), col="gray80")
 mtext(side=3,las=1,adj=0,line=-3,text=paste("Raw catch composition, scaled", sep = " "),cex=1,font=2)
 legend('bottomleft', colnames(p2$z), fill=col, bty='n', 
        ncol=2,cex=1)
+dev.off()
 
+png(file.path("..", "plots", "CatchComp_unscaled.png"))
 par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
 basemap(c(we, ea), c(so, no))
 draw.rect()
@@ -130,7 +133,9 @@ axis(1,at=seq(we,ea,2), col="gray80")
 mtext(side=3,las=1,adj=0,line=-3,text=paste("Raw catch composition, unscaled", sep = " "),cex=1,font=2)
 legend('bottomleft', colnames(p2$z), fill=col, bty='n', 
        ncol=2,cex=1)
+dev.off()
 
+png(file.path("..", "plots", "Cluster_Effort.png"))
 par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
 basemap(c(we, ea), c(so, no))
 draw.rect()
@@ -144,6 +149,25 @@ mtext(side=3,las=1,adj=0,line=-3,text=paste("Clustering of landings for Irish TR
       with effort (hrs) proportionate to bubble size", sep = " "),cex=1,font=2)
 legend('bottomleft', colnames(p$z), fill=col, bty='n', 
        ncol=2,cex=1)
+dev.off()
+
+## Draw areas with labels
+
+png(file.path("..", "plots", "Metier_locations.png"))
+par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
+basemap(c(we, ea), c(so, no))
+#draw.rect()
+draw.barplot2D(p$x, p$y,p$z, width=1, height=0.5, col=col, 
+	       lwd.frame = 0, col.frame = "grey10")
+draw.shape(coast, col = "lightgreen")
+#box(col="gray80")
+axis(2,at=seq(so,no,2), col="gray80")
+axis(1,at=seq(we,ea,2), col="gray80")
+mtext(side=3,las=1,adj=0,line=-3,text=paste("Defined Metier/Areas", sep = " "),cex=1,font=2)
+legend('bottomleft', LETTERS[1:12], fill=col, bty='n', 
+       ncol=2,cex=1)
+dev.off()
+
 
 
 ##############################
