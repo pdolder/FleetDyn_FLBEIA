@@ -170,7 +170,7 @@ image(as.matrix(seas[,2:ncol(seas)]))
 ## with season and species predictors...
 m3 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + 
 	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
-	       NHKE + NMEG + WHG, data = sim_data)
+	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e3)
 
 AIC(m1, m2, m3)
 
@@ -350,7 +350,7 @@ cur.eff <- as.matrix(sapply(fl@metiers, function(x) x@effshare[, year, , season-
 
 new.share <- apply(p_hat_mat, 2, function(x) x %*% cur.eff)
 
-if(sum(new.share) != 1) {stop("Error - effort share does not sum to 1")}
+if(round(sum(new.share),6) != 1) {stop("Error - effort share does not sum to 1")}
 
 return(new.share)
 
@@ -461,18 +461,22 @@ ggsave("Markov_seasonal_shares.png")
 ## total effort shares > 1
 ## Need to think why...
 
-res_stock <- lapply(c("COD", "HAD", "MON", 
+stks <- c("COD", "HAD", "MON", 
 		      "NEP16", "NEP17", "NEP19", "NEP2021", "NEP22",
-		      "NHKE", "NMEG", "WHG"), function(x) {
+		      "NHKE", "NMEG", "WHG")
+
+res_stock <- lapply(stks, function(x) {
 
 print(x)
+
+predicted.share <- list()
 
 cr_spp <- sim_data %>% group_by(state) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
 
 ## Increase in %s
 
 ## 0% to 100% higher CPUE 
-cr <- lapply(seq(0.1,1,0.1), function(y) {
+cr <- lapply(seq(0.1,2,0.1), function(y) {
        cr <- cr_spp$cr  * y
        return(cr)
 })
@@ -503,12 +507,27 @@ updated.df  <- data.frame(state.tminus1 = LETTERS[1:12], season = as.factor(1),
 		   "NHKE" = NHKE, "NMEG" = NMEG,
 		   "WHG" = WHG)
 
-predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
+predicted.share[[i]] <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
 
 }
+
+return(predicted.share)
+
 
 	   })
 
 
+names(res_stock) <- stks
 
+## crude plot
+
+png(file.path("..", "plots", "Markov_Catch_Rate_Mult.png"), width = 1600, height = 1800)
+par(mfrow=c(4,3), mar = c(1,1,1,1))
+for(i in stks) {
+matplot(do.call(rbind, res_stock[[i]]), type = "l", main = i, ylab = "Effshare", xlab = "Catch rate multiplier", lwd = 2, lty = 1, cex.main = 2) ## 
+}
+plot(x=seq(0,2,0.1), y = seq(0,1,0.05), type = "n", xlab = "", ylab = "", ann = F, xaxt = 'n', yaxt = 'n')
+legend(0.1,0.8, lty = 1, legend = LETTERS[1:6], col = 1:6, cex = 3.7, bty = "n", lwd = 2)
+legend(1.1,0.8, lty = 1, legend = LETTERS[7:12], col = 7:12, cex = 3.7, bty = "n", lwd = 2)
+dev.off()
 
