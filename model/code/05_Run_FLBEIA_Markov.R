@@ -1,4 +1,4 @@
-###################################################
+F##################################################
 ## Testing basic model
 ###################################################
 
@@ -9,14 +9,16 @@ library(FLBEIA)
 lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
 ## Test RUM fit
-load(file = file.path("..", "..","tests", "RUM_model.RData"))
+load(file = file.path("..", "..","tests", "Markov_model.RData"))
 
 ## Change effort share model
 fleets.ctrl[["IE_Otter"]][['effort.model']]   <- 'SMFB_ES'
-fleets.ctrl[["IE_Otter"]][['effshare.model']] <-  'mlogit.flbeia'
-fleets.ctrl[["IE_Otter"]][['mlogit.model']]   <-  RUM_model_fit
+fleets.ctrl[["IE_Otter"]][['effshare.model']] <-  'Markov.flbeia'
+fleets.ctrl[["IE_Otter"]][['Markov.model']]   <-  Markov_fit 
 
-SC3 <- FLBEIA(biols = biols, 
+undebug(FLBEIA:::Markov.flbeia)
+undebug(FLBEIA:::make_Markov_predict_df)
+SC4 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
 	      BDs = NULL, 
 	      fleets=fleets, 
@@ -31,6 +33,6 @@ SC3 <- FLBEIA(biols = biols,
               assess.ctrl = assess.ctrl, 
 	      advice.ctrl = advice.ctrl) 
 
-save(SC3, file = file.path("..", "outputs", "RUM_Model.RData"))
+save(SC4, file = file.path("..", "outputs", "Markov_Model.RData"))
 
 rm(list=ls())

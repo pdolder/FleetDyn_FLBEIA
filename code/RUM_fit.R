@@ -132,8 +132,16 @@ res <- do.call(rbind, res.df)
 ## Let's combine Nephrops to make simpler when fitting a model with species
 res$NEP_all <- res$NEP16 + res$NEP17 + res$NEP19 + res$NEP2021 + res$NEP22
 
-## Lagged effort share
+##
+## Some contrast in the catch data...
+####
 
+## For each of the catch records, take a value around the mean
+#for(i in 6:17) {
+#res[,i] <- sapply(res[,i], function(x) { rnorm(1, mean = x, sd = 0.2 * x) }) 
+#}
+
+## Lagged effort share
 res$effshare <- NA
 
 res$effshare <- choices$data[match(paste(res$year-1, res$season, res$metier),
@@ -682,9 +690,9 @@ data.frame("metier" = rownames(predicted.share),
 ## Including lagged effshare
 ########################
 
-m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season:effshare, data = LD, 
-	     print.level = 2)
-
+m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG + effshare | season, data = LD, 
+	     print.level = 2, iterlim = 1e4)
+summary(m4)
 AIC(m1, m2, m3, m4)
 
 
@@ -702,24 +710,220 @@ updated.df <- update_RUM_params(model = m4, predict.df = predict.df, fleet = fl,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ## step 3 
-predicted.share <- predict_RUM(model = m4, updated.df = updated.df)
+predicted.share_past <- predict_RUM(model = m4, updated.df = updated.df)
 
 real_share <- filter(eff_met, year == 2017, season == 1)$data
 
 data.frame("metier" = rownames(predicted.share),
 	   "pred" = predicted.share[,1], 
+	   "pred_past" = predicted.share_past[,1], 
 	   "real" = real_share)
-
-
-
-
-
 
 
 ###################################
 ## Save model as input to FLBEIA  #
 ###################################
 
-RUM_model_fit <- m4
+## By default computed at the sample mean
+effects(m4, covariate = "season")
+
+
+lims <- lapply(colnames(res)[6:16], function(x) range(effects(m4, covariate = x)))
+lims <- range(unlist(lims))
+
+par(mfrow = c(4,3)) 
+for(i in colnames(res)[6:16]) { 
+image(effects(m4, covariate = i), main = i, zlim = lims)
+}
+
+effects(m4, covariate = "NEP16")
+effects(m4, covariate = "NEP2021")
+
+
+############################
+## Catch rate effect m3
+############################
+
+res_stock <- lapply(colnames(res)[6:16], function(x) {
+
+print(x)
+
+cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
+
+## Increase in %s
+
+## 0% to 100% higher CPUE 
+cr <- lapply(seq(1,16,0.1), function(y) {
+       cr <- cr_spp$cr  * y
+       return(cr)
+})
+
+cr <- do.call(rbind, cr) ## matrix
+
+if(x != "COD") {COD = 1}
+if(x != "HAD") {HAD = 1}
+if(x != "MON") {MON = 1}
+if(x != "NEP16") {NEP16 = 1}
+if(x != "NEP17") {NEP17 = 1}
+if(x != "NEP19") {NEP19 = 1}
+if(x != "NEP2021") {NEP2021 = 1}
+if(x != "NEP22") {NEP22 = 1}
+if(x != "NHKE") {NHKE = 1}
+if(x != "NMEG") {NMEG = 1}
+if(x != "WHG") {WHG = 1}
+
+assign(x, as.vector(t(cr)))
+
+res3<- data.frame(season = 1, metier = rep(LETTERS[1:12], times = nrow(cr)), choice = "yes", 
+		   "COD" = COD, "HAD" = HAD, "MON" = MON, 
+		   "NEP16" = NEP16, "NEP17" = NEP17, "NEP19" = NEP19, "NEP2021" = NEP2021, "NEP22" = NEP22, 
+		   "NHKE" = NHKE, "NMEG" = NMEG,
+		   "WHG" = WHG)
+
+#res3$index <- paste(res3$metier, get(x), sep ="_")
+res3$index <- seq_len(nrow(res3))
+## Use mFormula to define model form
+LD3 <- mlogit.data(res3, choice = "choice", shape = "long",
+		   alt.var = "metier", chid.var = "index")
+
+mod.mat <- model.matrix(m3$formula, data = LD3)
+beta <- as.matrix(coef(m3))
+
+## linear predictor long
+eta_long <- mod.mat %*% beta
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+head(own_p_hat)
+
+## So this would be the probabilities for each season
+colnames(own_p_hat) <- LETTERS[1:12]
+rownames(own_p_hat) <- seq(1, 16, 0.1)
+
+own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+own_p_hat$percIncrease = seq(1,16,0.1) 
+
+own_p_hat$stock <- x
+
+return(own_p_hat)
+
+})
+
+
+res_all <- do.call(rbind, res_stock)
+
+ggplot(res_all, aes(x = percIncrease, y = prob)) +
+	geom_line(stat = "identity", aes(colour = stock)) +
+	facet_wrap(~metier) + theme_bw() +
+	ggtitle("Catch rate multiplier effect on choice probabilities \n 
+		in season 1 from m3 model") +
+		xlab("Catch Rate multiplier") +
+		ylab("Choice probability / share")
+ggsave("Catch_Rate_Multi_m3.png")
+
+#########################
+
+
+
+## Model without Nephrops dynamics
+
+m5 <- mlogit(choice ~ COD + HAD + MON + NHKE + NMEG + WHG | season, data = LD, 
+	     print.level = 2)
+summary(m5)
+
+############################
+## Catch rate effect m5
+############################
+
+res_stock <- lapply(colnames(res)[c(6:8,14:16)], function(x) {
+
+print(x)
+
+cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
+
+## Increase in %s
+
+## 0% to 100% higher CPUE 
+cr <- lapply(seq(1,16,0.1), function(y) {
+       cr <- cr_spp$cr  * y
+       return(cr)
+})
+
+cr <- do.call(rbind, cr) ## matrix
+
+if(x != "COD") {COD = 1}
+if(x != "HAD") {HAD = 1}
+if(x != "MON") {MON = 1}
+if(x != "NHKE") {NHKE = 1}
+if(x != "NMEG") {NMEG = 1}
+if(x != "WHG") {WHG = 1}
+
+assign(x, as.vector(t(cr)))
+
+res3<- data.frame(season = 1, metier = rep(LETTERS[1:12], times = nrow(cr)), choice = "yes", 
+		   "COD" = COD, "HAD" = HAD, "MON" = MON, 
+		   "NHKE" = NHKE, "NMEG" = NMEG,
+		   "WHG" = WHG)
+
+#res3$index <- paste(res3$metier, get(x), sep ="_")
+res3$index <- seq_len(nrow(res3))
+## Use mFormula to define model form
+LD3 <- mlogit.data(res3, choice = "choice", shape = "long",
+		   alt.var = "metier", chid.var = "index")
+
+mod.mat <- model.matrix(m5$formula, data = LD3)
+beta <- as.matrix(coef(m5))
+
+## linear predictor long
+eta_long <- mod.mat %*% beta
+
+## linear predictor wide
+eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:12])
+
+## convert to a probability
+own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
+
+head(own_p_hat)
+
+## So this would be the probabilities for each season
+colnames(own_p_hat) <- LETTERS[1:12]
+rownames(own_p_hat) <- seq(1, 16, 0.1)
+
+own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
+own_p_hat$percIncrease = seq(1,16,0.1) 
+
+own_p_hat$stock <- x
+
+return(own_p_hat)
+
+})
+
+
+res_all <- do.call(rbind, res_stock)
+
+ggplot(res_all, aes(x = percIncrease, y = prob)) +
+	geom_line(stat = "identity", aes(colour = stock)) +
+	facet_wrap(~metier) + theme_bw() +
+	ggtitle("Catch rate multiplier effect on choice probabilities \n 
+		in season 1 from m5 model") +
+		xlab("Catch Rate multiplier") +
+		ylab("Choice probability / share")
+ggsave("Catch_Rate_Multi_m5.png")
+
+
+m6 <- mlogit(choice ~ COD + HAD + MON + NHKE + NMEG + WHG + effshare | season, data = LD, 
+	     print.level = 2, iterlim = 1e4)
+summary(m6)
+AIC(m1, m2, m3, m4, m5, m6)
+
+
+
+RUM_model_fit <- m6
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

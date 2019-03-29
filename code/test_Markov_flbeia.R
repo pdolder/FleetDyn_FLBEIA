@@ -4,6 +4,7 @@
 
 library(FLBEIA)
 library(tidyverse)
+library(nnet)
 
 set.seed(111)
 
@@ -28,7 +29,7 @@ for(fl in inputs) load(file.path('C:/use/Dropbox/FLeetDyn_FLBEIA/model/model_inp
 
 fleets.ctrl[["IE_Otter"]][['effort.model']]   <- 'SMFB_ES'
 fleets.ctrl[["IE_Otter"]][['effshare.model']] <-  'Markov.flbeia'
-fleets.ctrl[["IE_Otter"]][['mlogit.model']]   <-  Markov_fit
+fleets.ctrl[["IE_Otter"]][['Markov.model']]   <-  Markov_fit
 
 debug(FLBEIA:::mlogit.flbeia)
 

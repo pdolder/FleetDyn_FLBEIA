@@ -10,7 +10,10 @@ lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .Gl
 ## Change the effort share model
 
 fleets.ctrl[['IE_Otter']][['effort.model']]   <- 'SMFB_ES'
-fleets.ctrl[['IE_Otter']][['effshare.model']] <- 'gravity'
+fleets.ctrl[['IE_Otter']][['effshare.model']] <- 'gravity.flbeia'
+fleets.ctrl[['IE_Otter']][['gravity.model']] <- 'revenue'  ## profit and tradition now also optionsi
+## Note, tradition is a fraction of effort that comes from past effort share,
+## e.g. 0.2
 
 
 SC2 <- FLBEIA(biols = biols, 

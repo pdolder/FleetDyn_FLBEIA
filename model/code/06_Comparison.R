@@ -9,12 +9,13 @@ library(ggplotFL)
 load(file.path("..", "outputs", "Base_Model.RData"))
 load(file.path("..", "outputs", "Gravity_Model.RData"))
 load(file.path("..", "outputs", "RUM_Model.RData"))
+load(file.path("..", "outputs", "Markov_Model.RData"))
 
 base    <- SC1
 gravity <- SC2
 rum     <- SC3
-
-rm(SC1, SC2, SC3)
+markov  <- SC4
+rm(SC1, SC2, SC3, SC4)
 
 maxyr <- range(base[["stocks"]][[1]])[["maxyear"]]
 
@@ -26,8 +27,8 @@ maxyr <- range(base[["stocks"]][[1]])[["maxyear"]]
 ## Total effort in each scenario
 df <- rbind(cbind(scenario = "base", as.data.frame(base$fleets[["IE_Otter"]]@effort)),
       cbind(scenario = "gravity", as.data.frame(gravity$fleets[["IE_Otter"]]@effort)),
-      cbind(scenario = "rum", as.data.frame(rum$fleets[["IE_Otter"]]@effort))
-
+      cbind(scenario = "rum", as.data.frame(rum$fleets[["IE_Otter"]]@effort)),
+      cbind(scenario = "markov", as.data.frame(markov$fleets[["IE_Otter"]]@effort))
 )
 df <- df[df$year > 2014,]
 
@@ -40,7 +41,8 @@ ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario), size = 1
 
 df2 <- rbind(cbind(scenario = "base", do.call(rbind, lapply(base$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare))))),
 	     cbind(scenario = "gravity", do.call(rbind, lapply(gravity$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare))))),
-	     cbind(scenario = "rum", do.call(rbind, lapply(rum$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare)))))
+	     cbind(scenario = "rum", do.call(rbind, lapply(rum$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare))))),
+	     cbind(scenario = "markov", do.call(rbind, lapply(markov$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare)))))
 	     )
 df2 <- filter(df2, year > 2014)
 

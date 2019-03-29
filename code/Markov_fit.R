@@ -427,8 +427,8 @@ legend(x  = 1.5, y = 0.18, col = 1:2, lty = 1:2, legend = c("pred", "obs"))
 ## Make sure the fit is best possible
 m2 <- multinom(state ~ state.tminus1:season, data = sim_data, maxit = 1e3)
 
-Markov_fit <- m2
-save(Markov_fit, file = "Markov_fit.RData")
+#Markov_fit <- m2
+#save(Markov_fit, file = "Markov_fit.RData")
 
 seasonal_preds <- lapply(1:4, function(s) {
 
@@ -530,4 +530,9 @@ plot(x=seq(0,2,0.1), y = seq(0,1,0.05), type = "n", xlab = "", ylab = "", ann = 
 legend(0.1,0.8, lty = 1, legend = LETTERS[1:6], col = 1:6, cex = 3.7, bty = "n", lwd = 2)
 legend(1.1,0.8, lty = 1, legend = LETTERS[7:12], col = 7:12, cex = 3.7, bty = "n", lwd = 2)
 dev.off()
+
+
+Markov_fit <- m3
+save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
+
 
