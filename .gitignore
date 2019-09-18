@@ -1,8 +1,7 @@
 
-.csv
-*.csv
-**/.csv
+!*.csv
 
 .pdf
 *.pdf
 **/.pdf
+!*.RData
