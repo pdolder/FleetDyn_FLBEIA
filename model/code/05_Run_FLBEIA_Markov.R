@@ -8,7 +8,7 @@ library(FLBEIA)
 ## Load in all files
 lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
-## Test RUM fit
+## Test Markov fit
 load(file = file.path("..", "..","tests", "Markov_model.RData"))
 
 ## Change effort share model
