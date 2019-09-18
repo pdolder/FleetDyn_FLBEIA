@@ -6,4 +6,4 @@
 **/.pdf
 !*.RData
 
-/tests
+*/tests/
