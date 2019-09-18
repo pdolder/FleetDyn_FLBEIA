@@ -602,17 +602,17 @@ for(s in stks) {
 
 }
 
-COD_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(catchWStock(fleets,"COD"))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-HAD_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(catchWStock(fleets,'HAD'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-MON_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(catchWStock(fleets,'MON'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NHKE_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]    <- apply(quantSums(catchWStock(fleets,'NHKE'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NMEG_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]    <- apply(quantSums(catchWStock(fleets,'NMEG'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NEP16_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(catchWStock(fleets,'NEP16'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NEP17_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(catchWStock(fleets,'NEP17'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NEP19_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(catchWStock(fleets,'NEP19'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NEP2021_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])] <- apply(quantSums(catchWStock(fleets,'NEP2021'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-NEP22_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(catchWStock(fleets,'NEP22'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
-WHG_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(catchWStock(fleets,'WHG'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+COD_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(landWStock(fleets,"COD"))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+HAD_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(landWStock(fleets,'HAD'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+MON_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(landWStock(fleets,'MON'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NHKE_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]    <- apply(quantSums(landWStock(fleets,'NHKE'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NMEG_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]    <- apply(quantSums(landWStock(fleets,'NMEG'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NEP16_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(landWStock(fleets,'NEP16'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NEP17_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(landWStock(fleets,'NEP17'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NEP19_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(landWStock(fleets,'NEP19'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NEP2021_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])] <- apply(quantSums(landWStock(fleets,'NEP2021'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+NEP22_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]   <- apply(quantSums(landWStock(fleets,'NEP22'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
+WHG_advice.TAC.flq[,ac(data.yrs[1]:data.yrs[2])]     <- apply(quantSums(landWStock(fleets,'WHG'))[,ac(data.yrs[1]:data.yrs[2])],2,sum)
 
 stks.data <- list(COD =ls(pattern="^COD"),
                   HAD =ls(pattern="^HAD"),

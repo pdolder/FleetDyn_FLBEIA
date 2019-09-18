@@ -48,6 +48,13 @@ catch$species[catch$species == "LEZ"] <- "NMEG"
 catch <- filter(catch, species != "NEP18")
 catch <- filter(catch, species != "NEPOutsideFU")
 
+
+## Load additional STECF catch and effort information
+load(file.path("..", "..", "data", "STECF_Additional.RData"))
+
+stecf_E <- filter(stecf_E, year != "2015")
+stecf_C <- filter(stecf_C, year != "2015")
+
 ## We also want the stock objects for the total landings etc..
 
 stk.path <- file.path("..", "FCube", "stocks")
@@ -60,7 +67,7 @@ stocks<-FLStocks(lapply(list.files(stk.path),function(x){
                         res}))
 
 ## Fleet data
-first.yr <- 2015 
+first.yr <- 2004 ## with STECF data 
 last.yr  <- 2017
 
 
@@ -69,13 +76,13 @@ last.yr  <- 2017
 ####################################
 
 ## Effort
-effort <- filter(effort, year %in% 2014:2016) ## Note our years are different
+effort <- filter(effort, year %in% 2003:2016) ## Note our years are different
 
 ## Need the proportion of effort per quarter
 
-## quant dims are 1,3,1,4,1,1
-Q             <- FLQuant(NA, dim = c(1,3,1,4,1,1), 
-		dimnames = list(year = 2015:2017))
+## quant dims are 1,ny,1,4,1,1
+Q             <- FLQuant(NA, dim = c(1,length(first.yr:last.yr),1,4,1,1), 
+		dimnames = list(year = first.yr:last.yr))
 eff <- Q
 
 effort_all <- effort %>% group_by(year, quarter) %>%
@@ -89,14 +96,14 @@ effort_all[,2:5] <- effort_all[,2:5]/rowSums(effort_all[,2:5])
 fl1 <- "IE_Otter_10<24m"
 fl2 <- "IE_Otter_24<40m"
 
-eff[,,,1] <- effort_all[,2] * fleets[[fl1]]@effort + 
-			       fleets [[fl2]]@effort
-eff[,,,2] <- effort_all[,3] * fleets[[fl1]]@effort + 
-			       fleets [[fl2]]@effort
-eff[,,,3] <- effort_all[,4] * fleets[[fl1]]@effort + 
-			       fleets [[fl2]]@effort
-eff[,,,4] <- effort_all[,5] * fleets[[fl1]]@effort + 
-			       fleets [[fl2]]@effort
+eff[,,,1] <- effort_all[,2] * c(stecf_E$Effort, fleets[[fl1]]@effort + 
+			       fleets [[fl2]]@effort)
+eff[,,,2] <- effort_all[,3] * c(stecf_E$Effort, fleets[[fl1]]@effort + 
+			       fleets [[fl2]]@effort)
+eff[,,,3] <- effort_all[,4] * c(stecf_E$Effort, fleets[[fl1]]@effort + 
+			       fleets [[fl2]]@effort)
+eff[,,,4] <- effort_all[,5] * c(stecf_E$Effort, fleets[[fl1]]@effort + 
+			       fleets [[fl2]]@effort)
 
 eff <- window(eff, first.yr, last.yr)
 
@@ -136,10 +143,10 @@ metiers <- FLMetiersExt(lapply(mets, function(met) {
 
 print(met)
 
-effort_met <- effort %>% filter(year %in% 2014:2016, 
+effort_met <- effort %>% filter(year %in% 2003:2016, 
 			      group == met) %>%
 	     select(-Effort, - total) %>%
-	     complete(group, year = 2014:2016, 
+	     complete(group, year = 2003:2016, 
 		      quarter = 1:4, 
 		      fill = list(effshare = 0)) %>%
 	     as.data.frame()
@@ -165,7 +172,7 @@ units(vcost) <- "000 euros"
 ###############
 
 stks <- sort(unique(catch[catch$group == met & 
-	       catch$year %in% 2015:2017,"species"]))
+	       catch$year %in% first.yr:last.yr,"species"]))
 
 catchMet <- FLCatchesExt(lapply(stks, function(S) {
 
@@ -189,6 +196,11 @@ if(S == "NEPOutsideFU") { s <- "NEP7OTH" }
 Q_age   <- biols[[S]]@n; Q_age[] <- NA 
 Q_bio   <- ssb(biols[[S]]); Q_bio[] <- NA
 
+if(grepl("NEP", S)) {
+Q_age <- window(Q_age, first.yr, last.yr)
+Q_bio <- window(Q_bio, first.yr, last.yr)
+}
+
 ## Metiers in the FLFleet object
 mt1 <- fleets[[fl1]]@metiers@names
 mt2 <- fleets[[fl2]]@metiers@names
@@ -198,10 +210,10 @@ mt2 <- fleets[[fl2]]@metiers@names
 ## landings ##
 ##############
 
-catch_met <- catch %>% filter(year %in% 2014:2016, 
+catch_met <- catch %>% filter(year %in% 2003:2016, 
 			      group == met, species == S) %>%
 	     select(-landings, - total) %>%
-	     complete(group, year = 2014:2016, 
+	     complete(group, year = 2003:2016, 
 		      quarter = 1:4, species,
 		      fill = list(catchshare = 0)) %>%
 	     as.data.frame()
@@ -221,10 +233,20 @@ fl2_l <-Sums(FLQuants(lapply(mt2, function(x) {
 		})))
 fl_l <- fl1_l + fl2_l ## the fleet level landings
 
-land[,ac(2015:2017),,1] <- fl_l * (catch_met[catch_met$quarter == 1 ,"catchshare"])
-land[,ac(2015:2017),,2] <- fl_l * (catch_met[catch_met$quarter == 2 ,"catchshare"])
-land[,ac(2015:2017),,3] <- fl_l * (catch_met[catch_met$quarter == 3,"catchshare"])
-land[,ac(2015:2017),,4] <- fl_l * (catch_met[catch_met$quarter == 4 ,"catchshare"])
+## Now to add the STECF data
+
+if(S %in% c("COD", "HAD", "WHG", "MON", "NHKE", "NMEG"))
+	{
+		add_L <- filter(stecf_C, species == S, Measure.Names == "landings")$Measure.Values
+		fl_l <- c(add_L, fl_l)
+	} else {
+		fl_l <- c(rep(0, 11), fl_l) ## for nephrops, we don't have the data
+	}
+
+land[,ac(first.yr:last.yr),,1] <- fl_l * (catch_met[catch_met$quarter == 1 ,"catchshare"])
+land[,ac(first.yr:last.yr),,2] <- fl_l * (catch_met[catch_met$quarter == 2 ,"catchshare"])
+land[,ac(first.yr:last.yr),,3] <- fl_l * (catch_met[catch_met$quarter == 3,"catchshare"])
+land[,ac(first.yr:last.yr),,4] <- fl_l * (catch_met[catch_met$quarter == 4 ,"catchshare"])
 
 land <- window(land, first.yr, last.yr)
 
@@ -233,43 +255,52 @@ land_age <- Q_age
 
 ## Need to do these by FLQuant
 
-dim_q <- c(dim(stocks[[s]])[1],3,1,1,1,1)
+dim_q <- c(dim(stocks[[s]])[1],length(first.yr:last.yr),1,1,1,1)
 
 ## This is the stock landing.n * (fleet landings / total landings) * fleet
 ## landings in quarter
 
-land_age[,ac(2015:2017),,1] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(2015:2017)]), each = dim_q[1]),
+if(grepl("NEP",S)) {
+stocks[[S]] <- window(stocks[[S]], first.yr, last.yr)
+}
+
+land_age[,ac(first.yr:last.yr),,1] <- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 1 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-land_age[,ac(2015:2017),,2] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(2015:2017)]), each = dim_q[1]),
+land_age[,ac(first.yr:last.yr),,2] <- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 2,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-land_age[,ac(2015:2017),,3] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(2015:2017)]), each = dim_q[1]),
+land_age[,ac(first.yr:last.yr),,3] <- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 3 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-land_age[,ac(2015:2017),,4] <- stocks[[s]]@landings.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(2015:2017)]), each = dim_q[1]),
+land_age[,ac(first.yr:last.yr),,4] <- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_l / stocks[[s]]@landings[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
 ## redistribute the first age and season to the others - not nephrops
 
 if(!grepl("NEP", S)) {
-land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector((land_age[1,ac(2015:2017),,1])))
-land_age[1,ac(2015:2017),,1]  <- 0
+land_age[1,ac(first.yr:last.yr),,2:4] <- land_age[1,ac(first.yr:last.yr),,2:4] + (1/3 * as.vector((land_age[1,ac(first.yr:last.yr),,1])))
+land_age[1,ac(first.yr:last.yr),,1]  <- 0
 }
 
 land_age <- window(land_age, first.yr, last.yr)
 
 ## landings.wt - from the biols
+
+if(grepl("NEP", S)) {
+biols[[S]] <- window(biols[[S]], first.yr, last.yr)
+}
+
 land_wt <- Q_age
-land_wt <- biols[[S]]@wt[,ac(2015:2017)]
+land_wt <- biols[[S]]@wt[,ac(first.yr:last.yr)]
 
 land_wt <- window(land_wt, first.yr, last.yr)
 
@@ -289,10 +320,19 @@ fl2_d <-Sums(FLQuants(lapply(mt2, function(x) {
 		})))
 fl_d <- fl1_d + fl2_d ## the fleet level discards 
 
-disc[,ac(2015:2017),,1] <- fl_d * (catch_met[catch_met$quarter == 1 ,"catchshare"])
-disc[,ac(2015:2017),,2] <- fl_d * (catch_met[catch_met$quarter == 2 ,"catchshare"])
-disc[,ac(2015:2017),,3] <- fl_d * (catch_met[catch_met$quarter == 3 ,"catchshare"])
-disc[,ac(2015:2017),,4] <- fl_d * (catch_met[catch_met$quarter == 4 ,"catchshare"])
+if(S %in% c("COD", "HAD", "WHG", "MON", "NHKE", "NMEG"))
+	{
+		add_D <- filter(stecf_C, species == S, Measure.Names == "discards")$Measure.Values
+		fl_d <- c(add_D, fl_d)
+	} else {
+		fl_d <- c(rep(0, 11), fl_d) ## for nephrops, we don't have the data
+	}
+
+
+disc[,ac(first.yr:last.yr),,1] <- fl_d * (catch_met[catch_met$quarter == 1 ,"catchshare"])
+disc[,ac(first.yr:last.yr),,2] <- fl_d * (catch_met[catch_met$quarter == 2 ,"catchshare"])
+disc[,ac(first.yr:last.yr),,3] <- fl_d * (catch_met[catch_met$quarter == 3 ,"catchshare"])
+disc[,ac(first.yr:last.yr),,4] <- fl_d * (catch_met[catch_met$quarter == 4 ,"catchshare"])
 
 disc <- window(disc, first.yr, last.yr)
 
@@ -304,23 +344,23 @@ disc_age <- Q_age
 ## This is the stock discards.n * (fleet discards / total discards) * fleet
 ## landings in quarter
 
-disc_age[,ac(2015:2017),,1] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(2015:2017)]), each = dim_q[1]),
+disc_age[,ac(first.yr:last.yr),,1] <- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 1 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-disc_age[,ac(2015:2017),,2] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(2015:2017)]), each = dim_q[1]),
+disc_age[,ac(first.yr:last.yr),,2] <- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 2, "catchshare"], each = dim_q[1]), dim = dim_q)
 
-disc_age[,ac(2015:2017),,3] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(2015:2017)]), each = dim_q[1]),
+disc_age[,ac(first.yr:last.yr),,3] <- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 3 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
-disc_age[,ac(2015:2017),,4] <- stocks[[s]]@discards.n[,ac(2015:2017)] *
-			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(2015:2017)]), each = dim_q[1]),
+disc_age[,ac(first.yr:last.yr),,4] <- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] *
+			       FLQuant(rep(as.vector(fl_d / stocks[[s]]@discards[,ac(first.yr:last.yr)]), each = dim_q[1]),
 				       dim = dim_q) *
 			   FLQuant(rep(catch_met[catch_met$quarter == 4 ,"catchshare"], each = dim_q[1]), dim = dim_q)
 
@@ -329,15 +369,15 @@ disc_age[is.na(disc_age)] <- 0
 ## redistribute the first age and season to the others
 
 if(!grepl("NEP", S)) {
-disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
-disc_age[1,ac(2015:2017),,1]  <- 0
+disc_age[1,ac(first.yr:last.yr),,2:4] <- disc_age[1,ac(first.yr:last.yr),,2:4] + (1/3 * as.vector(disc_age[1,ac(first.yr:last.yr),,1]))
+disc_age[1,ac(first.yr:last.yr),,1]  <- 0
 }
 
 disc_age <- window(disc_age, first.yr, last.yr)
 
 ## discards.wt - from biols
 disc_wt <- Q_age
-disc_wt <- biols[[S]]@wt[,ac(2015:2017)]
+disc_wt <- biols[[S]]@wt[,ac(first.yr:last.yr)]
 
 disc_wt <- window(disc_wt, first.yr, last.yr)
 
@@ -352,9 +392,12 @@ tot <- FLQuants(lapply(mt1, function(x) {
 		FLQuant(0, dim = c(1,dim_q[2],1,1,1,1))
 		}))
 
+tot <- lapply(tot, window, first.yr, last.yr)
+
 for(i in 1:length(tot)) {
 tot[[i]][is.na(tot[[i]])] <- 5  ## remove any NAs, replace with mean val
 }
+
 
 tot = Sums(tot) / length(tot)
 pr <- FLQuant(rep(as.vector(tot), each = dim_q[1]), dim = dim(land_age),
@@ -391,14 +434,18 @@ disc.sel <- window(disc.sel, first.yr, last.yr)
 eff_a <- Q_age
 
 for(i in 1:4) {
-eff_a[,ac(2015:2017),,i,] <- rep(as.vector(eff[,,,i]), each = dim_q[1])
+eff_a[,ac(first.yr:last.yr),,i,] <- rep(as.vector(eff[,,,i]), each = dim_q[1])
 }
 
 eff_a <- window(eff_a, first.yr, last.yr)
 
+if(grepl("NEP", S)) {
+biomass[[S]] <- window(biomass[[S]], first.yr, last.yr)
+}
+
 q <- ((land_age * land_wt) + 
      (disc_age * disc_wt))/
-      (biomass[[S]][,ac(2015:2017)]^be * 
+      (biomass[[S]][,ac(first.yr:last.yr)]^be * 
       eff_a^al)
 
 
@@ -437,8 +484,8 @@ IE_Otter <- FLFleetExt(metiers = metiers, name = "IE_Otter",
 		       effort = eff, capacity = cap, fcost = fcost,
 		       crewshare = crew)
 
-IE_Otter@range["minyear"] <- 2015
-IE_Otter@range["maxyear"] <- 2017
+IE_Otter@range["minyear"] <- first.yr
+IE_Otter@range["maxyear"] <- last.yr
 
 unique(catch$species)
 catchNames(IE_Otter)
@@ -448,8 +495,8 @@ catchNames(IE_Otter)
 ###################################
 
 ## quant dims are 1,3,1,4,1,1
-Q             <- FLQuant(NA, dim = c(1,3,1,4,1,1), 
-		dimnames = list(year = 2015:2017))
+Q             <- FLQuant(NA, dim = c(1,length(first.yr:last.yr),1,4,1,1), 
+		dimnames = list(year = first.yr:last.yr))
 eff <- Q
 eff[] <- 1e5
 eff <- window(eff, first.yr, last.yr)
@@ -511,36 +558,54 @@ if(S == "NEP22") {s <- "NEP22"}
 Q_age   <- biols[[S]]@n; Q_age[] <- NA 
 Q_bio   <- ssb(biols[[S]]); Q_bio[] <- NA
 
+if(grepl("NEP", S)) {
+Q_age <- window(Q_age, first.yr, last.yr)
+Q_bio <- window(Q_bio, first.yr, last.yr)
+}
+
 ## landings ##
 land <- Q_bio
 
 ## residual landings weight
 flt     <- apply(landWStock.f(IE_Otter, S),c(2), sum)
-res	<- stocks[[s]]@landings[,ac(first.yr:last.yr)] - flt
 
-land[,ac(2015:2017),,] <- res / 4
+if(grepl("NEP", S)) { 
+res	<- window(stocks[[s]]@landings, first.yr, last.yr) - flt
+} else {
+res	<- stocks[[s]]@landings[,ac(first.yr:last.yr)] - flt
+}
+
+land[,ac(first.yr:last.yr),,] <- res / 4
 land <- window(land, first.yr, last.yr)
 
 ## landings.n
 land_age <- Q_age
 
 flt	<- apply(landStock.f(IE_Otter, S), c(1,2), sum)
+
+if(grepl("NEP", S)) {
+res	<- window(stocks[[s]]@landings.n, first.yr, last.yr) - flt
+} else {
 res	<- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] - flt
+}
 
 ## For first age, only split among seasons 2 - 4
-land_age[,ac(2015:2017),,] <- res / 4
+land_age[,ac(first.yr:last.yr),,] <- res / 4
 
 if(!grepl("NEP", S)) {
-land_age[1,ac(2015:2017),,2:4] <- land_age[1,ac(2015:2017),,2:4] + as.vector(1/3 * (land_age[1,ac(2015:2017),,1]))
-land_age[1,ac(2015:2017),,1]  <- 0
+land_age[1,ac(first.yr:last.yr),,2:4] <- land_age[1,ac(first.yr:last.yr),,2:4] + as.vector(1/3 * (land_age[1,ac(first.yr:last.yr),,1]))
+land_age[1,ac(first.yr:last.yr),,1]  <- 0
 }
 
 land_age <- window(land_age, first.yr, last.yr)
 
 ## landings.wt - from the biols
 land_wt <- Q_age
-land_wt <- biols[[S]]@wt[,ac(2015:2017)]
-land_wt <- window(land_wt,  , 2017) 
+if(grepl("NEP", S)) {
+land_wt <- window(biols[[S]]@wt, first.yr, last.yr)
+} else {
+land_wt <- biols[[S]]@wt[,ac(first.yr:last.yr)]
+}
 
 land_wt <- window(land_wt, first.yr, last.yr)
 
@@ -549,22 +614,28 @@ land_wt <- window(land_wt, first.yr, last.yr)
 disc <- Q_bio
 
 flt	<- apply(discWStock.f(IE_Otter, S),c(2), sum)
+if(grepl("NEP", S)) {
+res	<- window(stocks[[s]]@discards, first.yr, last.yr) - flt
+} else {
 res	<- stocks[[s]]@discards[,ac(first.yr:last.yr)] - flt
-
-disc[,ac(2015:2017),,] <- res / 4 
+}
+disc[,ac(first.yr:last.yr),,] <- res / 4 
 disc <- window(disc, first.yr, last.yr)
 
 ## discards.n
 disc_age <- Q_age
 
 flt	<- apply(discStock.f(IE_Otter, S), c(1,2), sum)
+if(grepl("NEP", S)) {
+res	<- window(stocks[[s]]@discards.n,first.yr,last.yr) - flt
+} else {
 res	<- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] - flt
-
-disc_age[,ac(2015:2017),,] <- res / 4
+}
+disc_age[,ac(first.yr:last.yr),,] <- res / 4
 
 if(!grepl("NEP", S)) {
-disc_age[1,ac(2015:2017),,2:4] <- disc_age[1,ac(2015:2017),,2:4] + (1/3 * as.vector(disc_age[1,ac(2015:2017),,1]))
-disc_age[1,ac(2015:2017),,1]  <- 0
+disc_age[1,ac(first.yr:last.yr),,2:4] <- disc_age[1,ac(first.yr:last.yr),,2:4] + (1/3 * as.vector(disc_age[1,ac(first.yr:last.yr),,1]))
+disc_age[1,ac(first.yr:last.yr),,1]  <- 0
 }
 
 disc_age[is.na(disc_age)] <- 0
@@ -572,8 +643,11 @@ disc_age <- window(disc_age, first.yr, last.yr)
 
 ## discards.wt - from biols
 disc_wt <- Q_age
-disc_wt <- biols[[S]]@wt[,ac(2015:2017)]
-
+if(grepl("NEP", S)) {
+disc_wt <- window(biols[[S]]@wt, first.yr, last.yr)
+} else {
+disc_wt <- biols[[S]]@wt[,ac(first.yr:last.yr)]
+}
 disc_wt <- window(disc_wt, first.yr, last.yr)
 
 ## price
@@ -613,7 +687,7 @@ eff_a <- window(eff_a, first.yr, last.yr)
 
 q <- ((land_age * land_wt) + 
      (disc_age * disc_wt))/
-      (biomass[[S]][,ac(2015:2017)]^al * 
+      (window(biomass[[S]], first.yr, last.yr)^al * 
       eff_a^be)
 
 
@@ -660,28 +734,28 @@ assign(paste0(S, "_fleet"),
 
 ## set ranges
 
-MON_fleet@range["minyear"]  <- 2015
-MON_fleet@range["maxyear"]  <- 2017
-COD_fleet@range["minyear"]  <- 2015
-COD_fleet@range["maxyear"]  <- 2017
-HAD_fleet@range["minyear"]  <- 2015
-HAD_fleet@range["maxyear"]  <- 2017
-WHG_fleet@range["minyear"]  <- 2015
-WHG_fleet@range["maxyear"]  <- 2017
-NMEG_fleet@range["minyear"]  <- 2015
-NMEG_fleet@range["maxyear"]  <- 2017
-NHKE_fleet@range["maxyear"]  <- 2017
-NHKE_fleet@range["minyear"]  <- 2015
-NEP16_fleet@range["maxyear"]  <- 2017
-NEP16_fleet@range["minyear"]  <- 2015
-NEP17_fleet@range["maxyear"]  <- 2017
-NEP17_fleet@range["minyear"]  <- 2015
-NEP19_fleet@range["maxyear"]  <- 2017
-NEP19_fleet@range["minyear"]  <- 2015
-NEP2021_fleet@range["maxyear"]  <- 2017
-NEP2021_fleet@range["minyear"]  <- 2015
-NEP22_fleet@range["maxyear"]  <- 2017
-NEP22_fleet@range["minyear"]  <- 2015
+MON_fleet@range["minyear"]  <- first.yr 
+MON_fleet@range["maxyear"]  <- last.yr 
+COD_fleet@range["minyear"]  <- first.yr
+COD_fleet@range["maxyear"]  <- last.yr
+HAD_fleet@range["minyear"]  <- first.yr
+HAD_fleet@range["maxyear"]  <- last.yr
+WHG_fleet@range["minyear"]  <- first.yr
+WHG_fleet@range["maxyear"]  <- last.yr
+NMEG_fleet@range["minyear"]  <- first.yr
+NMEG_fleet@range["maxyear"]  <- last.yr
+NHKE_fleet@range["maxyear"]  <- last.yr
+NHKE_fleet@range["minyear"]  <- first.yr
+NEP16_fleet@range["maxyear"]  <- last.yr
+NEP16_fleet@range["minyear"]  <- first.yr
+NEP17_fleet@range["maxyear"]  <- last.yr
+NEP17_fleet@range["minyear"]  <- first.yr
+NEP19_fleet@range["maxyear"]  <- last.yr
+NEP19_fleet@range["minyear"]  <- first.yr
+NEP2021_fleet@range["maxyear"]  <- last.yr
+NEP2021_fleet@range["minyear"]  <- first.yr
+NEP22_fleet@range["maxyear"]  <- last.yr
+NEP22_fleet@range["minyear"]  <- first.yr
 
 
 

@@ -99,7 +99,7 @@ n_trans <- 1e4
 sim_data <- NULL
 
 ## loop over year and season with separate probabilities
-for(y in 2015:2016) {
+for(y in 2004:2017) {
 print(y)
 
 for(i in 1:4) {

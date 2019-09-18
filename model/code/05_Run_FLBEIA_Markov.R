@@ -16,8 +16,6 @@ fleets.ctrl[["IE_Otter"]][['effort.model']]   <- 'SMFB_ES'
 fleets.ctrl[["IE_Otter"]][['effshare.model']] <-  'Markov.flbeia'
 fleets.ctrl[["IE_Otter"]][['Markov.model']]   <-  Markov_fit 
 
-undebug(FLBEIA:::Markov.flbeia)
-undebug(FLBEIA:::make_Markov_predict_df)
 SC4 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
 	      BDs = NULL, 
