@@ -68,3 +68,5 @@ p_est <- exp(log_odds) / rowSums(exp(log_odds))
 
 plot(c(p_true), c(p_est), xlim = c(0, 1), ylim = c(0, 1))
 abline(c(0, 1))
+
+dev.off()
