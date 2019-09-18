@@ -38,6 +38,8 @@ df <- df[df$year > 2014,]
 
 ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario), size = 1.5) +
 	facet_wrap(~season, scale = "free") + ggtitle("Effort by quarter")
+ggsave(file.path("..", "plots", "Effort_by_quarter.png"))
+
 ## in multi-stock example, total effort quite different by season 
 
 ## Effort shares
@@ -65,8 +67,17 @@ plot(FLStocks(base = base[["stocks"]][[S]][,ac(2015:maxyr)],
 	      rum = rum[["stocks"]][[S]][,ac(2015:maxyr)],
      	      markov = markov[["stocks"]][[S]][,ac(2015:maxyr)],
 	      gravity_trad = gravity_trad[["stocks"]][[S]][,ac(2015:maxyr)])
-     ) + 
-	    theme(legend.position = "top") + ggtitle(paste("Comparison", S))
+     ) + theme(legend.position = "top") + ggtitle(paste("Comparison", S))
+ggsave(file.path("..", "plots", "Cod_by_scenario.png"))
+
+S <- "WHG"
+plot(FLStocks(base = base[["stocks"]][[S]][,ac(2015:maxyr)], 
+	      gravity = gravity[["stocks"]][[S]][,ac(2015:maxyr)],
+	      rum = rum[["stocks"]][[S]][,ac(2015:maxyr)],
+     	      markov = markov[["stocks"]][[S]][,ac(2015:maxyr)],
+	      gravity_trad = gravity_trad[["stocks"]][[S]][,ac(2015:maxyr)])
+     ) + theme(legend.position = "top") + ggtitle(paste("Comparison", S))
+ggsave(file.path("..", "plots", "Whg_by_scenario.png"))
 
 bio <- rbind(
       cbind(sc = "base", as.data.frame(bioSum(base, long = FALSE, years = ac(2016:maxyr+2)))),

@@ -14,8 +14,6 @@ models <- c('05_Run_FLBEIA_Base.R',
 	    )
 
 
-
-
 foreach(i = models) %dopar% {
 	
 	set.seed(123)

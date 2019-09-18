@@ -6,7 +6,7 @@ library(FLBEIA)
 library(tidyverse)
 library(mlogit)
 
-set.seed(111)
+set.seed(123)
 
 if(length(grep("coilin", getwd())) > 0){
     load(file.path("~", "Dropbox", "FLeetDyn_FLBEIA", "model", "fleets", "fleets.RData"))
@@ -924,6 +924,6 @@ AIC(m1, m2, m3, m4, m5, m6)
 
 
 #####################
-RUM_model_fit <- m6
+RUM_model_fit <- m5
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
