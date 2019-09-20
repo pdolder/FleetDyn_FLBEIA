@@ -178,6 +178,12 @@ AIC(m1, m2, m3)
 ## the summary function with nnet is no good though, takes forever to return
 ## anything
 
+
+m4 <- multinom(state ~ state.tminus1*season + COD + HAD + MON + 
+	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
+	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e3)
+
+
 ##############################################################################
 ##############################################################################
 ## What we want to do in FLBEIA -
@@ -363,15 +369,19 @@ return(new.share)
 ########################################
 ########################################
 
-## step 1 
-predict.df <- make_Markov_predict_df(model = m3, fleet = fl, s = 1)
+## step 1
+
+s <- 2
+predict.df <- make_Markov_predict_df(model = m3, fleet = fl, s = s)
 
 ## step 2 
-updated.df <- update_Markov_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+updated.df <- update_Markov_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ## step 3 
-predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = 1)
+predicted.share <- predict_Markov(model = m3, updated.df = updated.df, fleet = fl, year = 3, season = s)
+
+print(as.matrix(round(predicted.share,4)))
 
 real_share <- filter(eff_met, year == 2017, season == 1)$data
 

@@ -2,7 +2,7 @@
 
 library(doParallel)
 
-registerDoParallel(cores = 5)
+registerDoParallel(cores = 6)
 
 set.seed(123, kind = "L'Ecuyer-CMRG")
 
@@ -22,5 +22,5 @@ foreach(i = models) %dopar% {
 
 
 
-
+source('06_Comparison.R')
 

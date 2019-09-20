@@ -698,15 +698,14 @@ AIC(m1, m2, m3, m4)
 
 
 ## Test
-
+yr <- 3
+s <- 1
 
 ## step 1 
 predict.df <- make_RUM_predict_df(model = m4, fleet = fl, s = 1)
 
 ## step 2 
-yr <- 3
-s <- 1
-updated.df <- update_RUM_params(model = m4, predict.df = predict.df, fleet = fl, covars = covars, season = 1,
+updated.df <- update_RUM_params(model = m4, predict.df = predict.df, fleet = fl, covars = covars, season = s,
 		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
 
 ## step 3 
@@ -836,6 +835,18 @@ m5 <- mlogit(choice ~ COD + HAD + MON + NHKE + NMEG + WHG | season, data = LD,
 	     print.level = 2)
 summary(m5)
 
+### step 1
+s <- 2
+predict.df <- make_RUM_predict_df(model = m5, fleet = fl, s = s)
+## step 2 
+updated.df <- update_RUM_params(model = m5, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+## step 3 
+predicted.share <- predict_RUM(model = m5, updated.df = updated.df)
+
+print(predicted.share)
+
+
 ############################
 ## Catch rate effect m5
 ############################
@@ -920,10 +931,34 @@ ggsave("Catch_Rate_Multi_m5.png")
 m6 <- mlogit(choice ~ COD + HAD + MON + NHKE + NMEG + WHG + effshare | season, data = LD, 
 	     print.level = 2, iterlim = 1e4)
 summary(m6)
+
+### step 1
+s <- 1
+
+predict.df <- make_RUM_predict_df(model = m6, fleet = fl, s = s)
+
+## step 2 
+updated.df <- update_RUM_params(model = m6, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+## step 3 
+predicted.share_past <- predict_RUM(model = m6, updated.df = updated.df)
+
+# step 1 
+predict.df <- make_RUM_predict_df(model = m4, fleet = fl, s = 1)
+
+## step 2 
+updated.df <- update_RUM_params(model = m4, predict.df = predict.df, fleet = fl, covars = covars, season = s,
+		       N, q.m, wl.m, beta.m, ret.m, pr.m) 
+
+## step 3 
+predicted.share_past <- predict_RUM(model = m4, updated.df = updated.df)
+
+
 AIC(m1, m2, m3, m4, m5, m6)
 
 
 #####################
-RUM_model_fit <- m5
+RUM_model_fit <- m3
 
-save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
+qave(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

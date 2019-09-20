@@ -17,6 +17,33 @@ fleets.ctrl[["IE_Otter"]][["gravity.tradition"]] <- 0.8 ## 80 % from tradition
 ## e.g. 0.2
 
 
+## Simulate closure in metier I from 2026 for IE_Otter
+## this is done by setting effshare to 0, reallocating to other metier
+## and setting catch.q in metier I to zero
+
+close.yr <- ac(2026:2029)
+
+## Effort share in metier I, and reassign to 0
+ef.i <- fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr]
+fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr] <- 0
+
+## For all other metier, recalculate proportionatly
+mets <- fleets[["IE_Otter"]]@metiers@names
+mets <- mets[!mets == "I"]
+
+for(m in mets) {
+  fleets[["IE_Otter"]]@metiers[[m]]@effshare[,close.yr] <-  fleets[["IE_Otter"]]@metiers[[m]]@effshare[,close.yr] + 
+    (ef.i * (fleets[["IE_Otter"]]@metiers[[m]]@effshare[,close.yr] / (1- ef.i) ))
+}
+
+## catch.q to 0
+
+for(i in catchNames(fleets[["IE_Otter"]]@metiers[["I"]])) {
+  fleets[["IE_Otter"]]@metiers[["I"]]@catches[[i]]@catch.q[,close.yr,,1:4] <- 0
+}
+
+
+
 SC5 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
 	      BDs = NULL, 
