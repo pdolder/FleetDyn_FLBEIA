@@ -4,11 +4,10 @@
 ########################################################
 
 library(FLBEIA)
-library(fishmethods)
+library(TMB)
 
 ## Paths
 stk.path <- file.path("..", "FCube", "stocks")
-
 
 ## 1. Load the stock objects
 stocks<-FLStocks(lapply(list.files(stk.path),function(x){
@@ -47,7 +46,7 @@ test <- biols[[1]]
 wts <- as.data.frame(test@wt[,1,,1])
 plot(wts$data ~ wts$age, type = "b")
 
-## We fit a VBGF
+## We fit some lm's with polynomials 
 fit <- lm(wts$data ~ wts$age)
 fit2 <- lm(wts$data ~ poly(wts$age,2,raw = T))
 fit3 <- lm(wts$data ~ poly(wts$age,3,raw = T))
@@ -60,20 +59,47 @@ lines(1:7, predict(fit3, data.frame(age = 1:7)), col = "red")
 lines(1:7, predict(fit4, data.frame(age = 1:7)), col = "green")
 
 ## can do better
+wts <- as.data.frame(test@wt[,,,1]) ## all years
 
-## Note Sinf, K and t0 are starting values for optimiser
-fit <- growth(intype = 2, unit = 2, size = wts$data, age = wts$age,
-       Sinf = 200, K = 0.3, t0 = -1)
+## Fit a von bertalanffy growth model
+## In TMB
+## this is the method in the package fishmethods
+compile("vonbert.cpp")
+dyn.load(dynlib("vonbert"))
 
-## take the vbgf
-plot(wts$data ~ wts$age)
-lines(seq(1,7.75,0.25),predict(fit$vout, data.frame(age = seq(1,7.75, 0.25))), type = "b", col = "blue")
+dat <- list(wgt = wts$data, age = wts$age, age_q = seq(min(wts$age), max(wts$age)+0.75, 0.25),
+	    yr = as.numeric(as.factor(wts$year))-1)
+pars <- list(logK = exp(0.3), t0 = -1, Sinf = 200, logSigma = 0, 
+	     year_ef = rep(0, length(unique(dat$yr))), sigma_yr = 0)
+
+obj <- MakeADFun(dat, pars, DLL = "vonbert")#, random = "year_ef")
+obj$fn()
+obj$gr()
+
+opt <- nlminb(obj$par, obj$fn, obj$gr)
+sdreport(obj)
+report <- obj$report()
+
+pdf("test_vbgf.pdf", width = 6, height = 6)
+
+ggplot(data.frame(year = factor(dat$yr), age = dat$age, obs = dat$wgt, pred = report$fitted), 
+       aes(x = age, y = pred, group = year)) + 
+	geom_point(aes(colour = year)) + 
+	geom_line(aes(colour = year)) +
+	geom_point(aes(y = obs), shape = "x")  
+
+plot(report$residuals, type = "p")
+abline(h = 0)
+
+qqnorm(report$residuals)
+abline(0,1)
+
+dev.off()
 
 ## For MON-CS and N-MEG the model doesn't fit....
 ## Also, for Nephrops it makes no sense
 
 ## Let's start with Monkfish
-
 test <- as.data.frame(biols[["MON-CS"]]@wt[,1,,1])
 wt <- test$data
 age <- test$age
@@ -110,15 +136,22 @@ neps <- grep("NEP", names(biols), value = T) ## names of nephrops stocks
 
 
 
-
 ###############################################################
 
 ## OK, let's do this for each year updates to the biols
 
-## try for cod, had, whg, n-hake
-## we need to do something else for nep, n-meg and mon
+## try for cod, had, whg, n-hake, n-meg and mon
+## we need to do something else for nep
 
 stks <- c("COD-CS", "HAD-CS", "WHG-CS", "N-HKE", "MON-CS", "N-MEG")
+
+pars_out <- c("logK", "t0", "Sinf", "logSigma")
+
+## Let's also record the parameter estimates
+param_ests <- matrix(NA, nrow = length(stks), ncol = length(pars_out),
+       dimnames = list(stks, pars_out))
+
+pdf("VBGF_fits.pdf", height = 12, width = 4)
 
 for(n. in stks) {
 	       print(n.)
@@ -128,30 +161,35 @@ for(n. in stks) {
 	
 		print(y)
 		df <- as.data.frame(x@wt[,ac(y),,1])  
-		wt <- df$data
+		wt <- df$data 
 		age <- df$age
 
-		if(n. %in% c("COD-CS", "HAD-CS", "WHG-CS", "N-HKE")) {
-
-		## fit the growth model and predict the increments
-		fit <- growth(intype = 2, unit = 2, size = wt, age = age,
-	        Sinf = 200, K = 0.3, t0 = 0, graph = TRUE)
-
-		preds <-data.frame(age = rep(age, each = 4), 
-		season = rep(1:4, times = length(age)),
-	data = predict(fit$vout, data.frame(age = seq(min(age),max(age)+0.75, 0.25))))
+		## fit the vb growth model and predict the increments
 		
-		}
-		
-		if(n. %in% c("MON-CS", "N-MEG")) {
-	
-		fit <- lm(wt~ poly(age,3,raw = T))
+		dat <- list(wgt = wt, age = age, age_q = seq(min(age), max(age)+0.75, 0.25))
+		pars <- list(logK = 0.3, t0 = -1, Sinf = max(wt)*50, logSigma = 0)
+		obj <- MakeADFun(dat, pars, DLL = "vonbert")
+		opt <- nlminb(obj$par, obj$fn, obj$gr)
+		report <- obj$report()
+
+		param_ests[n.,] <- opt$par
 		
 		preds <-data.frame(age = rep(age, each = 4), 
 		season = rep(1:4, times = length(age)),
-	data = predict(fit, data.frame(age = seq(min(age),max(age)+0.75, 0.25))))
+	data =  report$predictions)
 		
-		}
+		par(mfrow=c(3,1))
+		
+		plot(age, wt, type = "p", main = paste( n., y, sep = " "))
+		points(age, report$fitted, col = "blue")
+		lines(seq(min(age), max(age)+0.75, 0.25), report$predictions)
+
+		plot(report$residuals, type = "p")
+		abline(h=0)
+		
+		qqnorm(report$residuals)
+		abline(0,1)
+
 
 ## Fill the biol for the year
 for(i in 1:4) { 
@@ -162,6 +200,11 @@ for(i in 1:4) {
 }
 
 }
+
+dev.off()
+
+param_ests
+
 ## Note residual patterns, especially noticeable for N-hake
 
 ## Recruitment -- season 2 only

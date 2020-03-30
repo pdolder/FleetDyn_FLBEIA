@@ -1,0 +1,127 @@
+
+R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ########################################################
+> ##  Covert FCube Stock objects to seasonal biol objects
+> ##  for FLBEIA
+> ########################################################
+> 
+> library(FLBEIA)
+Loading required package: FLCore
+Loading required package: lattice
+Loading required package: iterators
+FLCore (Version 2.6.14, packaged: 2019-11-18 21:54:10 UTC)
+Loading required package: FLFleet
+Loading required package: ggplot2
+
+Attaching package: ‘ggplot2’
+
+The following object is masked from ‘package:FLCore’:
+
+    %+%
+
+Warning messages:
+1: replacing previous import ‘FLCore::spread’ by ‘tidyr::spread’ when loading ‘FLBEIA’ 
+2: replacing previous import ‘FLCore::%+%’ by ‘ggplot2::%+%’ when loading ‘FLBEIA’ 
+3: replacing previous import ‘FLCore::desc’ by ‘plyr::desc’ when loading ‘FLBEIA’ 
+4: replacing previous import ‘dplyr::mutate’ by ‘plyr::mutate’ when loading ‘FLBEIA’ 
+> library(TMB)
+> 
+> ## Paths
+> stk.path <- file.path("..", "FCube", "stocks")
+> 
+> ## 1. Load the stock objects
+> stocks<-FLStocks(lapply(list.files(stk.path),function(x){
++                             load(file.path(stk.path,x))
++                         res<-get("stock")
++                         name(res)<-gsub('.RData',"",x)
++                         res}))
+> 
+> ## For some reason Nep22 has no stock weight, we'll use the catch weight
+> stocks[["NEP22"]]@stock.wt[] <- stocks[["NEP22"]]@catch.wt
+> 
+> ## And let's ignore NEPOTH as its small 
+> stocks <- stocks[!names(stocks) == "NEP7OTH"]
+> 
+> 
+> # 2. Move to FLBiols
+> biols <- FLBiols(lapply(stocks, function(x) {
++     as(x, "FLBiol")
++ }))
+Warning messages:
+1: In max(from@mat[!is.na(from@mat)]) :
+  no non-missing arguments to max; returning -Inf
+2: In max(from@mat[!is.na(from@mat)]) :
+  no non-missing arguments to max; returning -Inf
+3: In max(from@mat[!is.na(from@mat)]) :
+  no non-missing arguments to max; returning -Inf
+4: In max(from@mat[!is.na(from@mat)]) :
+  no non-missing arguments to max; returning -Inf
+5: In max(from@mat[!is.na(from@mat)]) :
+  no non-missing arguments to max; returning -Inf
+> 
+> ## Want to ensure the fbar ranges carry across. For some reason not automatic
+> for(s in names(biols)) {
++ biols[[s]]@range <- stocks[[s]]@range
++ }
+> 
+> 
+> # 3. expand the biols for a seasonal component 
+> biols <- FLBiols(lapply(biols, function(x) expand(x, season = 1:4)))
+> 
+> ## Need to adjust the numbers, weights etc.. for seasonal growth
+> 
+> ## First try weights
+> test <- biols[[1]]
+> 
+> ## within a given year, weight at age
+> wts <- as.data.frame(test@wt[,1,,1])
+> plot(wts$data ~ wts$age, type = "b")
+> 
+> ## We fit some lm's with polynomials 
+> fit <- lm(wts$data ~ wts$age)
+> fit2 <- lm(wts$data ~ poly(wts$age,2,raw = T))
+> fit3 <- lm(wts$data ~ poly(wts$age,3,raw = T))
+> fit4 <- lm(wts$data ~ poly(wts$age,4,raw = T))
+> 
+> plot(wts$data ~ wts$age)
+> lines(1:7, predict(fit, data.frame(age = 1:7)))
+> lines(1:7, predict(fit2, data.frame(age = 1:7)), col = "blue")
+> lines(1:7, predict(fit3, data.frame(age = 1:7)), col = "red")
+> lines(1:7, predict(fit4, data.frame(age = 1:7)), col = "green")
+> 
+> ## can do better
+> wts <- as.data.frame(test@wt[,,,1]) ## all years
+> 
+> ## Fit a von bertalanffy growth model
+> ## In TMB
+> ## this is the method in the package fishmethods
+> compile("vonbert.cpp")
+make: Nothing to be done for 'all'.
+[1] 0
+> dyn.load(dynlib("vonbert"))
+> 
+> dat <- list(wgt = wts$data, age = wts$age, age_q = seq(min(wts$age), max(wts$age)+0.75, 0.25),
++ 	    yr = as.numeric(as.factor(unique(wts$year)))-1)
+> pars <- list(logK = exp(0.3), t0 = -1, Sinf = 200, logSigma = 0, 
++ 	     year_ef = rep(0, length(dat$yr)), sigma_yr = 0)
+> 
+> obj <- MakeADFun(dat, pars, DLL = "vonbert")
+TMB has received an error from Eigen. The following condition was not met:
+index >= 0 && index < size()
+Please check your matrix-vector bounds etc., or run your program through a debugger.
+Aborted (core dumped)
