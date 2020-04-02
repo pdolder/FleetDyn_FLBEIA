@@ -58,21 +58,27 @@ lines(1:7, predict(fit2, data.frame(age = 1:7)), col = "blue")
 lines(1:7, predict(fit3, data.frame(age = 1:7)), col = "red")
 lines(1:7, predict(fit4, data.frame(age = 1:7)), col = "green")
 
-## can do better
-wts <- as.data.frame(test@wt[,,,1]) ## all years
+## Add cohort onto the data
+## should be a cohort effect, not year effect
+wts2 <- as.data.frame(FLCohort(test@wt)[,47,,1]) ## all years
+wts2 <- wts2[!is.na(wts2$data),]  ## remove NAs
+
+ggplot(wts2, aes(x = age, y = data, group = cohort)) +
+	geom_point(aes(colour = cohort)) + geom_line(aes(colour = cohort)) +
+	facet_wrap(~cohort)
+
 
 ## Fit a von bertalanffy growth model
 ## In TMB
 ## this is the method in the package fishmethods
 compile("vonbert.cpp")
 dyn.load(dynlib("vonbert"))
+dat <- list(wgt = wts2$data, age = wts2$age, 
+	    age_q = seq(min(wts$age), max(wts$age)+0.75, 0.25))   ## for predictions
 
-dat <- list(wgt = wts$data, age = wts$age, age_q = seq(min(wts$age), max(wts$age)+0.75, 0.25),
-	    yr = as.numeric(as.factor(wts$year))-1)
-pars <- list(logK = exp(0.3), t0 = -1, Sinf = 200, logSigma = 0, 
-	     year_ef = rep(0, length(unique(dat$yr))), sigma_yr = 0)
+pars <- list(logK = exp(0.3), t0 = -1, Sinf = 200, logSigma = 0) 
 
-obj <- MakeADFun(dat, pars, DLL = "vonbert")#, random = "year_ef")
+obj <- MakeADFun(dat, pars, DLL = "vonbert")
 obj$fn()
 obj$gr()
 
@@ -80,13 +86,16 @@ opt <- nlminb(obj$par, obj$fn, obj$gr)
 sdreport(obj)
 report <- obj$report()
 
+obs   <- data.frame(age = dat$age, obs = dat$wgt)
+preds <- data.frame(age = dat$age_q,
+		    pred = report$predictions)
+
+theme_set(theme_bw())
 pdf("test_vbgf.pdf", width = 6, height = 6)
 
-ggplot(data.frame(year = factor(dat$yr), age = dat$age, obs = dat$wgt, pred = report$fitted), 
-       aes(x = age, y = pred, group = year)) + 
-	geom_point(aes(colour = year)) + 
-	geom_line(aes(colour = year)) +
-	geom_point(aes(y = obs), shape = "x")  
+ggplot(preds, aes(x = age, y = pred)) + 
+	geom_line(size = 1.5, col = "blue") +
+	geom_point(data = obs, aes(y = obs), shape = "o", size = 4)  
 
 plot(report$residuals, type = "p")
 abline(h = 0)
@@ -96,45 +105,8 @@ abline(0,1)
 
 dev.off()
 
-## For MON-CS and N-MEG the model doesn't fit....
-## Also, for Nephrops it makes no sense
-
-## Let's start with Monkfish
-test <- as.data.frame(biols[["MON-CS"]]@wt[,1,,1])
-wt <- test$data
-age <- test$age
-
-plot(wt ~ age, type = "b")
-
-fit <- lm(wt~ poly(age,3,raw = T))
-
-plot(wt ~ age, type = "b")
-lines(seq(0, 7.75, 0.25), 
-predict(fit, newdata = data.frame(age = seq(0,7.75, 0.25))), col = "blue")
-
-## That will do...
-
-## And N-MEG
-test <- as.data.frame(biols[["N-MEG"]]@wt[,1,,1])
-wt <- test$data
-age <- test$age
-
-plot(wt ~ age, type = "b")
-
-fit <- lm(wt~ poly(age,3,raw = T))
-
-plot(wt ~ age, type = "b")
-lines(seq(1, 10.75, 0.25), 
-predict(fit, newdata = data.frame(age = seq(1,10.75, 0.25))), col = "blue")
-
-## That will do...
-
-## This leave Nephrops
-### We can just assume its the same in each season  
-
+### For Nephrops we can just assume its the same in each season  
 neps <- grep("NEP", names(biols), value = T) ## names of nephrops stocks
-
-
 
 ###############################################################
 
@@ -145,24 +117,22 @@ neps <- grep("NEP", names(biols), value = T) ## names of nephrops stocks
 
 stks <- c("COD-CS", "HAD-CS", "WHG-CS", "N-HKE", "MON-CS", "N-MEG")
 
-pars_out <- c("logK", "t0", "Sinf", "logSigma")
-
-## Let's also record the parameter estimates
-param_ests <- matrix(NA, nrow = length(stks), ncol = length(pars_out),
-       dimnames = list(stks, pars_out))
-
 pdf("VBGF_fits.pdf", height = 12, width = 4)
 
 for(n. in stks) {
 	       print(n.)
 	       x <- biols[[n.]]
-	
-	for(y in range(x)[["minyear"]]:range(x)[["maxyear"]]) {
+	       x <- FLCohort(x@wt)	       
+
+	for(y in dimnames(x)$cohort) {
 	
 		print(y)
-		df <- as.data.frame(x@wt[,ac(y),,1])  
+		df <- as.data.frame(x[,ac(y),,1])  
 		wt <- df$data 
 		age <- df$age
+
+		age <- age[!is.na(wt)]
+		wt  <- wt[!is.na(wt)]
 
 		## fit the vb growth model and predict the increments
 		
@@ -172,8 +142,6 @@ for(n. in stks) {
 		opt <- nlminb(obj$par, obj$fn, obj$gr)
 		report <- obj$report()
 
-		param_ests[n.,] <- opt$par
-		
 		preds <-data.frame(age = rep(age, each = 4), 
 		season = rep(1:4, times = length(age)),
 	data =  report$predictions)
@@ -191,9 +159,15 @@ for(n. in stks) {
 		abline(0,1)
 
 
-## Fill the biol for the year
-for(i in 1:4) { 
-	biols[[n.]]@wt[,ac(y),,i][] <- preds$data[preds$season == i]
+## Fill the biol for the cohort 
+## Need to loop through each
+for(i in 1:nrow(preds)) {
+
+	y1 <- as.numeric(y)+ preds$age[i]  ## year to replace
+	i1 <- preds$season[i]              ## season to replace
+	a1 <- preds$age[i]                 ## age to replace
+		
+	biols[[n.]]@wt[ac(a1),ac(y1),,ac(i1)][] <- preds$data[i]
 	biols[[n.]]@wt[biols[[n.]]@wt<0] <- 0.001
 }
 
