@@ -2,6 +2,8 @@
 ## Testing basic model
 ###################################################
 
+devtools::install_github('flr/FLBEIA@variable_ES_fix')
+
 library(FLBEIA)
 
 
@@ -27,7 +29,7 @@ close.yr <- ac(2026:2029)
 ef.i <- fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr]
 fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr] <- 0
 
-## For all other metier, recalculate proportionatly
+## For all other metier, recalculate proportionately
 mets <- fleets[["IE_Otter"]]@metiers@names
 mets <- mets[!mets == "I"]
 

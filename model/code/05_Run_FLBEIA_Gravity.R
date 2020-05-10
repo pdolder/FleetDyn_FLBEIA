@@ -56,6 +56,4 @@ SC2 <- FLBEIA(biols = biols,
               assess.ctrl = assess.ctrl, 
 	      advice.ctrl = advice.ctrl) 
 
-save(SC2, file = file.path("..", "outputs", "Gravity_Model.RData"))
-
 rm(list=ls())

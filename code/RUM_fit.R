@@ -961,4 +961,4 @@ AIC(m1, m2, m3, m4, m5, m6)
 #####################
 RUM_model_fit <- m3
 
-qave(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
+save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
