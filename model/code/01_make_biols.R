@@ -4,11 +4,10 @@
 ########################################################
 
 library(FLBEIA)
-library(fishmethods)
+library(TMB)
 
 ## Paths
 stk.path <- file.path("..", "FCube", "stocks")
-
 
 ## 1. Load the stock objects
 stocks<-FLStocks(lapply(list.files(stk.path),function(x){
@@ -47,7 +46,7 @@ test <- biols[[1]]
 wts <- as.data.frame(test@wt[,1,,1])
 plot(wts$data ~ wts$age, type = "b")
 
-## We fit a VBGF
+## We fit some lm's with polynomials 
 fit <- lm(wts$data ~ wts$age)
 fit2 <- lm(wts$data ~ poly(wts$age,2,raw = T))
 fit3 <- lm(wts$data ~ poly(wts$age,3,raw = T))
@@ -59,109 +58,127 @@ lines(1:7, predict(fit2, data.frame(age = 1:7)), col = "blue")
 lines(1:7, predict(fit3, data.frame(age = 1:7)), col = "red")
 lines(1:7, predict(fit4, data.frame(age = 1:7)), col = "green")
 
-## can do better
+## Add cohort onto the data
+## should be a cohort effect, not year effect
+wts2 <- as.data.frame(FLCohort(test@wt)[,47,,1]) ## all years
+wts2 <- wts2[!is.na(wts2$data),]  ## remove NAs
 
-## Note Sinf, K and t0 are starting values for optimiser
-fit <- growth(intype = 2, unit = 2, size = wts$data, age = wts$age,
-       Sinf = 200, K = 0.3, t0 = -1)
+ggplot(wts2, aes(x = age, y = data, group = cohort)) +
+	geom_point(aes(colour = cohort)) + geom_line(aes(colour = cohort)) +
+	facet_wrap(~cohort)
 
-## take the vbgf
-plot(wts$data ~ wts$age)
-lines(seq(1,7.75,0.25),predict(fit$vout, data.frame(age = seq(1,7.75, 0.25))), type = "b", col = "blue")
 
-## For MON-CS and N-MEG the model doesn't fit....
-## Also, for Nephrops it makes no sense
+## Fit a von bertalanffy growth model
+## In TMB
+## this is the method in the package fishmethods
+compile("vonbert.cpp")
+dyn.load(dynlib("vonbert"))
+dat <- list(wgt = wts2$data, age = wts2$age, 
+	    age_q = seq(min(wts$age), max(wts$age)+0.75, 0.25))   ## for predictions
 
-## Let's start with Monkfish
+pars <- list(logK = exp(0.3), t0 = -1, Sinf = 200, logSigma = 0) 
 
-test <- as.data.frame(biols[["MON-CS"]]@wt[,1,,1])
-wt <- test$data
-age <- test$age
+obj <- MakeADFun(dat, pars, DLL = "vonbert")
+obj$fn()
+obj$gr()
 
-plot(wt ~ age, type = "b")
+opt <- nlminb(obj$par, obj$fn, obj$gr)
+sdreport(obj)
+report <- obj$report()
 
-fit <- lm(wt~ poly(age,3,raw = T))
+obs   <- data.frame(age = dat$age, obs = dat$wgt)
+preds <- data.frame(age = dat$age_q,
+		    pred = report$predictions)
 
-plot(wt ~ age, type = "b")
-lines(seq(0, 7.75, 0.25), 
-predict(fit, newdata = data.frame(age = seq(0,7.75, 0.25))), col = "blue")
+theme_set(theme_bw())
+pdf("test_vbgf.pdf", width = 6, height = 6)
 
-## That will do...
+ggplot(preds, aes(x = age, y = pred)) + 
+	geom_line(size = 1.5, col = "blue") +
+	geom_point(data = obs, aes(y = obs), shape = "o", size = 4)  
 
-## And N-MEG
-test <- as.data.frame(biols[["N-MEG"]]@wt[,1,,1])
-wt <- test$data
-age <- test$age
+plot(report$residuals, type = "p")
+abline(h = 0)
 
-plot(wt ~ age, type = "b")
+qqnorm(report$residuals)
+abline(0,1)
 
-fit <- lm(wt~ poly(age,3,raw = T))
+dev.off()
 
-plot(wt ~ age, type = "b")
-lines(seq(1, 10.75, 0.25), 
-predict(fit, newdata = data.frame(age = seq(1,10.75, 0.25))), col = "blue")
-
-## That will do...
-
-## This leave Nephrops
-### We can just assume its the same in each season  
-
+### For Nephrops we can just assume its the same in each season  
 neps <- grep("NEP", names(biols), value = T) ## names of nephrops stocks
-
-
-
 
 ###############################################################
 
 ## OK, let's do this for each year updates to the biols
 
-## try for cod, had, whg, n-hake
-## we need to do something else for nep, n-meg and mon
+## try for cod, had, whg, n-hake, n-meg and mon
+## we need to do something else for nep
 
 stks <- c("COD-CS", "HAD-CS", "WHG-CS", "N-HKE", "MON-CS", "N-MEG")
+
+pdf("VBGF_fits.pdf", height = 12, width = 4)
 
 for(n. in stks) {
 	       print(n.)
 	       x <- biols[[n.]]
-	
-	for(y in range(x)[["minyear"]]:range(x)[["maxyear"]]) {
+	       x <- FLCohort(x@wt)	       
+
+	for(y in dimnames(x)$cohort) {
 	
 		print(y)
-		df <- as.data.frame(x@wt[,ac(y),,1])  
-		wt <- df$data
+		df <- as.data.frame(x[,ac(y),,1])  
+		wt <- df$data 
 		age <- df$age
 
-		if(n. %in% c("COD-CS", "HAD-CS", "WHG-CS", "N-HKE")) {
+		age <- age[!is.na(wt)]
+		wt  <- wt[!is.na(wt)]
 
-		## fit the growth model and predict the increments
-		fit <- growth(intype = 2, unit = 2, size = wt, age = age,
-	        Sinf = 200, K = 0.3, t0 = 0, graph = TRUE)
+		## fit the vb growth model and predict the increments
+		
+		dat <- list(wgt = wt, age = age, age_q = seq(min(age), max(age)+0.75, 0.25))
+		pars <- list(logK = 0.3, t0 = -1, Sinf = max(wt)*50, logSigma = 0)
+		obj <- MakeADFun(dat, pars, DLL = "vonbert")
+		opt <- nlminb(obj$par, obj$fn, obj$gr)
+		report <- obj$report()
 
 		preds <-data.frame(age = rep(age, each = 4), 
 		season = rep(1:4, times = length(age)),
-	data = predict(fit$vout, data.frame(age = seq(min(age),max(age)+0.75, 0.25))))
+	data =  report$predictions)
 		
-		}
+		par(mfrow=c(3,1))
 		
-		if(n. %in% c("MON-CS", "N-MEG")) {
-	
-		fit <- lm(wt~ poly(age,3,raw = T))
-		
-		preds <-data.frame(age = rep(age, each = 4), 
-		season = rep(1:4, times = length(age)),
-	data = predict(fit, data.frame(age = seq(min(age),max(age)+0.75, 0.25))))
-		
-		}
+		plot(age, wt, type = "p", main = paste( n., y, sep = " "))
+		points(age, report$fitted, col = "blue")
+		lines(seq(min(age), max(age)+0.75, 0.25), report$predictions)
 
-## Fill the biol for the year
-for(i in 1:4) { 
-	biols[[n.]]@wt[,ac(y),,i][] <- preds$data[preds$season == i]
+		plot(report$residuals, type = "p")
+		abline(h=0)
+		
+		qqnorm(report$residuals)
+		abline(0,1)
+
+
+## Fill the biol for the cohort 
+## Need to loop through each
+for(i in 1:nrow(preds)) {
+
+	y1 <- as.numeric(y)+ preds$age[i]  ## year to replace
+	i1 <- preds$season[i]              ## season to replace
+	a1 <- preds$age[i]                 ## age to replace
+		
+	biols[[n.]]@wt[ac(a1),ac(y1),,ac(i1)][] <- preds$data[i]
 	biols[[n.]]@wt[biols[[n.]]@wt<0] <- 0.001
 }
 
 }
 
 }
+
+dev.off()
+
+param_ests
+
 ## Note residual patterns, especially noticeable for N-hake
 
 ## Recruitment -- season 2 only
