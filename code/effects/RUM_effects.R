@@ -125,6 +125,22 @@ ylab("Choice probability / share")
 ggsave(paste0("RUM_Stock_Catch_Rate_Multiplier.png"))
 #
 
+## Note, does not interact with season
+ggplot(filter(res_all,season==1), aes(x = percIncrease, y = prob, group = metier)) +
+geom_line(aes(colour = metier, group = metier)) +
+facet_wrap(~stock, scale = "free_y") + theme_bw() +
+ggtitle(paste0("Catch rate multiplier effect on choice probabilities")) +
+xlab("Catch Rate multiplier") +
+ylab("Choice probability / share")
+ggsave(paste0("RUM_Metier_Catch_Rate_Multiplier.png"))
+#
+
+
+
+
+
+
+
 #######################
 # Seasonal effect
 ######################
