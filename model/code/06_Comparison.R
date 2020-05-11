@@ -56,10 +56,21 @@ ggplot(df2, aes(x = paste(year, season), y = data, group = scenario)) +
 #	geom_point(aes(colour = scenario), size = 1.5) +
 	geom_line(aes(colour = scenario), size = 1.5) + 
 #	geom_bar(stat = "identity", aes(fill = season)) +
-	facet_wrap(~metier) + 	theme_bw() +
+	facet_grid(scenario~metier) + 	theme_bw() +
 	theme(axis.text.x = element_text(angle = -90),
 	      legend.position = "top") 
 ggsave(file.path("..", "plots", "Effort_shares.png"), height = 7, width = 12)
+
+for(s in unique(df2$scenario)) {
+ggplot(filter(df2, scenario == s), aes(x = year, y = data, group = season)) +
+	geom_line(aes(colour = season), size = 1.5) + 
+	facet_wrap(~metier) + 	theme_bw() +
+	theme(axis.text.x = element_text(angle = -90),
+	      legend.position = "top") 
+ggsave(file.path("..", "plots", paste0("Effort_shares_", s,".png")), height = 7, width = 12)
+}
+
+
 
 S <- "COD"
 plot(FLStocks(base = base[["stocks"]][[S]][,ac(2015:maxyr)], 

@@ -147,6 +147,8 @@ res$effshare <- NA
 res$effshare <- choices$data[match(paste(res$year-1, res$season, res$metier),
 				   paste(choices$year, choices$season, choices$metier))]
 
+res$season <- as.factor(res$season)
+
 ## unique index
 #res$season <- as.factor(res$season)
 res$index <- paste(res$index, res$year, res$season, sep = "_")
@@ -690,7 +692,7 @@ data.frame("metier" = rownames(predicted.share),
 ## Including lagged effshare
 ########################
 
-m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG + effshare | season, data = LD, 
+m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season + effshare, data = LD, 
 	     print.level = 2, iterlim = 1e4)
 summary(m4)
 AIC(m1, m2, m3, m4)
@@ -959,6 +961,6 @@ AIC(m1, m2, m3, m4, m5, m6)
 
 
 #####################
-RUM_model_fit <- m3
+RUM_model_fit <- m4
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

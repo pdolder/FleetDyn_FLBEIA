@@ -2,8 +2,6 @@
 ## Testing basic model
 ###################################################
 
-devtools::install_github('flr/FLBEIA@variable_ES_fix')
-
 library(FLBEIA)
 
 
