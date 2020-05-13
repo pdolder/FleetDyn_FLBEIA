@@ -22,7 +22,7 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 12 
+n.proj.yrs <- 5 
 ni <- 1
 ns <- 4
 
@@ -734,7 +734,7 @@ advice.ctrl <- advice.ctrl[sort(names(advice.ctrl))]
 save(advice.ctrl,file=file.path("..", "model_inputs", 'advice_ctrl.RData'))
 
 
-fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, 2015:2017, proj.yrs) 
+fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, fleets.ctrl, 2015:2017, proj.yrs) 
 
 fleets[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 
 fleets2[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 

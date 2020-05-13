@@ -13,6 +13,8 @@ load("RUM_data.RData")
 
 model <- RUM_model_fit
 
+
+n_met <- 5
 ##########################
 # calculating the probs
 ########################
@@ -25,7 +27,7 @@ cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.dat
 
 ## Increase in %s
 
-ratios <- seq(0.1, 20, 0.1)
+ratios <- seq(0, 20, 0.1)
 
 ## 0% to 100% higher CPUE 
 cr <- lapply(ratios, function(y) {
@@ -49,7 +51,7 @@ if(x != "WHG") {WHG = 1}
 
 assign(x, as.vector(t(cr)))
 
-res3<- data.frame(season = rep(as.factor(1:4),each = nrow(cr)*12), metier = rep(LETTERS[1:12], times = nrow(cr)*4), choice = "yes", 
+res3<- data.frame(season = rep(as.factor(1:4),each = nrow(cr)*n_met), metier = rep(LETTERS[1:n_met], times = nrow(cr)*4), choice = "yes", 
 		   "COD" = COD, "HAD" = HAD, "MON" = MON, 
 		   "NEP16" = NEP16, "NEP17" = NEP17, "NEP19" = NEP19, "NEP2021" = NEP2021, "NEP22" = NEP22, 
 		   "NHKE" = NHKE, "NMEG" = NMEG,
@@ -82,8 +84,8 @@ beta <- beta[!rownames(beta) %in% grep(paste(toRemove, collapse = "|"), rownames
 eta_long <- mod.mat %*% beta
 
 ## linear predictor wide
-eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
-names(eta_wide) <- toupper(letters[1:12])
+eta_wide <- matrix(eta_long, ncol = n_met, byrow = TRUE)
+names(eta_wide) <- LETTERS[1:n_met]
 
 ## convert to a probability
 own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
@@ -93,7 +95,7 @@ head(own_p_hat)
 own_p_hat <- own_p_hat[1:length(ratios),]  ## is repeated 4 times
 
 ## So this would be the probabilities for each season
-colnames(own_p_hat) <- LETTERS[1:12]
+colnames(own_p_hat) <- LETTERS[1:n_met]
 rownames(own_p_hat) <- ratios
 
 own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
@@ -175,8 +177,8 @@ beta <- as.matrix(coef(model))
 eta_long <- mod.mat %*% beta
 
 ## linear predictor wide
-eta_wide <- matrix(eta_long, ncol = 12, byrow = TRUE)
-names(eta_wide) <- toupper(letters[1:12])
+eta_wide <- matrix(eta_long, ncol = n_met, byrow = TRUE)
+names(eta_wide) <- toupper(letters[1:n_met])
 
 ## convert to a probability
 own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
@@ -184,11 +186,11 @@ own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
 head(own_p_hat)
 
 ## So this would be the probabilities for each season
-colnames(own_p_hat) <- LETTERS[1:12]
+colnames(own_p_hat) <- LETTERS[1:n_met]
 rownames(own_p_hat) <- paste0("season", 1:4) 
 
 own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
-own_p_hat$season <- rep(1:4, times = 12)
+own_p_hat$season <- rep(1:4, times = n_met)
 
 
 ggplot(own_p_hat, aes(x = season, y = prob)) +

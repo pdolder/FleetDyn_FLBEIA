@@ -6,6 +6,7 @@
 
 ## Library loading
 library(tidyverse)
+library(fpc)
 library(PBSmapping)
 library(vmstools)
 library(mapplots)
@@ -74,14 +75,18 @@ clust<-scale(q)
 
 # Ward Hierarchical Clustering
 d <- dist(clust, method = "euclidean") # distance matrix
-fit<-hclust(d,method="ward")
+fit<-hclust(d,method="ward.D2")
 plot(fit)# display dendogram
 
-n_clust <- 12 
+n_clust <- 5 
 
-groups <- cutree(fit, k=n_clust) # cut tree into n clusters
+pam_fit <- pamk(clust, 5)
+
 # draw dendogram with red borders around the n clusters 
 rect.hclust(fit, k=n_clust, border="red")
+
+#groups <- pam_fit$pamobject$clustering 
+groups <- cutree(fit, k=n_clust) # cut tree into n clusters
 
 ## plot the groups
 df  <-data.frame(rect=names(groups),area=as.data.frame(groups))
@@ -164,7 +169,7 @@ draw.shape(coast, col = "lightgreen")
 axis(2,at=seq(so,no,2), col="gray80")
 axis(1,at=seq(we,ea,2), col="gray80")
 mtext(side=3,las=1,adj=0,line=-3,text=paste("Defined Metier/Areas", sep = " "),cex=1,font=2)
-legend('bottomleft', LETTERS[1:12], fill=col, bty='n', 
+legend('bottomleft', LETTERS[1:n_clust], fill=col, bty='n', 
        ncol=2,cex=1)
 dev.off()
 

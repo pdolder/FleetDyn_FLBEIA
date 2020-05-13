@@ -21,15 +21,16 @@ fleets.ctrl[["IE_Otter"]][['mlogit.model']]   <-  RUM_model_fit
 ## this is done by setting effshare to 0, reallocating to other metier
 ## and setting catch.q in metier I to zero
 
-close.yr <- ac(2026:2029)
+close.yr <- ac(2021:2022)
+close.met <- "A"
 
 ## Effort share in metier I, and reassign to 0
-ef.i <- fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr]
-fleets[["IE_Otter"]]@metiers[["I"]]@effshare[,close.yr] <- 0
+ef.i <- fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr]
+fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr] <- 0
 
 ## For all other metier, recalculate proportionately
 mets <- fleets[["IE_Otter"]]@metiers@names
-mets <- mets[!mets == "I"]
+mets <- mets[!mets == close.met]
 
 for(m in mets) {
   fleets[["IE_Otter"]]@metiers[[m]]@effshare[,close.yr] <-  fleets[["IE_Otter"]]@metiers[[m]]@effshare[,close.yr] + 
@@ -38,10 +39,9 @@ for(m in mets) {
 
 ## catch.q to 0
 
-for(i in catchNames(fleets[["IE_Otter"]]@metiers[["I"]])) {
-  fleets[["IE_Otter"]]@metiers[["I"]]@catches[[i]]@catch.q[,close.yr,,1:4] <- 0
+for(i in catchNames(fleets[["IE_Otter"]]@metiers[[close.met]])) {
+  fleets[["IE_Otter"]]@metiers[[close.met]]@catches[[i]]@catch.q[,close.yr,,1:4] <- 0
 }
-
 
 
 SC3 <- FLBEIA(biols = biols, 

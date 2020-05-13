@@ -18,6 +18,8 @@ if(length(grep("coilin", getwd())) > 0){
 
 fl <- fleets[["IE_Otter"]]
 
+n_met <- length(fleets[["IE_Otter"]]@metiers)
+
 #################
 ### processing 
 #################
@@ -133,6 +135,9 @@ sim_data$state         <- as.factor(sim_data$state)
 sim_data$state.tminus1 <- as.factor(sim_data$state.tminus1) 
 sim_data$season        <- as.factor(sim_data$season)
 
+## Summarise proportions in data
+prop.table(table(sim_data$state.tminus1, sim_data$state, sim_data$season), margin = c(1,3))
+
 #############################
 ## Let's estimate with nnet
 ## multinom function
@@ -140,7 +145,7 @@ sim_data$season        <- as.factor(sim_data$season)
 
 ## Without season
 m1 <- multinom(state ~ state.tminus1, data = sim_data)
-pred.data <- data.frame(state.tminus1 = LETTERS[1:12])
+pred.data <- data.frame(state.tminus1 = LETTERS[1:n_met])
 predictions <- cbind(pred.data, predict(m1, pred.data, type = "probs"))
 pred1 <- predictions %>% gather(state, prob,  -state.tminus1)
 
@@ -153,7 +158,7 @@ image(as.matrix(pred1_mat[,2:ncol(pred1_mat)]))
 
 ## With season
 m2 <- multinom(state ~ state.tminus1:season, data = sim_data)
-pred.data <- data.frame(season = rep(1:4, each = 12), state.tminus1 = rep(LETTERS[1:12], times = 4))
+pred.data <- data.frame(season = rep(1:4, each = n_met), state.tminus1 = rep(LETTERS[1:n_met], times = 4))
 pred.data$season <- as.factor(pred.data$season)
 predictions <- cbind(pred.data, predict(m2, pred.data, type = "probs"))
 pred2 <- predictions %>% gather(state, prob,  -season, -state.tminus1)
@@ -324,7 +329,7 @@ return(predict.df)
 ##########################
 ##
 ## For testing the function!!
-load(file.path("RUMtestData.RData"))
+##load(file.path("RUMtestData.RData"))
 ##########################
 
 updated.df <- update_Markov_params(model = m3, predict.df = predict.df, fleet = fl, covars = covars, season = s,
@@ -511,7 +516,7 @@ if(x != "WHG") {WHG = 0.01}
 
 assign(x, cr_sub)
 
-updated.df  <- data.frame(state.tminus1 = LETTERS[1:12], season = as.factor(1), 
+updated.df  <- data.frame(state.tminus1 = LETTERS[1:n_met], season = as.factor(1), 
 		   "COD" = COD, "HAD" = HAD, "MON" = MON,
 		   "NEP16" = NEP16,"NEP17" = NEP17,"NEP19" = NEP19,"NEP2021" = NEP2021,"NEP22" = NEP22,
 		   "NHKE" = NHKE, "NMEG" = NMEG,
@@ -537,8 +542,8 @@ for(i in stks) {
 matplot(do.call(rbind, res_stock[[i]]), type = "l", main = i, ylab = "Effshare", xlab = "Catch rate multiplier", lwd = 2, lty = 1, cex.main = 2) ## 
 }
 plot(x=seq(0,2,0.1), y = seq(0,1,0.05), type = "n", xlab = "", ylab = "", ann = F, xaxt = 'n', yaxt = 'n')
-legend(0.1,0.8, lty = 1, legend = LETTERS[1:6], col = 1:6, cex = 3.7, bty = "n", lwd = 2)
-legend(1.1,0.8, lty = 1, legend = LETTERS[7:12], col = 7:12, cex = 3.7, bty = "n", lwd = 2)
+legend(0.1,0.8, lty = 1, legend = LETTERS[1:floor(n_met/2)], col = 1:floor(n_met/2)], cex = 3.7, bty = "n", lwd = 2)
+legend(1.1,0.8, lty = 1, legend = LETTERS[ceiling(n_met/2):n_met], col = ceiling(n_met/2):n_met, cex = 3.7, bty = "n", lwd = 2)
 dev.off()
 
 

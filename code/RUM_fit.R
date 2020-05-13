@@ -159,6 +159,8 @@ table(res$year, res$metier, res$season)
 LD <- mlogit.data(res, choice = "choice", shape = "long",
 		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
 
+save(res, LD, file = file.path("effects", "RUM_data.RData"))
+
 #m0 <- mlogit(choice ~ 1, data = LD, print.level = 5)
 #summary(m0)
 
