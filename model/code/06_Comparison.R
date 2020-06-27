@@ -40,6 +40,8 @@ ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario), size = 1
 	facet_wrap(~season, scale = "free") + ggtitle("Effort by quarter")
 ggsave(file.path("..", "plots", "Effort_by_quarter.png"))
 
+
+
 ## in multi-stock example, total effort quite different by season 
 
 ## Effort shares
@@ -60,6 +62,22 @@ ggplot(df2, aes(x = paste(year, season), y = data, group = scenario)) +
 	theme(axis.text.x = element_text(angle = -90),
 	      legend.position = "top") 
 ggsave(file.path("..", "plots", "Effort_shares.png"), height = 7, width = 12)
+
+## effort share annualised
+
+df3 <- df2 %>% group_by(scenario, metier, year) %>% summarise(data = mean(data))
+
+
+ggplot(filter(df3, scenario %in% c("base","gravity","gravity_trad")), aes(x = year, season, y = data, group = scenario)) +
+  #	geom_point(aes(colour = scenario), size = 1.5) +
+  geom_line(aes(colour = scenario), size = 1.5) + 
+  #	geom_bar(stat = "identity", aes(fill = season)) +
+  facet_wrap(~metier) + 	theme_bw() +
+  theme(axis.text.x = element_text(angle = -90),
+        legend.position = "top") 
+ggsave("effort_shares_annual.png")
+
+
 
 for(s in unique(df2$scenario)) {
 ggplot(filter(df2, scenario == s), aes(x = year, y = data, group = season)) +
@@ -104,6 +122,16 @@ ggplot(bio, aes(x = year, y = f, group = sc)) +
 	theme_bw() + ggtitle("Fishing mortality") +
 expand_limits(y = 0)
 ggsave(file.path("..", "plots","F_difference.png"), height = 7, width = 12)
+
+ggplot(filter(bio, sc %in% c("base", "gravity", "gravity_trad")), aes(x = year, y = f, group = sc)) +
+  geom_line(aes(colour = sc), size = 1.5) + 
+  facet_wrap(~stock, scale = "free_y") + 
+  theme_bw() + ggtitle("Fishing mortality") +
+  expand_limits(y = 0)
+ggsave(file.path("..", "plots","F_difference_lim.png"), height = 7, width = 12)
+
+
+
 
 ggplot(bio, aes(x = year, y = catch, group = sc)) +
 	geom_line(aes(colour = sc), size = 1.5) + 
