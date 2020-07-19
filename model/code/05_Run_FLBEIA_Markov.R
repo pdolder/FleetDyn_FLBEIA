@@ -27,7 +27,7 @@ close.met <- "A"
 ef.i <- fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr]
 fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr] <- 0
 
-## For all other metier, recalculate proportionatly
+## For all other metier, recalculate proportionally
 mets <- fleets[["IE_Otter"]]@metiers@names
 mets <- mets[!mets == close.met]
 

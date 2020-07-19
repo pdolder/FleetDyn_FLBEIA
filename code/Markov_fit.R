@@ -135,8 +135,21 @@ sim_data$state         <- as.factor(sim_data$state)
 sim_data$state.tminus1 <- as.factor(sim_data$state.tminus1) 
 sim_data$season        <- as.factor(sim_data$season)
 
+colnames(sim_data)[5] <- "effshare"
+
 ## Summarise proportions in data
 prop.table(table(sim_data$state.tminus1, sim_data$state, sim_data$season), margin = c(1,3))
+
+## Investigate some of the covariates
+## summarise the mean catch rates vs the proportions of effort
+
+sim_props <- sim_data %>% group_by(year, season, state, state.tminus1) %>%
+	summarise(N = n(), COD = mean(COD), HAD = mean(HAD), MON = mean(MON),
+		  NEP16 = mean(NEP16), NEP17 = mean(NEP17), NEP19 = mean(NEP19),
+		  NEP2021 = mean(NEP2021), NEP22 = mean(NEP22), NHKE = mean(NHKE), 
+		  NMEG = mean(NMEG), WHG = mean(WHG)) %>% as.data.frame()
+
+ ggplot(sim_props, aes(x = NEP2021, y = N)) + geom_point()
 
 #############################
 ## Let's estimate with nnet
@@ -173,9 +186,16 @@ image(as.matrix(seas[,2:ncol(seas)]))
 }
 
 ## with season and species predictors...
-m3 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + 
+m3 <- multinom(state ~ state.tminus1 + season + COD + HAD + MON + 
 	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
-	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e3)
+	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e6)
+
+m4 <- multinom(state ~ state.tminus1 + effshare +  season + COD + HAD + MON + 
+	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
+	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e6)
+
+
+
 
 AIC(m1, m2, m3)
 
@@ -183,10 +203,23 @@ AIC(m1, m2, m3)
 ## the summary function with nnet is no good though, takes forever to return
 ## anything
 
+sim_data$lCOD     <- log(sim_data$COD+0.001)
+sim_data$lHAD     <- log(sim_data$HAD+0.001)
+sim_data$lMON     <- log(sim_data$MON+0.001)
+sim_data$lNEP16   <- log(sim_data$NEP16+0.001)
+sim_data$lNEP17 <- log(sim_data$NEP17+0.001)
+sim_data$lNEP19   <- log(sim_data$NEP19+0.001)
+sim_data$lNEP2021 <- log(sim_data$NEP2021+0.001)
+sim_data$lNEP22   <- log(sim_data$NEP22+0.001)
+sim_data$lNHKE    <- log(sim_data$NHKE+0.001)
+sim_data$lNMEG    <- log(sim_data$NMEG+0.001)
+sim_data$lWHG     <- log(sim_data$WHG+0.001)
 
-m4 <- multinom(state ~ state.tminus1*season + COD + HAD + MON + 
-	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
-	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e3)
+
+#m4 <- multinom(state ~ state.tminus1*season + lCOD + lHAD + lMON + 
+#	       lNEP16 + lNEP17 + lNEP19 + lNEP2021 + lNEP22 + 
+#	       lNHKE + lNMEG + lWHG, data = sim_data, maxit = 1e3)
+## same as m3
 
 
 ##############################################################################
@@ -547,7 +580,7 @@ legend(1.1,0.8, lty = 1, legend = LETTERS[ceiling(n_met/2):n_met], col = ceiling
 dev.off()
 
 
-Markov_fit <- m3
+Markov_fit <- m4
 save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 

@@ -697,6 +697,10 @@ data.frame("metier" = rownames(predicted.share),
 m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season + effshare, data = LD, 
 	     print.level = 2, iterlim = 1e4)
 summary(m4)
+
+## Very strong influence of past share!!!
+
+
 AIC(m1, m2, m3, m4)
 
 
