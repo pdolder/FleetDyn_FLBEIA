@@ -129,17 +129,38 @@ return(choice_set2)
 
 res <- do.call(rbind, res.df)
 
-## Let's combine Nephrops to make simpler when fitting a model with species
-res$NEP_all <- res$NEP16 + res$NEP17 + res$NEP19 + res$NEP2021 + res$NEP22
+## Only Nephrops data in 2015 - 2017, we need to fill the earlier years
+mean_nep <- res %>% filter(year %in% 2015:2017) %>% group_by(season, metier) %>%
+	summarise(NEP16 = mean(NEP16), NEP17 = mean(NEP17), NEP19 = mean(NEP19), 
+		  NEP2021 = mean(NEP2021), NEP22 = mean(NEP22))
 
-##
+res1 <- res %>% filter(year < 2015)
+res2 <- res %>% filter(year > 2014)
+
+res1$NEP16   <- mean_nep$NEP16[match(paste0(res1$season, res1$metier),
+				   paste0(mean_nep$season, mean_nep$metier))]
+res1$NEP17   <- mean_nep$NEP17[match(paste0(res1$season, res1$metier),
+				   paste0(mean_nep$season, mean_nep$metier))]
+res1$NEP19   <- mean_nep$NEP19[match(paste0(res1$season, res1$metier),
+				   paste0(mean_nep$season, mean_nep$metier))]
+res1$NEP2021 <- mean_nep$NEP2021[match(paste0(res1$season, res1$metier),
+				   paste0(mean_nep$season, mean_nep$metier))]
+res1$NEP22   <- mean_nep$NEP22[match(paste0(res1$season, res1$metier),
+				   paste0(mean_nep$season, mean_nep$metier))]
+
+res <- rbind(res1, res2)
+
+## Let's combine Nephrops to make simpler when fitting a model with species
+res$NEP_all <- apply(res[,c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22")],1, mean)
+
+####
 ## Some contrast in the catch data...
 ####
 
 ## For each of the catch records, take a value around the mean
-#for(i in 6:17) {
-#res[,i] <- sapply(res[,i], function(x) { rnorm(1, mean = x, sd = 0.2 * x) }) 
-#}
+for(i in 6:17) {
+res[,i] <- sapply(res[,i], function(x) { rnorm(1, mean = x, sd = 0.2 * x) }) 
+}
 
 ## Lagged effort share
 res$effshare <- NA
@@ -148,6 +169,10 @@ res$effshare <- choices$data[match(paste(res$year-1, res$season, res$metier),
 				   paste(choices$year, choices$season, choices$metier))]
 
 res$season <- as.factor(res$season)
+
+## Noise around the past effort share
+res[,"effshare"] <- sapply(res[,"effshare"], function(x) { rnorm(1, mean = x, sd = 0.2 * x) }) 
+
 
 ## unique index
 #res$season <- as.factor(res$season)
@@ -673,6 +698,25 @@ m3 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 
 	     print.level = 2)
 summary(m3)
 
+# Try with only recent years
+LD_reduced <- mlogit.data(filter(res, year %in% 2015:2017), choice = "choice", shape = "long",
+		  chid.var = "index", alt.var = "metier", drop.index = TRUE)
+
+
+m3_red <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season, data = LD_reduced, 
+	     print.level = 2)
+summary(m3_red)
+
+## Worse...
+
+## Drop the non-sig species: COD, NEP22
+
+m3_drop <- mlogit(choice ~ HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NHKE + NMEG + WHG | season, data = LD, 
+	     print.level = 2)
+summary(m3_drop)
+
+
+
 
 ## step 1 
 predict.df <- make_RUM_predict_df(model = m3, fleet = fl, s = 1)
@@ -694,12 +738,17 @@ data.frame("metier" = rownames(predicted.share),
 ## Including lagged effshare
 ########################
 
-m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season + effshare, data = LD, 
+m4 <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | effshare + season, data = LD, 
 	     print.level = 2, iterlim = 1e4)
 summary(m4)
 
 ## Very strong influence of past share!!!
 
+## Drop the non-sig species: COD 
+
+m4_drop <- mlogit(choice ~ HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | season + effshare, data = LD, 
+	     print.level = 2, iterlim = 1e4)
+summary(m4_drop)
 
 AIC(m1, m2, m3, m4)
 
@@ -965,8 +1014,131 @@ predicted.share_past <- predict_RUM(model = m4, updated.df = updated.df)
 
 AIC(m1, m2, m3, m4, m5, m6)
 
+#########################################################
+##
+# Let's check the fitted values against the observations
+#########################################################
+
+# Data for each combination of year, season and metier
+# Note we lose 2004, as have no data on effort share the previous year
+##
+check_fit <- as.data.frame(fitted(m3, type = "probabilities"))
+
+check_fit$year   <- sapply(strsplit(rownames(check_fit), "_", fixed = TRUE), "[", 2)
+check_fit$season <- sapply(strsplit(rownames(check_fit), "_", fixed = TRUE), "[", 3)
+
+filter(check_fit, year == 2015, season == 1) %>%
+	summarise(A = mean(A), B = mean(B), C = mean(C), D = mean(D), E = mean(E))
+
+choices2 <- choices[order(choices$year, choices$season, choices$metier),]
+matrix(filter(choices, season == 1)$data, ncol = 5, byrow = TRUE)
+
+par(mfrow=c(2,2))
+for(i in 1:4) {
+matplot(matrix(filter(choices, season == i)$data, ncol = 5, byrow = TRUE), type = "b")
+}
+
+check_fit %>% 	group_by(season) %>%
+	summarise(A = mean(A), B = mean(B), C = mean(C), D = mean(D), E = mean(E)) %>%
+	as.data.frame()
+
+# Plot the fitted against obs
+
+obs <- matrix(filter(choices, season == 1)$data, ncol = 5, byrow = TRUE)
+
+fit <- check_fit %>% group_by(season) %>%
+	summarise(A = mean(A), B = mean(B), C = mean(C), D = mean(D), E = mean(E)) %>%
+	as.data.frame() 
+
+fit <- as.matrix(fit[,2:6])
+ 
+obs_df <- data.frame(year = rep(2004:2017, times = 5), season = 1, metier = rep(LETTERS[1:5], times = length(2004:2017)),obs = as.vector(obs))
+obs_df$fit <- fit[1,]
+
+plot(obs_df$fit ~ obs_df$obs)
+
+## Plot the observations against the fitted values
+## for all seasons
+
+obs_df     <- data.frame(year = rep(2004:2017, each = 5 * 4), season = rep(1:4, each = 5), metier = LETTERS[1:5], obs = choices$data)
+obs_df$fit <- as.vector(t(fit)) 
+
+plot(obs_df$fit ~ obs_df$obs)
+
+theme_set(theme_bw())
+
+cols <- c("blue", "purple", "green", "red", "brown")
+
+for(i in 1:5) {
+assign(paste0("p", i), ggplot(obs_df, aes(x = obs, y = fit)) +
+	geom_point(colour = "grey") + 
+	geom_point(data = filter(obs_df, metier== LETTERS[i]), colour = cols[i]) +
+ylab("fitted proportions")  + xlab("Observed proportions")
+)
+}
+
+library(cowplot)
+
+p6 <- plot_grid(p1,p2,p3,p4,p5, labels = LETTERS[1:5])
+save_plot("Observed_and_fitted_RUM.png", p6, base_width = 10, base_height = 8)
+
+
+## effects of different covariates
+effects(m4, "effshare", type = "rr")
+effects(m4, "NEP2021", type = "rr")
+effects(m4, "NEP22", type = "rr")
+
+effects(m3, "NEP22", type = "rr")
+effects(m3, "MON", type = "rr")
+effects(m3, "COD", type = "rr")
+
+
+## With the individual variation
+
+obs_df     <- choices2 %>% select(year, season, metier, data)
+	
+fit <- check_fit %>% group_by(year, season) %>%
+summarise(A = mean(A), B = mean(B), C = mean(C), D = mean(D), E = mean(E)) %>%
+as.data.frame() 
+
+fit <- as.matrix(fit[,3:7])
+ 
+obs_df$fit <- as.vector(t(fit)) 
+
+plot(obs_df$fit ~ obs_df$data)
+
+theme_set(theme_bw())
+
+cols <- c("blue", "purple", "green", "red", "brown")
+
+for(i in 1:5) {
+assign(paste0("p", i), ggplot(obs_df, aes(x = data, y = fit)) +
+	geom_point(colour = "grey") + 
+	geom_point(data = filter(obs_df, metier== LETTERS[i]), colour = cols[i]) +
+ylab("fitted proportions")  + xlab("Observed proportions")
+)
+}
+
+library(cowplot)
+
+p6 <- plot_grid(p1,p2,p3,p4,p5, labels = LETTERS[1:5])
+save_plot("Observed_and_fitted_RUM.png", p6, base_width = 10, base_height = 8)
+
+
+###################################
+## Increment the species included
+###################################
+
+m5 <- mlogit(choice ~ COD | season, data = LD, 
+	     print.level = 2)
+summary(m5)
+
 
 #####################
-RUM_model_fit <- m4
+#
+# Save output for FLBEIA
+#
+#####################
+RUM_model_fit <- m3
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
