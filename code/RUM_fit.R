@@ -1133,12 +1133,18 @@ m5 <- mlogit(choice ~ COD | season, data = LD,
 	     print.level = 2)
 summary(m5)
 
+####################
+## Model selection
+###################
+
+
+
 
 #####################
 #
 # Save output for FLBEIA
 #
 #####################
-RUM_model_fit <- m3
+RUM_model_fit <- m5
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))

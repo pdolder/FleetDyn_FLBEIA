@@ -126,6 +126,13 @@ sim_data <- sim_data[order(sim_data$vessel, sim_data$year, sim_data$season),]
 
 head(sim_data)
 
+## Add some variation in the covariate data
+## For each of the catch records, take a value around the mean
+for(i in 6:16) {
+sim_data[,i] <- sapply(sim_data[,i], function(x) { rnorm(1, mean = x, sd = 0.2 * x) }) 
+}
+
+
 ## Add state t-1, except for first obs for each "vessel"
 colnames(sim_data)[4] <- "state"
 sim_data$state.tminus1 <- c(NA, sim_data$state[1:(nrow(sim_data)-1)])
@@ -194,10 +201,18 @@ m4 <- multinom(state ~ state.tminus1 + effshare +  season + COD + HAD + MON +
 	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
 	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e6)
 
+m5 <- multinom(state ~ state.tminus1:season + COD + NEP2021, data = sim_data,
+	       maxit = 1e6)
 
+m7 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + 
+	       NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + 
+	       NHKE + NMEG + WHG, data = sim_data, maxit = 1e6)
 
+m8 <- multinom(state ~ state.tminus1:season + HAD + WHG, data = sim_data,
+	       maxit = 1e6)
+coef(m8)
 
-AIC(m1, m2, m3)
+AIC(m1, m2, m3, m4, m5)
 
 ## m3 is way better ??
 ## the summary function with nnet is no good though, takes forever to return
@@ -580,7 +595,7 @@ legend(1.1,0.8, lty = 1, legend = LETTERS[ceiling(n_met/2):n_met], col = ceiling
 dev.off()
 
 
-Markov_fit <- m4
+Markov_fit <- m8
 save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 

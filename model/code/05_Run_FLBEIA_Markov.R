@@ -4,7 +4,6 @@ F##################################################
 
 library(FLBEIA)
 
-
 ## Load in all files
 lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
