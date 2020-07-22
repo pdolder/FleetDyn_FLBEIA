@@ -1137,6 +1137,8 @@ summary(m5)
 ## Model selection
 ###################
 
+null.mod <- mlogit(choice ~ 1 | season , data = LD, print.level = 2)
+
 ## Define a global model
 covars <- c("COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG", "effshare")
 
@@ -1152,7 +1154,19 @@ model_fits <- lapply(models, function(i) { mlogit(i, data = LD)})
 
 sapply(model_fits, AIC)
 
-lrtest(global.mod, 
+BIC <- function(k,n,L) {
+# k number params
+# n number of data points
+# L the maxLik
+(k*log(n)) - (2 * log(L))
+}
+
+BIC(k= length(global.mod$coefficients), n = nrow(LD), L = -global.mod$logLik[[1]])
+
+lapply(model_fits, function(x) {BIC(k = length(x$coefficients),  n = nrow(LD), L = -x$logLik[[1]])})
+
+lrtest(null.mod, 
+global.mod, 
 model_fits[[1]],
 model_fits[[2]],
 model_fits[[3]],
@@ -1170,6 +1184,46 @@ rev.mod)
 rev.mod <- mlogit(choice ~ COD + HAD + NEP2021 | season, data = LD, print.level = 2, iterlim = 1e4)
 
 lrtest(global.mod, rev.mod)
+
+
+## table
+model_outputs <- data.frame(matrix(ncol = 5, nrow = 15))
+colnames(model_outputs) <- c("model","pars","AIC", "BIC", "logLik")
+
+model_outputs[1,"model"] <- paste("choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | effshare + season")
+model_outputs[2,"model"] <- paste("choice ~ 1")
+model_outputs[3:14, "model"] <- unlist(lapply(1:12, function(x) paste("choice ~ " ,paste(covars[1:x], collapse = " + "), "| season")))
+model_outputs[15,"model"] <- paste("choice ~ COD + HAD + NEP2021 | season")
+
+
+model_outputs[1,"pars"]    <- length(global.mod$coefficients) 
+model_outputs[2,"pars"]    <- length(null.mod$coefficients) 
+model_outputs[3:14,"pars"] <- sapply(model_fits, function(x) length(x$coefficients) )
+model_outputs[15,"pars"]   <- length(rev.mod$coefficients)
+
+model_outputs[1,"AIC"]    <- AIC(global.mod) 
+model_outputs[2,"AIC"]    <- AIC(null.mod) 
+model_outputs[3:14,"AIC"] <- sapply(model_fits, AIC)
+model_outputs[15,"AIC"] <-   AIC(rev.mod)
+
+model_outputs[1, "BIC"]   <- BIC(k= length(global.mod$coefficients), n = nrow(LD), L = -global.mod$logLik[[1]])
+model_outputs[2, "BIC"]   <- BIC(k= length(null.mod$coefficients), n = nrow(LD), L = -null.mod$logLik[[1]])
+model_outputs[3:14,"BIC"] <- sapply(model_fits, function(x) {BIC(k = length(x$coefficients),  n = nrow(LD), L = -x$logLik[[1]])})
+model_outputs[15, "BIC"]  <- BIC(k= length(rev.mod$coefficients), n = nrow(LD), L = -rev.mod$logLik[[1]])
+
+model_outputs[1,"logLik"] <- logLik(global.mod)[1]
+model_outputs[2,"logLik"] <- logLik(null.mod)[1]
+model_outputs[3:14,"logLik"] <- sapply(model_fits, function(x) { logLik(x)[1] })
+model_outputs[15,"logLik"] <- logLik(rev.mod)
+
+## Order AIC
+model_outputs[order(model_outputs$AIC),]
+## Order BIC
+model_outputs[order(model_outputs$BIC),]
+## Order logLik
+model_outputs[order(model_outputs$logLik),]
+
+save(model_outputs, file = "RUM_selection.RData")
 
 
 #####################
