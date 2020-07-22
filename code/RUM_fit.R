@@ -1137,7 +1137,39 @@ summary(m5)
 ## Model selection
 ###################
 
+## Define a global model
+covars <- c("COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG", "effshare")
 
+global.mod <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | effshare + season, data = LD, print.level = 2, iterlim = 1e4)
+
+## models <- dredge(global.mod, evaluate = FALSE) ## doesn't work on mlogit
+
+models <- lapply(1:12, function(x) mFormula(as.formula(paste("choice ~ " ,paste(covars[1:x], collapse = " + "), "| season"))))
+
+LD <- LD[!is.na(LD$effshare),]
+
+model_fits <- lapply(models, function(i) { mlogit(i, data = LD)})
+
+sapply(model_fits, AIC)
+
+lrtest(global.mod, 
+model_fits[[1]],
+model_fits[[2]],
+model_fits[[3]],
+model_fits[[4]],
+model_fits[[5]],
+model_fits[[6]],
+model_fits[[7]],
+model_fits[[8]],
+model_fits[[9]],
+model_fits[[10]],
+model_fits[[11]],
+model_fits[[12]],
+rev.mod)
+
+rev.mod <- mlogit(choice ~ COD + HAD + NEP2021 | season, data = LD, print.level = 2, iterlim = 1e4)
+
+lrtest(global.mod, rev.mod)
 
 
 #####################
