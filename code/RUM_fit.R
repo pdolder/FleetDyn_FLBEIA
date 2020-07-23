@@ -1136,23 +1136,35 @@ summary(m5)
 ####################
 ## Model selection
 ###################
+load(file = file.path("effects", "RUM_data.RData"))
 
-null.mod <- mlogit(choice ~ 1 | season , data = LD, print.level = 2)
-
-## Define a global model
-covars <- c("COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG", "effshare")
-
-global.mod <- mlogit(choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | effshare + season, data = LD, print.level = 2, iterlim = 1e4)
-
-## models <- dredge(global.mod, evaluate = FALSE) ## doesn't work on mlogit
-
-models <- lapply(1:12, function(x) mFormula(as.formula(paste("choice ~ " ,paste(covars[1:x], collapse = " + "), "| season"))))
-
+# To fit to same data we need to drop first year where previous effort
+# share is not available
 LD <- LD[!is.na(LD$effshare),]
 
-model_fits <- lapply(models, function(i) { mlogit(i, data = LD)})
+library(mlogit)
+library(MuMIn)
+library(linear.tools)
+library(doParallel)
 
-sapply(model_fits, AIC)
+## Define a global model
+## all covariates on the lhs and rhs
+covars.lhs <- c("COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG")
+covars.rhs <- c("effshare", "season")
+
+## Use lm as dredge doesn't work with mlogit, eval = FALSE
+glob.lm <- lm(paste("choice ~", paste(covars.lhs, collapse = " + ")), data = LD, na.action = na.fail)
+
+lhs.models <- dredge(glob.lm, eval = FALSE)
+
+## Now add the rhs combinations
+all.models <- c(lapply(lhs.models, function(x) mFormula(x$formula)),
+lapply(lhs.models, function(x) mFormula(formula(paste(paste_formula(x$formula), "| season")))),
+lapply(lhs.models, function(x) mFormula(formula(paste(paste_formula(x$formula), "| effshare")))),
+lapply(lhs.models, function(x) mFormula(formula(paste(paste_formula(x$formula), "| effshare + season"))))
+)
+
+## Define BIC function
 
 BIC <- function(k,n,L) {
 # k number params
@@ -1161,70 +1173,92 @@ BIC <- function(k,n,L) {
 (k*log(n)) - (2 * log(L))
 }
 
-BIC(k= length(global.mod$coefficients), n = nrow(LD), L = -global.mod$logLik[[1]])
+AICc <- function(AICv, k, n) {
+	AICv + ((2*k)*(k+1))/(n - k - 1)
+}
 
-lapply(model_fits, function(x) {BIC(k = length(x$coefficients),  n = nrow(LD), L = -x$logLik[[1]])})
+AICc(AIC(mod), k, n)
 
-lrtest(null.mod, 
-global.mod, 
-model_fits[[1]],
-model_fits[[2]],
-model_fits[[3]],
-model_fits[[4]],
-model_fits[[5]],
-model_fits[[6]],
-model_fits[[7]],
-model_fits[[8]],
-model_fits[[9]],
-model_fits[[10]],
-model_fits[[11]],
-model_fits[[12]],
-rev.mod)
+####################################
+## In parallel, doesn't seem to work
+####################################
 
-rev.mod <- mlogit(choice ~ COD + HAD + NEP2021 | season, data = LD, print.level = 2, iterlim = 1e4)
+#Progress bar combine function
+#f <- function(iterator){
+#	  pb <- txtProgressBar(min = 1, max = iterator - 1, style = 3)
+#  count <- 0
+#    function(...) {
+#	        count <<- count + length(list(...)) - 1
+#      setTxtProgressBar(pb, count)
+#          flush.console()
+#          cbind(...) # this can feed into .combine option of foreach
+#	    }
+#}
 
-lrtest(global.mod, rev.mod)
-
-
-## table
-model_outputs <- data.frame(matrix(ncol = 5, nrow = 15))
-colnames(model_outputs) <- c("model","pars","AIC", "BIC", "logLik")
-
-model_outputs[1,"model"] <- paste("choice ~ COD + HAD + MON + NEP16 + NEP17 + NEP19 + NEP2021 + NEP22 + NHKE + NMEG + WHG | effshare + season")
-model_outputs[2,"model"] <- paste("choice ~ 1")
-model_outputs[3:14, "model"] <- unlist(lapply(1:12, function(x) paste("choice ~ " ,paste(covars[1:x], collapse = " + "), "| season")))
-model_outputs[15,"model"] <- paste("choice ~ COD + HAD + NEP2021 | season")
+mod <- mlogit(all.models[[8192]], data = LD)
+summary(mod)
 
 
-model_outputs[1,"pars"]    <- length(global.mod$coefficients) 
-model_outputs[2,"pars"]    <- length(null.mod$coefficients) 
-model_outputs[3:14,"pars"] <- sapply(model_fits, function(x) length(x$coefficients) )
-model_outputs[15,"pars"]   <- length(rev.mod$coefficients)
+k <- length(mod$coefficients)
+n <- nrow(LD[LD$choice == TRUE,])
+L <- -mod$logLik[[1]]
+BIC(k,n,L)
 
-model_outputs[1,"AIC"]    <- AIC(global.mod) 
-model_outputs[2,"AIC"]    <- AIC(null.mod) 
-model_outputs[3:14,"AIC"] <- sapply(model_fits, AIC)
-model_outputs[15,"AIC"] <-   AIC(rev.mod)
+log(L) + ((k*(log(n))) / n)
 
-model_outputs[1, "BIC"]   <- BIC(k= length(global.mod$coefficients), n = nrow(LD), L = -global.mod$logLik[[1]])
-model_outputs[2, "BIC"]   <- BIC(k= length(null.mod$coefficients), n = nrow(LD), L = -null.mod$logLik[[1]])
-model_outputs[3:14,"BIC"] <- sapply(model_fits, function(x) {BIC(k = length(x$coefficients),  n = nrow(LD), L = -x$logLik[[1]])})
-model_outputs[15, "BIC"]  <- BIC(k= length(rev.mod$coefficients), n = nrow(LD), L = -rev.mod$logLik[[1]])
+registerDoParallel(10)
 
-model_outputs[1,"logLik"] <- logLik(global.mod)[1]
-model_outputs[2,"logLik"] <- logLik(null.mod)[1]
-model_outputs[3:14,"logLik"] <- sapply(model_fits, function(x) { logLik(x)[1] })
-model_outputs[15,"logLik"] <- logLik(rev.mod)
+models_fits <- foreach(i = 2:length(all.models)) %dopar% {
 
-## Order AIC
-model_outputs[order(model_outputs$AIC),]
-## Order BIC
-model_outputs[order(model_outputs$BIC),]
-## Order logLik
-model_outputs[order(model_outputs$logLik),]
+print(i)
+mod <- mlogit(all.models[[i]], data = LD)
+return(c(AIC = AIC(mod), 
+	    BIC = BIC(k = length(mod$coefficients), 
+		      n = nrow(LD), 
+		      L = -mod$logLik[[1]])))
+}
 
-save(model_outputs, file = "RUM_selection.RData")
+stopImplicitCluster()
 
+
+RUM_selection <- bind_rows(models_fits)
+
+RUM_selection$model <- unlist(lapply(all.models, function(x) paste_formula(x)))[2:length(all.models)]
+
+
+RUM_selection <- RUM_selection %>% select(model, AIC, BIC)
+
+save(RUM_selection, models_fits, file = "RUM_model_selection.RData")
+
+## By AIC
+
+RUM_selection[order(RUM_selection$AIC),]
+
+RUM_selection[order(RUM_selection$BIC, RUM_selection$AIC),] %>% as.data.frame() %>%
+       head(10)	
+
+RUM_selection[order(RUM_selection$AIC, RUM_selection$BIC),] %>% as.data.frame() %>%
+	head(20)
+
+
+
+######################
+## in serial..
+#####################
+
+#model_fits <- matrix(NA, ncol =3, nrow = length(all.models))
+#colnames(model_fits) <- c("model", "AIC", "BIC")
+#
+#for(i in 2:length(all.models)) {
+#print(i)
+#mod <- mlogit(all.models[[i]], data = LD)
+#
+#model_fits[i,"model"] <- i
+#model_fits[i,"AIC"] <- AIC(mod) 
+#model_fits[i,"BIC"] <- BIC(k = length(mod$coefficients), 
+#n = nrow(LD), 
+#L = -mod$logLik[[1]])
+#}
 
 #####################
 #
