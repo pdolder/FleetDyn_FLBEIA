@@ -64,9 +64,6 @@ ggsave(file.path("..", "plots", "Effort_shares.png"), height = 7, width = 12)
 
 ## effort share annualised
 
-df3 <- df2 %>% group_by(scenario, metier, year) %>% summarise(data = mean(data))
-
-
 ggplot(filter(df3, scenario %in% c("base","gravity","gravity_trad","rum", "markov")), aes(x = year, season, y = data, group = scenario)) +
   #	geom_point(aes(colour = scenario), size = 1.5) +
   geom_line(aes(colour = scenario), size = 1.5) + 
