@@ -143,6 +143,13 @@ ggplot(bio, aes(x = year, y = ssb, group = sc)) +
 	ggtitle("SSB differences")
 ggsave(file.path("..", "plots","SSB_difference.png"), height = 7, width = 12)
 
+ggplot(bio, aes(x = year, y = biomass, group = sc)) +
+	geom_line(aes(colour = sc), size = 1.5) + 
+	facet_wrap(~stock, scale = "free_y") + 
+	theme_bw() + expand_limits(y = 0) + 
+	ggtitle("biomass differences")
+ggsave(file.path("..", "plots","biomass_difference.png"), height = 7, width = 12)
+
 
 advice <- rbind(
       cbind(sc = "base", as.data.frame(advSum(base, long = FALSE, years = ac(2016:maxyr+2)))),

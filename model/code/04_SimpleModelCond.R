@@ -13,7 +13,7 @@ load(file.path("..", "fleets", "fleets.RData"))
 load(file.path("..", "biols", "biols.RData"))
 
 ## SR
-load(file.path("..", "biols","SR_fits.RData"))
+load(file.path("..", "biols","SR_fits2.RData"))
 
 ls()
 
@@ -208,7 +208,7 @@ biols <- FLBiols(lapply(biols, propagate, iter = ni, fill.iter = T))
 # n.b. this is all for the moment
 
 # Load stock recruit fits
-load(file.path("..", "biols", 'SR_fits.RData'))
+load(file.path("..", "biols", 'SR_fits2.RData'))
 
 ################
 ## COD
@@ -498,19 +498,19 @@ SRs      <- create.SRs.data(yrs = c(first.yr = first.yr, proj.yr = proj.yr, last
 
 ## For fixedPopulation stocks fill the biols @n with a value
 ## and create a stock-recruit for fixed Pop stocks with constant high recruitment
-nep.stks <- grep("NEP", stks, value = T)
+#nep.stks <- grep("NEP", stks, value = T)
 
-for (i in nep.stks) {
-  biols[[i]]@n[,ac(proj.yrs)]<-biols[[i]]@n[,ac(data.yrs[2])]  # fill the population n with last
-   ## if its a non UWTV survey Nephrop stock, fill with an arbritary large number
-  if(any(is.na(biols[[i]]@n[,ac(data.yrs[2])]))) {
-    biols[[i]]@n[,ac(proj.yrs)]<- 1e6
-  }
-  SRs[[i]]<-SRs[["COD"]]
-  SRs[[i]]@rec[]<-biols[[i]]@n[,ac(data.yrs[length(data.yrs)])]
-  SRs[[i]]@ssb[]<-biols[[i]]@n[,ac(data.yrs[length(data.yrs)])]
-  SRs[[i]]@model<-'geomean'
-}
+#for (i in nep.stks) {
+#  biols[[i]]@n[,ac(proj.yrs)]<-biols[[i]]@n[,ac(data.yrs[2])]  # fill the population n with last
+#   ## if its a non UWTV survey Nephrop stock, fill with an arbritary large number
+#  if(any(is.na(biols[[i]]@n[,ac(data.yrs[2])]))) {
+#    biols[[i]]@n[,ac(proj.yrs)]<- 1e6
+#  }
+#  SRs[[i]]<-SRs[["COD"]]
+#  SRs[[i]]@rec[]<-biols[[i]]@n[,ac(data.yrs[length(data.yrs)])]
+#  SRs[[i]]@ssb[]<-biols[[i]]@n[,ac(data.yrs[length(data.yrs)])]
+#  SRs[[i]]@model<-'geomean'
+#}
 
 ## Missing SSBs
 
@@ -524,8 +524,35 @@ save(SRs,file=file.path("..", "model_inputs",'SRs.RData'))
 ########################### BD STOCKS #################################
 #######################################################################
 
-# To do, replace the Nephrops fixedPops and SRs
+load(file.path("..", "biols", "BDs.RData"))
 
+## Expand the object and fill the parameters
+
+BDs <- lapply(BDs, function(x) {
+   x@biomass     <-  expand(x@biomass, year = first.yr:last.yr)
+   x@gB          <-  expand(x@gB, year = first.yr:last.yr)
+   x@catch       <-  expand(x@catch, year = first.yr:last.yr)
+   x@uncertainty <-  expand(x@uncertainty, year = first.yr:last.yr)
+   x@uncertainty[,ac(proj.yr:last.yr),,] <- 1
+
+   params <- array(data = NA, dim = c(3, dim(x@biomass)[c(2,4)],1), dimnames = 
+		   list(param = c("K", "p", "r"),
+				  year = first.yr:last.yr,
+		   season = 1:4,
+		   iter = ni))
+     params[1,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[1,1,1,1] 
+     params[2,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[2,1,1,1] 
+     params[3,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[3,1,1,1] 
+     x@params <- params
+
+     al  <- array(data = NA, dim = c(length(first.yr:last.yr), 4, 1:ni))
+     al[] <- x@alpha[1,1,1]
+     x@alpha <- al
+
+   return(x)
+			}) 
+
+save(BDs, file = file.path("..", "model_inputs", "BDs.RData"))
 
 #######################################################################
 ########################## BIOLS CTRL #################################
@@ -537,11 +564,11 @@ stks<-names(biols)
 
 growth.model     <- c(COD='ASPG',HAD='ASPG',
 		      MON='ASPG',
-                      NEP16 = 'fixedPopulation',
-                      NEP17 = 'fixedPopulation',
-                      NEP19 = 'fixedPopulation',
-                      NEP2021 = 'fixedPopulation',
-                      NEP22 = 'fixedPopulation',
+                      NEP16 = 'BDPG',
+                      NEP17 = 'BDPG',
+                      NEP19 = 'BDPG',
+                      NEP2021 = 'BDPG',
+                      NEP22 = 'BDPG',
 		      NHKE = 'ASPG', NMEG = 'ASPG',
                       WHG_NS="ASPG")
 growth.model <- growth.model[sort(names(growth.model))]

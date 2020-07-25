@@ -45,7 +45,7 @@ for(i in catchNames(fleets[["IE_Otter"]]@metiers[[close.met]])) {
 
 SC3 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
-	      BDs = NULL, 
+	      BDs = BDs, 
 	      fleets=fleets, 
 	      covars =NULL, 
               indices = NULL, 

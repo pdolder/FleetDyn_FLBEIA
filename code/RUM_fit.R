@@ -1157,6 +1157,8 @@ glob.lm <- lm(paste("choice ~", paste(covars.lhs, collapse = " + ")), data = LD,
 
 lhs.models <- dredge(glob.lm, eval = FALSE)
 
+rm(glob.lm) 
+
 ## Now add the rhs combinations
 all.models <- c(lapply(lhs.models, function(x) mFormula(x$formula)),
 lapply(lhs.models, function(x) mFormula(formula(paste(paste_formula(x$formula), "| season")))),
@@ -1166,18 +1168,16 @@ lapply(lhs.models, function(x) mFormula(formula(paste(paste_formula(x$formula), 
 
 ## Define BIC function
 
-BIC <- function(k,n,L) {
+BIC <- function(k,n,ll) {
 # k number params
 # n number of data points
 # L the maxLik
-(k*log(n)) - (2 * log(L))
+(k*log(n)) - (2 * ll)
 }
 
 AICc <- function(AICv, k, n) {
 	AICv + ((2*k)*(k+1))/(n - k - 1)
 }
-
-AICc(AIC(mod), k, n)
 
 ####################################
 ## In parallel, doesn't seem to work
@@ -1201,10 +1201,13 @@ summary(mod)
 
 k <- length(mod$coefficients)
 n <- nrow(LD[LD$choice == TRUE,])
-L <- -mod$logLik[[1]]
-BIC(k,n,L)
+ll <- mod$logLik[[1]]
+BIC(k,n,ll)
 
-log(L) + ((k*(log(n))) / n)
+AICc(AIC(mod), k, n)
+
+rm(mod)
+gc()
 
 registerDoParallel(10)
 
@@ -1212,10 +1215,12 @@ models_fits <- foreach(i = 2:length(all.models)) %dopar% {
 
 print(i)
 mod <- mlogit(all.models[[i]], data = LD)
-return(c(AIC = AIC(mod), 
-	    BIC = BIC(k = length(mod$coefficients), 
-		      n = nrow(LD), 
-		      L = -mod$logLik[[1]])))
+return(c(npar = length(mod$coefficients),
+	 AIC = AIC(mod),
+	 AICc = AICc(AICv = AIC(mod), k = length(mod$coefficients), n = nrow(LD)),
+	 BIC = BIC(k = length(mod$coefficients), 
+	 n = nrow(LD), 
+	 ll = mod$logLik[[1]])))
 }
 
 stopImplicitCluster()
@@ -1225,8 +1230,33 @@ RUM_selection <- bind_rows(models_fits)
 
 RUM_selection$model <- unlist(lapply(all.models, function(x) paste_formula(x)))[2:length(all.models)]
 
+RUM_selection <- RUM_selection %>% select(model, npar, AIC, AICc, BIC)
 
-RUM_selection <- RUM_selection %>% select(model, AIC, BIC)
+## Add on the number of parameters - from the formula
+## Think this should be right
+# Intercept for all models = 4 (5 areas - 1)
+# + 1 param for each species included (11 species total)
+# If season is included then 12 = 3 * 4 (4 seasons -1 * 5 areas - 1) 
+# If effshare is included then 4 (5 areas - 1)
+## So full model is 4 + 11 + 12 + 4 = 31
+
+
+#npars <- lapply(all.models, function(x) {
+#form  <- sapply(strsplit(paste_formula(x), "~"), "[[", 2)
+#form2 <- unlist(strsplit(form, "+", fixed = TRUE))
+#int   <- 4
+#n_spp <- length(form2[form2 %in% covars.lhs])
+#eff   <- ifelse(isTRUE(grepl("effshare", grep("effshare", form2, value = TRUE))) == TRUE, 4, 0)
+#sea   <- ifelse(isTRUE(grepl("season", grep("season", form2, value = TRUE))) == TRUE, 12, 0)
+#params <- int + n_spp + eff + sea
+#return(params)
+#})
+
+#RUM_selection$npar <- unlist(npars)[-1]
+
+## Recalculate BIC - can't do without the logLik....
+
+
 
 save(RUM_selection, models_fits, file = "RUM_model_selection.RData")
 
@@ -1235,12 +1265,18 @@ save(RUM_selection, models_fits, file = "RUM_model_selection.RData")
 RUM_selection[order(RUM_selection$AIC),]
 
 RUM_selection[order(RUM_selection$BIC, RUM_selection$AIC),] %>% as.data.frame() %>%
-       head(10)	
+       head(2000)	
 
 RUM_selection[order(RUM_selection$AIC, RUM_selection$BIC),] %>% as.data.frame() %>%
 	head(20)
 
+best.mod <- mlogit(mFormula(choice ~ MON + NEP2021 + NEP22 + NMEG + WHG + 1 | effshare + season), data = LD, print.level = 2)
 
+coef(best.mod)
+
+best.mod2 <- mlogit(mFormula(choice ~ MON + NEP2021 + NEP22 + NMEG + WHG + 1 | season), data = LD, print.level = 2)
+
+coef(best.mod2)
 
 ######################
 ## in serial..
@@ -1265,6 +1301,6 @@ RUM_selection[order(RUM_selection$AIC, RUM_selection$BIC),] %>% as.data.frame() 
 # Save output for FLBEIA
 #
 #####################
-RUM_model_fit <- m5
+RUM_model_fit <- best.mod 
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
