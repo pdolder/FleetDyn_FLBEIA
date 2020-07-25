@@ -78,9 +78,9 @@ d <- dist(clust, method = "euclidean") # distance matrix
 fit<-hclust(d,method="ward.D2")
 plot(fit)# display dendogram
 
-n_clust <- 5 
+n_clust <- 6
 
-pam_fit <- pamk(clust, 5)
+pam_fit <- pamk(clust, n_clust)
 
 # draw dendogram with red borders around the n clusters 
 rect.hclust(fit, k=n_clust, border="red")
@@ -173,7 +173,21 @@ legend('bottomleft', LETTERS[1:n_clust], fill=col, bty='n',
        ncol=2,cex=1)
 dev.off()
 
+## We want to redefine some of the clusters
+## As they are separate Nephrops FUs
+nep <- read.delim(file.path("..", "data", "rect_FU_MA_UPDATED_2017.txt"))
 
+df[df$group == 2 & df$rect %in% nep$Rectangle[nep$FU == 16],"groups"]  <- 2
+df[df$rect %in% c("32D9","32E0"),"groups"]  <- 4
+df[df$rect %in% c("32E1"),"groups"]  <- 5
+df[df$rect %in% c("30E2"),"groups"]  <- 5
+df[df$rect %in% c("33D7"),"groups"]  <- 2
+
+df[df$group == 2 & df$lat > 53,"groups"]  <- 1
+df[df$group == 2 & df$lat < 50,"groups"]  <- 1
+
+## Seperate Nephrops FU17
+df[df$rect %in% nep$Rectangle[nep$FU == 17],"groups"]  <- 7
 
 ##############################
 ## Associate clusters with 
@@ -259,6 +273,68 @@ catch$catchshare <- catch$landings / catch$total
 
 catch <- catch[!is.na(catch$group),]
 
+
+## Look at the catch compositions
+
+catch %>% group_by(group, species) %>% summarise(landings = mean(landings)) %>%
+	reshape2::dcast(group ~ species, value.var = "landings")
+
+
 save(catch, effort, file = file.path("..", "data", "Processed_catch.RData"))
 
+
+##########################
+## Figure
+##########################
+
+n_clust <- length(unique(df$group)) 
+
+p<-make.xyz(df$lon,df$lat,df$groups,as.factor(df$groups))
+col<- brewer.pal(n_clust, "Set3")
+
+
+png(file.path("..", "plots", "Final_Metier_locations.png"), height = 500, width = 400)
+par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
+basemap(c(we, ea), c(so, no))
+draw.rect()
+draw.barplot2D(p$x, p$y,p$z, width=1, height=0.5, col=col, 
+	       lwd.frame = 0, col.frame = "grey10")
+draw.bubble(x = eff_q$lon, y = eff_q$lat, z = eff_q$Effort, maxradius = 0.2)
+draw.shape(coast, col = "lightgreen")
+axis(2,at=seq(so,no,2), col="gray80")
+axis(1,at=seq(we,ea,2), col="gray80")
+mtext(side=3,las=1,adj=0,line=-3,text=paste("Defined Metier/Areas", sep = " "),cex=1,font=2)
+legend('bottomleft', LETTERS[1:n_clust], fill=col, bty='n', 
+       ncol=2,cex=1)
+dev.off()
+
+## Catch comp
+
+catch_avg <- catch %>% group_by(group, species) %>% summarise(landings = sum(landings))
+
+grp_sum <- catch_avg %>% group_by(group) %>% summarise(landings = sum(landings))
+
+catch_avg$grpL  <- grp_sum$landings[match(catch_avg$group, grp_sum$group)]
+catch_avg$share <- catch_avg$landings / catch_avg$grpL
+
+catch_avg <- reshape2::dcast(catch_avg, species ~ group, value.var = "share")
+
+spp <- catch_avg$species
+
+catch_avg <- as.matrix(catch_avg[,2:8])
+colnames(catch_avg) <- LETTERS[1:7]
+rownames(catch_avg) <- spp 
+catch_avg[is.na(catch_avg)] <- 0
+
+library(RColorBrewer)
+cols <- c(brewer.pal(13, "Set3"),"white")
+
+
+png(file.path("..", "plots", "Final_Metier_catchcomp.png"), width = 1200, height = 400)
+
+par(mar=c(4,4,8,4))
+barplot(catch_avg, col = cols) 
+par(xpd = TRUE)
+legend(0.3,1.3, legend = spp, fill = cols, cex = 1, ncol = 7)
+dev.off()
 

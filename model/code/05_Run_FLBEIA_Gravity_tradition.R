@@ -22,7 +22,7 @@ fleets.ctrl[["IE_Otter"]][["gravity.tradition"]] <- 0.8 ## 80 % from tradition
 ## and setting catch.q in metier I to zero
 
 close.yr <- ac(2021:2022)
-close.met <- "A"
+close.met <- "C"
 
 ## Effort share in metier I, and reassign to 0
 ef.i <- fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr]

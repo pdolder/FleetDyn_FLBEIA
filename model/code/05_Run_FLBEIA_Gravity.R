@@ -20,7 +20,7 @@ fleets.ctrl[['IE_Otter']][['gravity.model']] <- 'revenue'  ## profit and traditi
 ## and setting catch.q in metier I to zero
 
 close.yr <- ac(2021:2022)
-close.met <- "A"
+close.met <- "C"
 
 ## Effort share in metier I, and reassign to 0
 ef.i <- fleets[["IE_Otter"]]@metiers[[close.met]]@effshare[,close.yr]
@@ -44,7 +44,7 @@ for(i in catchNames(fleets[["IE_Otter"]]@metiers[[close.met]])) {
 
 SC2 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
-	      BDs = NULL, 
+	      BDs = BDs, 
 	      fleets=fleets, 
 	      covars =NULL, 
               indices = NULL, 
