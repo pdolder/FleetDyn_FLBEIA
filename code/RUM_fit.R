@@ -1226,7 +1226,7 @@ return(c(npar = length(mod$coefficients),
 stopImplicitCluster()
 
 
-RUM_selection <- bind_rows(models_fits)
+RUM_selection <- dplyr::bind_rows(models_fits)
 
 RUM_selection$model <- unlist(lapply(all.models, function(x) paste_formula(x)))[2:length(all.models)]
 
@@ -1256,25 +1256,27 @@ RUM_selection <- RUM_selection %>% select(model, npar, AIC, AICc, BIC)
 
 ## Recalculate BIC - can't do without the logLik....
 
-
-
-save(RUM_selection, models_fits, file = "RUM_model_selection.RData")
+save(RUM_selection, file = "RUM_model_selection.RData")
 
 ## By AIC
 
 RUM_selection[order(RUM_selection$AIC),]
 
 RUM_selection[order(RUM_selection$BIC, RUM_selection$AIC),] %>% as.data.frame() %>%
-       head(2000)	
+       head(3500)	
 
-RUM_selection[order(RUM_selection$AIC, RUM_selection$BIC),] %>% as.data.frame() %>%
-	head(20)
+ranked_mods <- RUM_selection[order(RUM_selection$AIC, RUM_selection$BIC),] %>% as.data.frame() %>%
+ select(model)
 
-best.mod <- mlogit(mFormula(choice ~ MON + NEP2021 + NEP22 + NMEG + WHG + 1 | effshare + season), data = LD, print.level = 2)
+ranked_mods$effshare <- grepl("effshare", ranked_mods$model) ## all the models including effshare
+
+head(ranked_mods[ranked_mods$effshare == FALSE,])
+
+best.mod <- mlogit(mFormula(choice ~ MON + NEP2021 + NMEG + WHG + 1 | effshare + season), data = LD, print.level = 2)
 
 coef(best.mod)
 
-best.mod2 <- mlogit(mFormula(choice ~ MON + NEP2021 + NEP22 + NMEG + WHG + 1 | season), data = LD, print.level = 2)
+best.mod2 <- mlogit(mFormula(choice ~ COD + MON + NEP19 + NEP22 + NHKE + WHG + 1 | season), data = LD, print.level = 2)
 
 coef(best.mod2)
 
@@ -1301,6 +1303,47 @@ coef(best.mod2)
 # Save output for FLBEIA
 #
 #####################
-RUM_model_fit <- best.mod 
+RUM_model_fit <- best.mod2 
 
 save(RUM_model_fit, file = file.path("..", "tests", "RUM_model.RData"))
+
+
+
+
+###########################
+##
+## Individual species effects 
+## on allocation among areas
+##
+###########################
+
+spp <- c("COD", "MON", "NEP19", "NEP22", "NHKE", "WHG")
+
+spp_effects <- lapply(spp, function(s) {
+	      colSums(mlogit:::effects.mlogit(best.mod2, s, type = "ar"))
+})
+
+names(spp_effects) <- spp
+spp_effects <- cbind(stock = spp, dplyr::bind_rows(spp_effects))
+
+spp_effects_df  <- reshape2::melt(spp_effects)
+colnames(spp_effects_df)[2] <- "area"
+
+spp_effects_mat <- as.matrix(spp_effects[,2:ncol(spp_effects)])
+rownames(spp_effects_mat) <- spp
+
+## This doesn't work as intended
+library(qgraph)
+qgraph(spp_effects_df)
+
+
+heatmap(t(spp_effects_mat), keep.dendro = FALSE, Rowv = NA, Colv = NA)
+
+library(tidyverse)
+
+ggplot(spp_effects_df, aes(x = stock, y = area)) +
+  geom_tile(aes(fill = value)) + scale_fill_gradient2(low = "blue", high = "red", midpoint = 0) + 
+  theme_minimal() + ggtitle("Influence of different stocks on RUM effort allocation") 
+ggsave(file.path("..", "plots", "heatmap_spp_influence_RUM.png"))
+
+

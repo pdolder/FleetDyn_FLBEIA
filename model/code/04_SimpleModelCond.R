@@ -23,7 +23,7 @@ ls()
 #####################
 
 n.proj.yrs <- 5 
-ni <- 1
+ni <- 50
 ns <- 4
 
 data.yrs <- c(range(biols)[["minyear"]],
@@ -102,7 +102,7 @@ covars<-NULL
 
 print("############  Expanding the FLFleet object to projection years ############")
 
-fleets<-lapply(fleets,window,data.yrs[1],proj.yrs[length(proj.yrs)]) ## now works
+fleets<-lapply(fleets,window,data.yrs[1],proj.yrs[length(proj.yrs)]) 
 
 nms.fls <- names(fleets)
 l.fls   <- length(nms.fls)
@@ -145,6 +145,9 @@ for(i in 1:l.fls){
   }
 }
 
+## Expand for the iterations
+fleets <- FLFleetsExt(lapply(fleets, FLBEIA:::propagateFLF, iter = ni, fill.iter = TRUE))
+
 save(fleets,file=file.path("..", "model_inputs",'FLFleetsExt_expanded.RData'))
 
 #}
@@ -175,12 +178,6 @@ fleets.ctrl      <- create.fleets.ctrl(fls = fls,n.fls.stks=n.flts.stks,fls.stks
 				       )
 
 save(fleets.ctrl, file = file.path("..", "model_inputs", "fleets_ctrl.RData"))
-
-
-#### Expand and save objects
-
-fleets <- FLFleetsExt(lapply(fleets, FLBEIA:::propagateFLF, iter = ni, fill.iter= T))
-save(fleets,file=file.path("..", "model_inputs", 'FLFleetsExt_expanded.RData'))
 
 
 ###########################################################################
@@ -533,24 +530,26 @@ BDs <- lapply(BDs, function(x) {
    x@gB          <-  expand(x@gB, year = first.yr:last.yr)
    x@catch       <-  expand(x@catch, year = first.yr:last.yr)
    x@uncertainty <-  expand(x@uncertainty, year = first.yr:last.yr)
-   x@uncertainty[,ac(proj.yr:last.yr),,] <- 1
+   x@uncertainty[,ac(proj.yr:last.yr),,] <- 1.2 
 
    params <- array(data = NA, dim = c(3, dim(x@biomass)[c(2,4)],1), dimnames = 
 		   list(param = c("K", "p", "r"),
 				  year = first.yr:last.yr,
 		   season = 1:4,
-		   iter = ni))
-     params[1,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[1,1,1,1] 
-     params[2,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[2,1,1,1] 
-     params[3,1:length(first.yr:last.yr),1:4,1:ni] <- x@params[3,1,1,1] 
+		   iter = 1))
+     params[1,1:length(first.yr:last.yr),1:4,1] <- x@params[1,1,1,1] 
+     params[2,1:length(first.yr:last.yr),1:4,1] <- x@params[2,1,1,1] 
+     params[3,1:length(first.yr:last.yr),1:4,1] <- x@params[3,1,1,1] 
      x@params <- params
 
-     al  <- array(data = NA, dim = c(length(first.yr:last.yr), 4, 1:ni))
+     al  <- array(data = NA, dim = c(length(first.yr:last.yr), 4, 1))
      al[] <- x@alpha[1,1,1]
      x@alpha <- al
 
    return(x)
 			}) 
+
+BDs <- lapply(BDs, propagate, iter = ni, fill.iter = TRUE)
 
 save(BDs, file = file.path("..", "model_inputs", "BDs.RData"))
 
@@ -680,18 +679,16 @@ advice$TAC["HAD","2018"][] <- 8225
 advice$TAC["MON","2018"][] <- 28414  
 advice$TAC["NHKE","2018"][] <- 94812
 advice$TAC["NMEG","2018"][] <- 14397
-#advice$TAC["NEP16","2018"][] <- 
-#advice$TAC["NEP17","2018"][] <- 
-#advice$TAC["NEP19","2018"][] <- 
-#advice$TAC["NEP2021","2018"][] <- 
-#advice$TAC["NEP22","2018"][] <- 
+advice$TAC["NEP16","2018"][] <- 2734 
+advice$TAC["NEP17","2018"][] <- 551
+advice$TAC["NEP19","2018"][] <- 173
+advice$TAC["NEP2021","2018"][] <- 8673
+advice$TAC["NEP22","2018"][] <- 4322
 advice$TAC["WHG","2018"][] <- 10332
 
 
 
 ## Take the int year TAC from single stock advice!!
-
-
 save(advice,file=file.path("..", "model_inputs",'advice.RData'))
 
 ####################################################################################
@@ -765,10 +762,28 @@ advice.ctrl$WHG$AdvCatch[]      <- TRUE
 advice.ctrl <- advice.ctrl[sort(names(advice.ctrl))]
 save(advice.ctrl,file=file.path("..", "model_inputs", 'advice_ctrl.RData'))
 
-
 fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, fleets.ctrl, 2015:2017, proj.yrs) 
 
-fleets[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 
+
+## Condition uncertainty in catch.q - IE_Otter only
+## Add some lognormal error around the mean value
+
+
+i  <- "IE_Otter"
+  nms.metiers <- names(fleets2[[i]]@metiers)
+  
+  for( j in nms.metiers){
+    nms.stks <- names(fleets2[[i]]@metiers[[j]]@catches)
+    
+    for( k in nms.stks){
+      fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,ac(proj.yrs) ]     <- rnorm(ni,mean=yearMeans(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,fl.proj.avg.yrs,,,,1]), sd = apply(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,fl.proj.avg.yrs],c(1,4),sd,na.rm = T))
+
+      fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)][is.na(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)])]<-0
+      
+    }
+  }
+
+fleets2[["IE_Otter"]][[1]][["COD"]]@catch.q[,ac(proj.yrs),,]
 fleets2[["IE_Otter"]][[1]][["COD"]]@catch.q[,"2015",,1] 
 
 

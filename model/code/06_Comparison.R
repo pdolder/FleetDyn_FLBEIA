@@ -33,11 +33,18 @@ df <- rbind(cbind(scenario = "base", as.data.frame(base$fleets[["IE_Otter"]]@eff
       cbind(scenario = "markov", as.data.frame(markov$fleets[["IE_Otter"]]@effort)),
       cbind(scenario = "gravity_trad", as.data.frame(gravity_trad$fleets[["IE_Otter"]]@effort))
 )
+
+df <- df %>% group_by(scenario, year, season) %>% summarise(val = mean(data, na.rm = T), 
+							    lo = quantile(data, 0.05,na.rm = T),
+							    high = quantile(data, 0.95, na.rm = T))
+
 df <- df[df$year > 2014,]
 
+theme_set(theme_minimal())
 
-ggplot(df, aes(x = year, y = data)) + geom_line(aes(colour = scenario), size = 1.5) +
-	facet_wrap(~season, scale = "free") + ggtitle("Effort by quarter")
+ggplot(df, aes(x = year, y = val)) + geom_line(aes(colour = scenario), size = 1.5) +
+	geom_ribbon(aes(ymin = lo, ymax = high, fill = scenario), alpha = 0.1) + 
+	facet_wrap(~season, scale = "free") + ggtitle("Effort by quarter") 
 ggsave(file.path("..", "plots", "Effort_by_quarter.png"))
 
 
@@ -51,12 +58,17 @@ df2 <- rbind(cbind(scenario = "base", do.call(rbind, lapply(base$fleets[["IE_Ott
 	     cbind(scenario = "markov", do.call(rbind, lapply(markov$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare))))), 
 	     cbind(scenario = "gravity_trad", do.call(rbind, lapply(gravity_trad$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare)))))
 	     )
+
+df2  <- df2 %>% group_by(scenario, metier, year, season) %>%
+	summarise(val = mean(data, na.rm = T), lo = quantile(data, na.rm = T),
+		  high = quantile(data, na.rm = T))
+
+
 df2 <- filter(df2, year > 2014)
 
-ggplot(df2, aes(x = paste(year, season), y = data, group = scenario)) +
-#	geom_point(aes(colour = scenario), size = 1.5) +
-	geom_line(aes(colour = scenario), size = 1.5) + 
-#	geom_bar(stat = "identity", aes(fill = season)) +
+ggplot(df2, aes(x = paste(year, season), y = val, group = scenario)) +
+	geom_line(aes(colour = scenario), size = 1.5) +
+       geom_ribbon(aes(ymin = lo, ymax = high, fill = scenario), alpha = 0.2) + 	
 	facet_grid(scenario~metier) + 	theme_bw() +
 	theme(axis.text.x = element_text(angle = -90),
 	      legend.position = "top") 
@@ -76,7 +88,7 @@ ggsave("effort_shares_annual.png")
 
 
 for(s in unique(df2$scenario)) {
-ggplot(filter(df2, scenario == s), aes(x = year, y = data, group = season)) +
+ggplot(filter(df2, scenario == s), aes(x = year, y = val, group = season)) +
 	geom_line(aes(colour = season), size = 1.5) + 
 	facet_wrap(~metier) + 	theme_bw() +
 	theme(axis.text.x = element_text(angle = -90),
@@ -105,46 +117,52 @@ plot(FLStocks(base = base[["stocks"]][[S]][,ac(2015:maxyr)],
 ggsave(file.path("..", "plots", "Whg_by_scenario.png"))
 
 bio <- rbind(
-      cbind(sc = "base", as.data.frame(bioSum(base, long = FALSE, years = ac(2016:maxyr+2)))),
-cbind(sc = "gravity", as.data.frame(bioSum(gravity, long = FALSE, years = ac(2016:maxyr+2)))),
-cbind(sc = "rum", as.data.frame(bioSum(rum, long = FALSE, years = ac(2016:maxyr+2)))),
-cbind(sc = "markov", as.data.frame(bioSum(markov, long = FALSE, years = ac(2016:maxyr+2)))),
-cbind(sc = "gravity_trad", as.data.frame(bioSum(gravity_trad, long = FALSE, years = ac(2016:maxyr+2))))
+      cbind(sc = "base", bioSumQ(as.data.frame(bioSum(base, long = FALSE, years = ac(2016:maxyr+2))))),
+cbind(sc = "gravity", bioSumQ(as.data.frame(bioSum(gravity, long = FALSE, years = ac(2016:maxyr+2))))),
+cbind(sc = "rum", bioSumQ(as.data.frame(bioSum(rum, long = FALSE, years = ac(2016:maxyr+2))))),
+cbind(sc = "markov", bioSumQ(as.data.frame(bioSum(markov, long = FALSE, years = ac(2016:maxyr+2))))),
+cbind(sc = "gravity_trad", bioSumQ(as.data.frame(bioSum(gravity_trad, long = FALSE, years = ac(2016:maxyr+2)))))
 )
 
-ggplot(bio, aes(x = year, y = f, group = sc)) +
-	geom_line(aes(colour = sc), size = 1.5) + 
+
+
+ggplot(bio, aes(x = year, y = f_q50, group = sc)) +
+	geom_line(aes(colour = sc), size = 1.5) +
+       geom_ribbon(aes(ymin = f_q05, ymax = f_q95, fill = sc), alpha = 0.2) + 	
 	facet_wrap(~stock, scale = "free_y") + 
 	theme_bw() + ggtitle("Fishing mortality") +
 expand_limits(y = 0)
 ggsave(file.path("..", "plots","F_difference.png"), height = 7, width = 12)
 
-ggplot(filter(bio, sc %in% c("base", "gravity", "gravity_trad", "rum", "markov")), aes(x = year, y = f, group = sc)) +
+ggplot(filter(bio, sc %in% c("base", "gravity", "gravity_trad", "rum", "markov")), 
+       aes(x = year, y = f_q50, group = sc)) +
   geom_line(aes(colour = sc), size = 1.5) + 
+  geom_ribbon(aes(ymin = f_q05, ymax = f_q95, fill = sc), alpha = 0.2) + 
   facet_wrap(~stock, scale = "free_y") + 
   theme_bw() + ggtitle("Fishing mortality") +
   expand_limits(y = 0)
 ggsave(file.path("..", "plots","F_difference_lim.png"), height = 7, width = 12)
 
 
-
-
-ggplot(bio, aes(x = year, y = catch, group = sc)) +
+ggplot(bio, aes(x = year, y = catch_q50, group = sc)) +
 	geom_line(aes(colour = sc), size = 1.5) + 
+	geom_ribbon(aes(ymin = catch_q05, ymax = catch_q95, fill = sc), alpha = 0.2) + 
 	facet_wrap(~stock, scale = "free_y") + 
 	theme_bw() + expand_limits(y = 0) + 
 	ggtitle("Catch differences")
 ggsave(file.path("..", "plots","C_difference.png"), height = 7, width = 12)
 
-ggplot(bio, aes(x = year, y = ssb, group = sc)) +
+ggplot(bio, aes(x = year, y = ssb_q50, group = sc)) +
 	geom_line(aes(colour = sc), size = 1.5) + 
+	geom_ribbon(aes(ymin = ssb_q05, ymax = ssb_q95, fill = sc), alpha = 0.2) + 
 	facet_wrap(~stock, scale = "free_y") + 
 	theme_bw() + expand_limits(y = 0) + 
 	ggtitle("SSB differences")
 ggsave(file.path("..", "plots","SSB_difference.png"), height = 7, width = 12)
 
-ggplot(bio, aes(x = year, y = biomass, group = sc)) +
+ggplot(bio, aes(x = year, y = biomass_q50, group = sc)) +
 	geom_line(aes(colour = sc), size = 1.5) + 
+	geom_ribbon(aes(ymin = biomass_q05, ymax = biomass_q95, fill = sc), alpha = 0.2) + 
 	facet_wrap(~stock, scale = "free_y") + 
 	theme_bw() + expand_limits(y = 0) + 
 	ggtitle("biomass differences")

@@ -88,9 +88,9 @@ params <- array(data = NA, dim = c(3, dim(BD_nep16@biomass)[c(2,4)],1), dimnames
 		     iter = 1))
 
 BD_nep16@params <- params
-BD_nep16@params[1,1:47,1:4,1] <- max(BD_nep16@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
+BD_nep16@params[1,1:47,1:4,1] <- 71000   #  max(BD_nep16@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
 BD_nep16@params[2,1:47,1:4,1] <- 1  ## p  - assymetry
-BD_nep16@params[3,1:47,1:4,1] <- 0.1  ## r  - growth rate, porcupine so slower than rest
+BD_nep16@params[3,1:47,1:4,1] <- 0.25  ## r  - growth rate, porcupine so slower than rest
 
 al <- array(data = NA, dim = c(47,4,1))
 BD_nep16@alpha <- al
@@ -112,9 +112,9 @@ BD_nep17@catch   <- flt_land[["NEP17"]] + flt_disc[["NEP17"]]
 BD_nep17@uncertainty[] <- 1 
 
 BD_nep17@params <- params
-BD_nep17@params[1,1:47,1:4,1] <- max(BD_nep17@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
+BD_nep17@params[1,1:47,1:4,1] <- 16000 # max(BD_nep17@biomass, na.rm = T) * 1  ## k  - carrying capacity
 BD_nep17@params[2,1:47,1:4,1] <- 1  ## p  - assymetry
-BD_nep17@params[3,1:47,1:4,1] <- 0.2  ## r  - growth rate, porcupine so slower than rest
+BD_nep17@params[3,1:47,1:4,1] <- 0.6  ## r  - growth rate, porcupine so slower than rest
 BD_nep17@alpha <- al
 BD_nep17@alpha[] <- 1.2 ## how much above K can stock go
 BD_nep17@gB[] <- NA
@@ -132,9 +132,9 @@ BD_nep19@catch   <- flt_land[["NEP19"]] + flt_disc[["NEP19"]]
 BD_nep19@uncertainty[] <- 1 
 
 BD_nep19@params <- params
-BD_nep19@params[1,1:47,1:4,1] <- max(BD_nep19@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
+BD_nep19@params[1,1:47,1:4,1] <- 24000 # max(BD_nep19@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
 BD_nep19@params[2,1:47,1:4,1] <- 1  ## p  - assymetry
-BD_nep19@params[3,1:47,1:4,1] <- 0.2  ## r  - growth rate, porcupine so slower than rest
+BD_nep19@params[3,1:47,1:4,1] <- 0.6  ## r  - growth rate, porcupine so slower than rest
 
 BD_nep19@alpha <- al
 BD_nep19@alpha[] <- 1.2 ## how much above K can stock go
@@ -154,9 +154,9 @@ BD_nep2021@catch   <- flt_land[["NEP2021"]] + flt_disc[["NEP2021"]]
 BD_nep2021@uncertainty[] <- 1 
 
 BD_nep2021@params <- params
-BD_nep2021@params[1,1:47,1:4,1] <- max(BD_nep2021@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
+BD_nep2021@params[1,1:47,1:4,1] <- 118000 # max(BD_nep2021@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
 BD_nep2021@params[2,1:47,1:4,1] <- 1  ## p  - assymetry
-BD_nep2021@params[3,1:47,1:4,1] <- 0.3  ## r  - growth rate, porcupine so slower than rest
+BD_nep2021@params[3,1:47,1:4,1] <- 0.6  ## r  - growth rate, porcupine so slower than rest
 
 BD_nep2021@alpha <- al
 BD_nep2021@alpha[] <- 1.2 ## how much above K can stock go
@@ -176,9 +176,9 @@ BD_nep22@catch   <- flt_land[["NEP22"]] + flt_disc[["NEP22"]]
 BD_nep22@uncertainty[] <- 1
 
 BD_nep22@params <- params
-BD_nep22@params[1,1:36,1:4,1] <- max(BD_nep22@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
+BD_nep22@params[1,1:36,1:4,1] <- 29000 #max(BD_nep22@biomass, na.rm = T) * 1.2  ## k  - carrying capacity
 BD_nep22@params[2,1:36,1:4,1] <- 1  ## p  - assymetry
-BD_nep22@params[3,1:36,1:4,1] <- 0.2  ## r  - growth rate, porcupine so slower than rest
+BD_nep22@params[3,1:36,1:4,1] <- 0.6  ## r  - growth rate, porcupine so slower than rest
 
 BD_nep22@alpha <- al
 BD_nep22@alpha[] <- 1.2 ## how much above K can stock go

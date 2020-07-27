@@ -594,6 +594,127 @@ legend(0.1,0.8, lty = 1, legend = LETTERS[1:floor(n_met/2)], col = 1:floor(n_met
 legend(1.1,0.8, lty = 1, legend = LETTERS[ceiling(n_met/2):n_met], col = ceiling(n_met/2):n_met, cex = 3.7, bty = "n", lwd = 2)
 dev.off()
 
+####################
+## Model selection
+###################
+
+# To fit to same data we need to drop first year where previous effort
+# share is not available
+
+library(MuMIn)
+library(linear.tools)
+library(doParallel)
+
+sim_data2 <- sim_data[!is.na(sim_data$state.tminus1),]
+
+## Define a global model
+## all covariates on the lhs and rhs
+covars <- c("state.tminus1", "season", "COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG")
+
+## Use lm as dredge doesn't work with mlogit, eval = FALSE
+glob.lm <- lm(paste("state ~", paste(covars, collapse = " + ")), data = sim_data2, na.action = na.fail)
+
+all.models <- dredge(glob.lm, eval = FALSE)
+
+rm(glob.lm) 
+
+## Define BIC function
+
+BIC <- function(k,n,ll) {
+# k number params
+# n number of data points
+# L the maxLik
+(k*log(n)) - (2 * ll)
+}
+
+AICc <- function(AICv, k, n) {
+	AICv + ((2*k)*(k+1))/(n - k - 1)
+}
+
+####################################
+## In parallel
+####################################
+
+mod <- multinom(all.models[[8192]], data = sim_data2)
+
+
+k <- length(coefficients(mod))
+n <- nrow(sim_data2)
+ll <- -mod$value
+BIC(k,n,ll)
+
+mod$AIC
+
+rm(mod)
+gc()
+
+registerDoParallel(10)
+
+models_fits <- foreach(i = 2:length(all.models)) %dopar% {
+
+print(i)
+mod <- multinom(all.models[[i]], data = sim_data2, maxit = 1e6)
+return(c(npar = length(coefficients(mod)),
+	 AIC = mod$AIC,
+	 AICc = AICc(AICv = mod$AIC, k = length(coefficients(mod)), n = nrow(sim_data2)),
+	 BIC = BIC(k = length(coefficients(mod)), 
+	 n = nrow(sim_data2), 
+	 ll = -mod$value)))
+}
+
+stopImplicitCluster()
+
+
+Markov_selection <- dplyr::bind_rows(models_fits)
+
+Markov_selection$model <- unlist(lapply(all.models, function(x) paste_formula(x)))[2:length(all.models)]
+
+Markov_selection <- Markov_selection %>% select(model, npar, AIC, AICc, BIC)
+
+save(Markov_selection, models_fits, file = "Markov_model_selection.RData")
+
+## By AIC
+
+Markov_selection[order(Markov_selection$AIC),]
+
+Markov_selection[order(Markov_selection$BIC, Markov_selection$AIC),] %>% as.data.frame() %>%
+       head(3500)	
+
+ranked_mods <- Markov_selection[order(Markov_selection$AIC, Markov_selection$BIC),] %>% as.data.frame() %>%
+ select(model)
+
+ranked_mods$effshare <- grepl("effshare", ranked_mods$model) ## all the models including effshare
+
+head(ranked_mods[ranked_mods$effshare == FALSE,])
+
+best.mod <-## mlogit(mFormula(choice ~ MON + NEP2021 + NMEG + WHG + 1 | effshare + season), data = LD, print.level = 2)
+
+coef(best.mod)
+
+best.mod2 <-## mlogit(mFormula(choice ~ COD + MON + NEP19 + NEP22 + NHKE + WHG + 1 | season), data = LD, print.level = 2)
+
+coef(best.mod2)
+
+######################
+## in serial..
+#####################
+
+#model_fits <- matrix(NA, ncol =3, nrow = length(all.models))
+#colnames(model_fits) <- c("model", "AIC", "BIC")
+#
+#for(i in 2:length(all.models)) {
+#print(i)
+#mod <- mlogit(all.models[[i]], data = LD)
+#
+#model_fits[i,"model"] <- i
+#model_fits[i,"AIC"] <- AIC(mod) 
+#model_fits[i,"BIC"] <- BIC(k = length(mod$coefficients), 
+#n = nrow(LD), 
+#L = -mod$logLik[[1]])
+#}
+
+
+
 
 Markov_fit <- m8
 save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
