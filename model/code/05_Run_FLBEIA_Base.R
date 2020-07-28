@@ -12,7 +12,7 @@ lapply(list.files(file.path("..", "model_inputs"), full.names = TRUE), load, .Gl
 ## this is done by setting effshare to 0, reallocating to other metier
 ## and setting catch.q in metier I to zero
 
-close.yr <- ac(2021:2022)
+close.yr <- ac(2021:main.ctrl[["sim.years"]][["final"]])
 close.met <- "F"
 
 ## Effort share in metier I, and reassign to 0

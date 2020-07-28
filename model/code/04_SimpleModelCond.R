@@ -22,8 +22,8 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5 
-ni <- 50
+n.proj.yrs <- 15 
+ni <- 100
 ns <- 4
 
 data.yrs <- c(range(biols)[["minyear"]],
@@ -767,7 +767,15 @@ fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, fleets.ctrl, 2015:2017, 
 
 ## Condition uncertainty in catch.q - IE_Otter only
 ## Add some lognormal error around the mean value
+## But what's the basis of this?  Do we just want to sample from the past 3
+## years or add random noise (variability)??
 
+## Likely the relationships between species are mixed, so sample from the most
+## recent years?
+
+## Do we also want to include combinations of the years?
+
+yr.ref <- sample(2015:2017, ni, replace = TRUE)
 
 i  <- "IE_Otter"
   nms.metiers <- names(fleets2[[i]]@metiers)
@@ -776,7 +784,10 @@ i  <- "IE_Otter"
     nms.stks <- names(fleets2[[i]]@metiers[[j]]@catches)
     
     for( k in nms.stks){
-      fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,ac(proj.yrs) ]     <- rnorm(ni,mean=yearMeans(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,fl.proj.avg.yrs,,,,1]), sd = apply(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,fl.proj.avg.yrs],c(1,4),sd,na.rm = T))
+
+for(it in 1:ni) {
+fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,ac(proj.yrs),,,,it]  <- fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[,ac(yr.ref[it]),,,,1]
+	   }
 
       fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)][is.na(fleets2[[i]]@metiers[[j]]@catches[[k]]@catch.q[, ac(proj.yrs)])]<-0
       

@@ -667,7 +667,7 @@ stopImplicitCluster()
 
 Markov_selection <- dplyr::bind_rows(models_fits)
 
-Markov_selection$model <- unlist(lapply(all.models, function(x) paste_formula(x)))[2:length(all.models)]
+Markov_selection$model <- unlist(lapply(all.models, function(x) paste_formula(formula(x))))[2:length(all.models)]
 
 Markov_selection <- Markov_selection %>% select(model, npar, AIC, AICc, BIC)
 
@@ -678,7 +678,7 @@ save(Markov_selection, models_fits, file = "Markov_model_selection.RData")
 Markov_selection[order(Markov_selection$AIC),]
 
 Markov_selection[order(Markov_selection$BIC, Markov_selection$AIC),] %>% as.data.frame() %>%
-       head(3500)	
+       head(20)	
 
 ranked_mods <- Markov_selection[order(Markov_selection$AIC, Markov_selection$BIC),] %>% as.data.frame() %>%
  select(model)
@@ -687,13 +687,24 @@ ranked_mods$effshare <- grepl("effshare", ranked_mods$model) ## all the models i
 
 head(ranked_mods[ranked_mods$effshare == FALSE,])
 
-best.mod <-## mlogit(mFormula(choice ~ MON + NEP2021 + NMEG + WHG + 1 | effshare + season), data = LD, print.level = 2)
+best.mod <- multinom(state ~ state.tminus1 + season + COD + HAD + MON + NEP16 + NEP17 + NEP19 + 
+		     NEP2021 + NEP22 + NHKE + NMEG + WHG, data = sim_data2, maxit = 1e6)
 
 coef(best.mod)
 
-best.mod2 <-## mlogit(mFormula(choice ~ COD + MON + NEP19 + NEP22 + NHKE + WHG + 1 | season), data = LD, print.level = 2)
+BIC(k = length(coefficients(best.mod)), 
+	 n = nrow(sim_data2), 
+	 ll = -best.mod$value)
+
+best.mod2 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + NEP16 + NEP17 + NEP19 + 
+		     NEP2021 + NEP22 + NHKE + NMEG + WHG, data = sim_data2, maxit = 1e6)
+
 
 coef(best.mod2)
+
+BIC(k = length(coefficients(best.mod2)), 
+	 n = nrow(sim_data2), 
+	 ll = -best.mod2$value)
 
 ######################
 ## in serial..
@@ -716,7 +727,7 @@ coef(best.mod2)
 
 
 
-Markov_fit <- m8
+Markov_fit <- best.mod 
 save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 

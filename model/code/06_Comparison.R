@@ -60,15 +60,15 @@ df2 <- rbind(cbind(scenario = "base", do.call(rbind, lapply(base$fleets[["IE_Ott
 	     )
 
 df2  <- df2 %>% group_by(scenario, metier, year, season) %>%
-	summarise(val = mean(data, na.rm = T), lo = quantile(data, na.rm = T),
-		  high = quantile(data, na.rm = T))
+	summarise(val = mean(data, na.rm = T), lo = quantile(data, 0.05, na.rm = T),
+		  high = quantile(data, 0.95, na.rm = T))
 
 
 df2 <- filter(df2, year > 2014)
 
 ggplot(df2, aes(x = paste(year, season), y = val, group = scenario)) +
 	geom_line(aes(colour = scenario), size = 1.5) +
-       geom_ribbon(aes(ymin = lo, ymax = high, fill = scenario), alpha = 0.2) + 	
+       geom_ribbon(aes(ymin = lo, ymax = high, fill = scenario), alpha = 0.5) + 	
 	facet_grid(scenario~metier) + 	theme_bw() +
 	theme(axis.text.x = element_text(angle = -90),
 	      legend.position = "top") 
@@ -124,8 +124,6 @@ cbind(sc = "markov", bioSumQ(as.data.frame(bioSum(markov, long = FALSE, years = 
 cbind(sc = "gravity_trad", bioSumQ(as.data.frame(bioSum(gravity_trad, long = FALSE, years = ac(2016:maxyr+2)))))
 )
 
-
-
 ggplot(bio, aes(x = year, y = f_q50, group = sc)) +
 	geom_line(aes(colour = sc), size = 1.5) +
        geom_ribbon(aes(ymin = f_q05, ymax = f_q95, fill = sc), alpha = 0.2) + 	
@@ -167,6 +165,15 @@ ggplot(bio, aes(x = year, y = biomass_q50, group = sc)) +
 	theme_bw() + expand_limits(y = 0) + 
 	ggtitle("biomass differences")
 ggsave(file.path("..", "plots","biomass_difference.png"), height = 7, width = 12)
+
+ggplot(bio, aes(x = year, y = rec_q50, group = sc)) +
+	geom_line(aes(colour = sc), size = 1.5) + 
+	geom_ribbon(aes(ymin = rec_q05, ymax = rec_q95, fill = sc), alpha = 0.2) + 
+	facet_wrap(~stock, scale = "free_y") + 
+	theme_bw() + expand_limits(y = 0) + 
+	ggtitle("Recruitment differences")
+ggsave(file.path("..", "plots","recruitment_difference.png"), height = 7, width = 12)
+
 
 
 advice <- rbind(
