@@ -1,6 +1,7 @@
 ################################################
 ## A basic Celtic Sea model
-## To check everything works
+## To simulate the effect of the  
+## location choice models
 ##
 ################################################
 
@@ -22,8 +23,8 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 15 
-ni <- 100
+n.proj.yrs <- 5 
+ni <- 1
 ns <- 4
 
 data.yrs <- c(range(biols)[["minyear"]],
@@ -697,9 +698,9 @@ save(advice,file=file.path("..", "model_inputs",'advice.RData'))
 
 HCR.models       <- c(COD = "IcesHCR", HAD = "IcesHCR", MON = 'IcesHCR',
 		      NHKE = "IcesHCR", NMEG = "IcesHCR", 
-		      NEP16 = "fixedAdvice", NEP17 = "fixedAdvice",
-		      NEP19 = "fixedAdvice", NEP2021 = "fixedAdvice",
-		      NEP22 = "fixedAdvice",
+		      NEP16 = "IcesHCR", NEP17 = "IcesHCR",
+		      NEP19 = "IcesHCR", NEP2021 = "IcesHCR",
+		      NEP22 = "IcesHCR",
                       WHG = "IcesHCR"
                       ) 
 HCR.models <- HCR.models[sort(names(HCR.models))]
@@ -711,10 +712,29 @@ ref.pts.nhke       <- matrix(c(0.28, 32000, 45000), 3,ni, dimnames = list(c('Fms
 ref.pts.nmeg       <- matrix(c(0.191, 37100, 41800), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
 ref.pts.whg        <- matrix(c(0.52, 25000, 35000), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
 
+msy_trig           <- 0.7 * BDs[["NEP16"]]@params[1] ## approximated at 70% K 
+ref.pts.nep16      <- matrix(c(0.062, 0.4 * msy_trig, msy_trig), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
+
+msy_trig           <- mean(biols[["NEP17"]]@wt, na.rm = T) * 540 ## from advice sheet
+ref.pts.nep17      <- matrix(c(0.085, 0.4 * msy_trig,msy_trig), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
+
+msy_trig           <- mean(biols[["NEP19"]]@wt, na.rm = T) * 430 ## from advice sheet
+ref.pts.nep19      <- matrix(c(0.093,0.4 * msy_trig ,msy_trig), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
+
+msy_trig           <- 0.7 * BDs[["NEP2021"]]@params[1] ## approximated at 70% K 
+ref.pts.nep2021    <- matrix(c(0.06, 0.4 * msy_trig, msy_trig), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
+
+msy_trig           <- mean(biols[["NEP22"]]@wt, na.rm = T) * 990 ## from advice sheet
+ref.pts.nep22      <- matrix(c(0.128, 0.4 * msy_trig, msy_trig), 3,ni, dimnames = list(c('Fmsy', 'Blim', 'Btrigger'), 1:ni))
+
+
 advice.ctrl      <- create.advice.ctrl(stksnames = stks, HCR.models =  HCR.models, 
                                        ref.pts.COD = ref.pts.cod, ref.pts.HAD = ref.pts.had,
 				       ref.pts.MON = ref.pts.mon, ref.pts.NHKE = ref.pts.nhke,
 				       ref.pts.NMEG = ref.pts.nmeg,ref.pts.WHG = ref.pts.whg,
+				       ref.pts.NEP16 = ref.pts.nep16, ref.pts.NEP17 = ref.pts.nep17,
+				       ref.pts.NEP19 = ref.pts.nep19, ref.pts.NEP2021 = ref.pts.nep2021,
+				       ref.pts.NEP22 = ref.pts.nep22,
 				       first.yr = first.yr, last.yr = last.yr)
 
 # default option : if you want to change do it after you can access it 
@@ -745,6 +765,12 @@ advice.ctrl[['WHG']][['sr']]            <- list()
 advice.ctrl[['WHG']][['sr']][['model']] <- 'geomean'
 advice.ctrl[['WHG']][['sr']][['years']] <- c(y.rm = 2, num.years = 10)
 
+advice.ctrl[["NEP16"]][["growth.years"]] <- c(y.rm =1, num.years = 5)
+advice.ctrl[["NEP17"]][["growth.years"]] <- c(y.rm =1, num.years = 5)
+advice.ctrl[["NEP19"]][["growth.years"]] <- c(y.rm =1, num.years = 5)
+advice.ctrl[["NEP2021"]][["growth.years"]] <- c(y.rm =1, num.years = 5)
+advice.ctrl[["NEP22"]][["growth.years"]] <- c(y.rm =1, num.years = 5)
+
 
 # advice based on catch, not landings
 advice.ctrl$COD$AdvCatch[]      <- TRUE
@@ -763,7 +789,6 @@ advice.ctrl <- advice.ctrl[sort(names(advice.ctrl))]
 save(advice.ctrl,file=file.path("..", "model_inputs", 'advice_ctrl.RData'))
 
 fleets2 <- calculate.q.sel.flrObjs(biols, fleets, NULL, fleets.ctrl, 2015:2017, proj.yrs) 
-
 
 ## Condition uncertainty in catch.q - IE_Otter only
 ## Add some lognormal error around the mean value

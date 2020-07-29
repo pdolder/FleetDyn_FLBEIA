@@ -174,6 +174,34 @@ ggplot(bio, aes(x = year, y = rec_q50, group = sc)) +
 	ggtitle("Recruitment differences")
 ggsave(file.path("..", "plots","recruitment_difference.png"), height = 7, width = 12)
 
+## Catch by IE_Otter fleet....
+
+scenarios <- c("base","gravity", "gravity_trad", "rum", "markov")
+
+ie_otter <- lapply(scenarios, function(s) {
+ sc    <- lapply(get(s)[["fleets"]][["IE_Otter"]]@metiers, function(x) {
+       catch <- lapply(x@catches, function(x2) cbind(stock = x2@name,as.data.frame(x2@landings + x2@discards)))
+       catch_all <- cbind(metier = x@name, bind_rows(catch))
+       return(catch_all)
+       })
+ return(cbind(scenario = s, bind_rows(sc)))
+       })
+
+ie_otter <- bind_rows(ie_otter)
+
+ie_otter_summary <- ie_otter %>% group_by(scenario, stock, year, iter) %>% 
+	summarise(data = sum(data, na.rm = T)) %>%
+	group_by(scenario, stock, year) %>%
+	summarise(q05 = quantile(data, 0.05, na.rm = T),
+		  q50 = quantile(data, 0.5, na.rm = T),
+		  q95 = quantile(data, 0.95, na.rm = T))
+
+ggplot(filter(ie_otter_summary, year > 2010), aes(x = year, y = q50)) +
+       geom_line(aes(colour = scenario)) + facet_wrap(~stock) +
+       geom_ribbon(aes(ymin = q05, ymax = q95, fill = scenario), alpha = 0.3) + 
+theme_bw()       
+ggsave(file.path("..", "plots", "IE_Otter_catches.png"))
+
 
 
 advice <- rbind(

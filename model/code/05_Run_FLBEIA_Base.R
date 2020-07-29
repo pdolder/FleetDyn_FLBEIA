@@ -34,8 +34,6 @@ for(i in catchNames(fleets[["IE_Otter"]]@metiers[[close.met]])) {
 fleets[["IE_Otter"]]@metiers[[close.met]]@catches[[i]]@catch.q[,close.yr,,1:4] <- 0
 }
 
-
-
 SC1 <- FLBEIA(biols = biols, 
 	      SRs = SRs, 
 	      BDs = BDs, 

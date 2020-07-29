@@ -727,7 +727,7 @@ BIC(k = length(coefficients(best.mod2)),
 
 
 
-Markov_fit <- best.mod 
+Markov_fit <- best.mod2 
 save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 

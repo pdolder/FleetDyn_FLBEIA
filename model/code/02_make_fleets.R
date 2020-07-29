@@ -575,6 +575,9 @@ res	<- window(stocks[[s]]@landings, first.yr, last.yr) - flt
 res	<- stocks[[s]]@landings[,ac(first.yr:last.yr)] - flt
 }
 
+## Check if the landings are <0 
+res[res<0] <- 0
+
 land[,ac(first.yr:last.yr),,] <- res / 4
 land <- window(land, first.yr, last.yr)
 
@@ -588,6 +591,8 @@ res	<- window(stocks[[s]]@landings.n, first.yr, last.yr) - flt
 } else {
 res	<- stocks[[s]]@landings.n[,ac(first.yr:last.yr)] - flt
 }
+
+res[res<0] <- 0
 
 ## For first age, only split among seasons 2 - 4
 land_age[,ac(first.yr:last.yr),,] <- res / 4
@@ -619,6 +624,9 @@ res	<- window(stocks[[s]]@discards, first.yr, last.yr) - flt
 } else {
 res	<- stocks[[s]]@discards[,ac(first.yr:last.yr)] - flt
 }
+
+res[res<0] <- 0
+
 disc[,ac(first.yr:last.yr),,] <- res / 4 
 disc <- window(disc, first.yr, last.yr)
 
@@ -631,6 +639,9 @@ res	<- window(stocks[[s]]@discards.n,first.yr,last.yr) - flt
 } else {
 res	<- stocks[[s]]@discards.n[,ac(first.yr:last.yr)] - flt
 }
+
+res[res<0] <- 0
+
 disc_age[,ac(first.yr:last.yr),,] <- res / 4
 
 if(!grepl("NEP", S)) {
@@ -674,6 +685,7 @@ be <- window(be, first.yr, last.yr)
 ## landings.sel
 land.sel <- land_age / (land_age + disc_age)
 land.sel <- window(land.sel, first.yr, last.yr)
+land.sel[is.na(land.sel)] <- 0 ## If NA, send everything to discards
 
 ## discards.sel
 disc.sel <- 1 - land.sel 
@@ -729,8 +741,6 @@ assign(paste0(S, "_fleet"),
        )
 
 }
-
-
 
 ## set ranges
 
