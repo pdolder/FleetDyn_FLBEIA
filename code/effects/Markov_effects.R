@@ -50,7 +50,7 @@ newdata[,3:ncol(newdata)] <- mean_CR[,2:ncol(mean_CR)]
 
 
 cr_mult <- lapply(colnames(newdata)[3:13], function(s) {  
-res <- sapply(seq(0,20,0.1), function(x) {
+res <- sapply(seq(0,5,0.01), function(x) {
 
 		      newdata2 <- newdata
 		      newdata2[,s] <- newdata2[,s] * x
@@ -60,7 +60,7 @@ FLBEIA:::predict_Markov(model, newdata2,
 			season = 1, year = 45, close = NA, iter = 1)
 })
 
-return(cbind(data.frame(stock = s, mult = seq(0, 20, 0.1)), as.data.frame(t(res))))
+return(cbind(data.frame(stock = s, mult = seq(0, 5, 0.01)), as.data.frame(t(res))))
 
 })
 
@@ -72,7 +72,7 @@ cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 colnames(cr_eff)[3] <- "area"
 
 theme_set(theme_bw())
-ggplot(cr_eff, aes(x = mult, y = value)) +
+ggplot(filter(cr_eff, stock %in% c("COD", "WHG", "NEP22", "NEP19", "NHKE", "MON")), aes(x = mult, y = value)) +
 	geom_line(aes(colour = area)) +
 	facet_wrap(~stock) +
 	ggtitle("Catch rate multiplier on choice probabilities") +
@@ -82,7 +82,6 @@ ggsave("Markov_Metier_Catch_Rate_Multiplier.png")
 
 
 ## What about the seasonal effect??
-
 
 seas <- lapply(1:4, function(s) {  
 

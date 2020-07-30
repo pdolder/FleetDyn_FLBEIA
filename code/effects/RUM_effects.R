@@ -51,7 +51,7 @@ predict.df[,s] <- mean_CR[,s]
 
 
 cr_mult <- lapply(colnames(predict.df)[4:9], function(s) {  
-res <- sapply(seq(0,20,0.1), function(x) {
+res <- sapply(seq(0,5,0.01), function(x) {
 
 		      predict.df2 <- predict.df 
 		      predict.df2[,s] <- predict.df2[,s] * x
@@ -60,7 +60,7 @@ FLBEIA:::predict_RUM(model, predict.df2,
 			season = 1, close = NA)
 })
 
-return(cbind(data.frame(stock = s, mult = seq(0, 20, 0.1)), as.data.frame(t(res))))
+return(cbind(data.frame(stock = s, mult = seq(0, 5, 0.01)), as.data.frame(t(res))))
 
 })
 
@@ -72,13 +72,14 @@ cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 
 colnames(cr_eff)[3] <- "area"
 
+exp(coef(RUM_model_fit))
 
 theme_set(theme_bw())
 ggplot(cr_eff, aes(x = mult, y = value)) +
 	geom_line(aes(colour = area)) +
 	facet_wrap(~stock) +
 	ggtitle("Catch rate multiplier on choice probabilities") +
-	ylab("Choice probability / share") + xlab("Catch Rate multiplier")# + 
+	ylab("Choice probability / share") + xlab("Catch Rate multiplier") #+ 
 #	scale_x_log10()
 ggsave("RUM_Metier_Catch_Rate_Multiplier.png")
 

@@ -96,7 +96,7 @@ plot(seq_len(nrow(metiers)), metiers$state, type = "l")
 
 
 ### Let's do this by season
-n_trans <- 1e4
+n_trans <- 1e3
 
 sim_data <- NULL
 
@@ -607,8 +607,12 @@ library(doParallel)
 
 sim_data2 <- sim_data[!is.na(sim_data$state.tminus1),]
 
+###############################
+## Load already generated data
 load(file.path("..", "tests", "Markov_model.RData"))
 rm(Markov_fit)
+###############################
+
 ## Define a global model
 ## all covariates on the lhs and rhs
 covars <- c("state.tminus1", "season", "COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG")
@@ -644,7 +648,7 @@ k <- length(coefficients(mod))
 n <- nrow(sim_data2)
 ll <- -mod$value
 BIC(k,n,ll)
-
+2
 mod$AIC
 
 rm(mod)
@@ -699,7 +703,7 @@ BIC(k = length(coefficients(best.mod)),
 	 ll = -best.mod$value)
 
 best.mod2 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + NEP16 + NEP17 + NEP19 + 
-		     NEP2021 + NEP22 + NHKE + NMEG + WHG, data = sim_data2, maxit = 1e6)
+		     NEP2021 + NEP22 + NHKE + NMEG + WHG, data = sim_data, maxit = 1e6)
 
 coef(best.mod2)
 
@@ -710,7 +714,7 @@ BIC(k = length(coefficients(best.mod2)),
 tmp <- expand.grid(covars[1], covars[2:length(covars)])
 
 best.mod3 <- multinom(formula(paste("state ~", paste(apply(tmp, 1, paste, collapse = ":"), collapse = " + "), sep = " ")), 
-		      data = sim_data2, maxit = 1e6)
+		      data = sim_data, maxit = 1e6)
 
 BIC(best.mod3)
 
@@ -719,14 +723,27 @@ tmp <- expand.grid(covars[1], covars[c(2,3,5,7,10,11,12)])
 best.mod4 <- multinom(formula(paste("state ~", paste(apply(tmp, 1, paste, collapse = ":"), collapse = " + "), sep = " ")), 
 		      data = sim_data2, maxit = 1e6)
 
-BIC(best.mod4)
+best.mod4b <- multinom(formula(state ~ state.tminus1:season + COD + WHG + NEP22 + NEP19 + NHKE + MON), 
+		      data = sim_data2, maxit = 1e6)
+
+BIC(best.mod4b)
+
+tmp <- expand.grid(covars[1], covars[c(2,3,6,7,11,12)])
+
+best.mod5 <- multinom(formula(paste("state ~", paste(apply(tmp, 1, paste, collapse = ":"), collapse = " + "), sep = " ")), 
+		      data = sim_data2, maxit = 1e6)
+
+BIC(best.mod5)
+
+simp.mod <- multinom(state ~ state.tminus1:season, data = sim_data2, maxit = 1e6) 
+
+BIC(simp.mod)
 
 ## best.mod3 wins
-
-
+# But still implausible parameter estimates...
 
 ## fitted against data
-sim_data2$fitted <- predict(best.mod3)
+sim_data2$fitted <- predict(best.mod4b)
 
 prop_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$state, sim_data2$season), margin = c(1,3)))
 fitt_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$fitted, sim_data2$season), margin = c(1,3)))
@@ -777,7 +794,7 @@ dev.off()
 #}
 
 
-Markov_fit <- best.mod3 
+Markov_fit <- best.mod4b 
 save(sim_data2, Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 
