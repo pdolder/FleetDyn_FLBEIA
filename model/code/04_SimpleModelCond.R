@@ -23,8 +23,8 @@ ls()
 ## main control
 #####################
 
-n.proj.yrs <- 5 
-ni <- 1
+n.proj.yrs <- 15 
+ni <- 100
 ns <- 4
 
 data.yrs <- c(range(biols)[["minyear"]],

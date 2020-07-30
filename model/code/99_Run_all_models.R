@@ -1,6 +1,7 @@
 
-
 library(doParallel)
+
+st.time <- Sys.time()
 
 registerDoParallel(cores = 6)
 
@@ -20,5 +21,8 @@ foreach(i = models) %dopar% {
 }
 
 
-source('06_Comparison.R')
+end.time <- Sys.time()
+
+end.time - st.time
+
 
