@@ -11,193 +11,100 @@ library(tidyverse)
 load(file.path("..", "..","tests", "RUM_model.RData"))
 load("RUM_data.RData")
 
+load(file.path("..", "..", "model", "fleets", "fleets.RData"))
+
 model <- RUM_model_fit
 
-
-n_met <- 5
+n_met <- 7
 ##########################
 # calculating the probs
 ########################
 
-res_stock <- lapply(colnames(res)[6:16], function(x) {
+# The dataframe to predict over
+predict.df <- FLBEIA:::make_RUM_predict_df(model, fleets[["IE_Otter"]], 1)
 
-print(x)
+## catch rates per stock and metier
+mean_CR <- lapply(fleets[["IE_Otter"]]@metiers@names, function(m) {
 
-cr_spp <- res %>% group_by(metier) %>% summarise(cr  = mean(get(x)) ) %>% as.data.frame()
-
-## Increase in %s
-
-ratios <- seq(0, 20, 0.1)
-
-## 0% to 100% higher CPUE 
-cr <- lapply(ratios, function(y) {
-       cr <- cr_spp$cr  * y
-       return(cr)
+stks<-   catchNames(fleets[["IE_Otter"]]@metiers[[m]])
+res3 <- sapply(stks, function(s) { 
+	   res<- fleets[["IE_Otter"]]@metiers[[m]]@catches[[s]]@landings/
+		       (fleets[["IE_Otter"]]@effort *
+       		       fleets[["IE_Otter"]]@metiers[[m]]@effshare)
+	   res2 <- mean(res[,ac(2015:2017)])
+	   return(res2)
 })
 
-cr <- do.call(rbind, cr) ## matrix
+return(data.frame(area = m, stock = names(res3), cr = res3))
+	       
+})
 
-if(x != "COD") {COD = 1}
-if(x != "HAD") {HAD = 1}
-if(x != "MON") {MON = 1}
-if(x != "NEP16") {NEP16 = 1}
-if(x != "NEP17") {NEP17 = 1}
-if(x != "NEP19") {NEP19 = 1}
-if(x != "NEP2021") {NEP2021 = 1}
-if(x != "NEP22") {NEP22 = 1}
-if(x != "NHKE") {NHKE = 1}
-if(x != "NMEG") {NMEG = 1}
-if(x != "WHG") {WHG = 1}
+mean_CR <- bind_rows(mean_CR)
 
-assign(x, as.vector(t(cr)))
+mean_CR <- reshape2::dcast(mean_CR, area ~ stock, drop = FALSE, fill = 0, value.var = "cr")
 
-res3<- data.frame(season = rep(as.factor(1:4),each = nrow(cr)*n_met), metier = rep(LETTERS[1:n_met], times = nrow(cr)*4), choice = "yes", 
-		   "COD" = COD, "HAD" = HAD, "MON" = MON, 
-		   "NEP16" = NEP16, "NEP17" = NEP17, "NEP19" = NEP19, "NEP2021" = NEP2021, "NEP22" = NEP22, 
-		   "NHKE" = NHKE, "NMEG" = NMEG,
-		   "WHG" = WHG, effshare = 0)
+## Update the data with the mean CR
 
-res3$index <- seq_len(nrow(res3))
-## Use mFormula to define model form
-LD3 <- mlogit.data(res3, choice = "choice", shape = "long",
-		   alt.var = "metier", chid.var = "index")
+for(s in c("COD", "MON", "NEP19", "NEP22", "NHKE", "WHG")) {
+predict.df[,s] <- mean_CR[,s]
+}
 
 
-## For each season
+cr_mult <- lapply(colnames(predict.df)[4:9], function(s) {  
+res <- sapply(seq(0,20,0.1), function(x) {
 
-seasons_out <- lapply(1:4, function(season) {
+		      predict.df2 <- predict.df 
+		      predict.df2[,s] <- predict.df2[,s] * x
 
-print(season)
-mod.mat <- model.matrix(model$formula, data = LD3)
-beta <- as.matrix(coef(model))
+FLBEIA:::predict_RUM(model, predict.df2, 
+			season = 1, close = NA)
+})
 
-
-## linear predictor long
-seas <- 1:max(as.numeric(as.character(model.frame(model)$season)),na.rm=T)
-toRemove <- paste0("season", seas[!seas %in% season])
-
-# remove from mod.mat
-mod.mat <- mod.mat[,!colnames(mod.mat) %in% grep(paste(toRemove, collapse = "|"), colnames(mod.mat), value = T)]
-# remove from beta
-beta <- beta[!rownames(beta) %in% grep(paste(toRemove, collapse = "|"), rownames(beta), value = T),]
-
-eta_long <- mod.mat %*% beta
-
-## linear predictor wide
-eta_wide <- matrix(eta_long, ncol = n_met, byrow = TRUE)
-names(eta_wide) <- LETTERS[1:n_met]
-
-## convert to a probability
-own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
-
-head(own_p_hat)
-
-own_p_hat <- own_p_hat[1:length(ratios),]  ## is repeated 4 times
-
-## So this would be the probabilities for each season
-colnames(own_p_hat) <- LETTERS[1:n_met]
-rownames(own_p_hat) <- ratios
-
-own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
-own_p_hat$percIncrease = ratios
-
-own_p_hat$stock <- x
-own_p_hat$season <- season
-
-return(own_p_hat)
-
-		   })
-
-seasons_out2 <- bind_rows(seasons_out)
-
-return(seasons_out2)
-
+return(cbind(data.frame(stock = s, mult = seq(0, 20, 0.1)), as.data.frame(t(res))))
 
 })
 
-res_all <- bind_rows(res_stock)
 
-## Note, does not interact with season
-ggplot(filter(res_all,season==1), aes(x = percIncrease, y = prob, group = stock)) +
-geom_line(aes(colour = stock, group = stock)) +
-facet_wrap(~metier, scale = "free_y") + theme_bw() +
-ggtitle(paste0("Catch rate multiplier effect on choice probabilities")) +
-xlab("Catch Rate multiplier") +
-ylab("Choice probability / share")
-ggsave(paste0("RUM_Stock_Catch_Rate_Multiplier.png"))
-#
+cr_effect <- bind_rows(cr_mult)
+colnames(cr_effect)[3:9] <- LETTERS[1:7]
 
-## Note, does not interact with season
-ggplot(filter(res_all,season==1), aes(x = percIncrease, y = prob, group = metier)) +
-geom_line(aes(colour = metier, group = metier)) +
-facet_wrap(~stock, scale = "free_y") + theme_bw() +
-ggtitle(paste0("Catch rate multiplier effect on choice probabilities")) +
-xlab("Catch Rate multiplier") +
-ylab("Choice probability / share")
-ggsave(paste0("RUM_Metier_Catch_Rate_Multiplier.png"))
-#
+cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
+
+colnames(cr_eff)[3] <- "area"
 
 
+theme_set(theme_bw())
+ggplot(cr_eff, aes(x = mult, y = value)) +
+	geom_line(aes(colour = area)) +
+	facet_wrap(~stock) +
+	ggtitle("Catch rate multiplier on choice probabilities") +
+	ylab("Choice probability / share") + xlab("Catch Rate multiplier")# + 
+#	scale_x_log10()
+ggsave("RUM_Metier_Catch_Rate_Multiplier.png")
 
 
+## What about the seasonal effect??
+
+seas <- lapply(1:4, function(s) {  
+		       
+res <- FLBEIA:::predict_RUM(model, predict.df, 
+			season = s, close = NA)
+
+return(res)
+
+})
 
 
+seas <- do.call(rbind, seas)
 
-#######################
-# Seasonal effect
-######################
+colnames(seas) <- LETTERS[1:7]
 
-res2 <- res %>% filter(choice == "yes") %>%
-	       group_by(season, metier, choice) %>% 
-	       summarise(COD=mean(COD),
-			 HAD = mean(HAD),
-			 MON = mean(MON),
-			 NEP16 = mean(NEP16),
-			 NEP17 = mean(NEP17),
-			 NEP19 = mean(NEP19),
-			 NEP2021 = mean(NEP2021),
-			 NEP22 = mean(NEP22),
-			 NHKE = mean(NHKE),
-			 NMEG = mean(NMEG),
-			 WHG = mean(WHG)) %>%
-	       mutate(effshare = 0) %>%
-	       as.data.frame()
+seas <- cbind(season = 1:4, seas)
 
+seas <- reshape2::melt(as.data.frame(seas), id = c("season"))
 
-res2$index <- seq_len(nrow(res2))
-## Use mFormula to define model form
-LD4 <- mlogit.data(res2, choice = "choice", shape = "long",
-		   alt.var = "metier", chid.var = "index")
+colnames(seas) <- c("season", "metier", "proportion")
 
-## For each season
-mod.mat <- model.matrix(model$formula, data = LD4)
-beta <- as.matrix(coef(model))
-
-## linear predictor long
-eta_long <- mod.mat %*% beta
-
-## linear predictor wide
-eta_wide <- matrix(eta_long, ncol = n_met, byrow = TRUE)
-names(eta_wide) <- toupper(letters[1:n_met])
-
-## convert to a probability
-own_p_hat <- exp(eta_wide) / rowSums(exp(eta_wide))
-
-head(own_p_hat)
-
-## So this would be the probabilities for each season
-colnames(own_p_hat) <- LETTERS[1:n_met]
-rownames(own_p_hat) <- paste0("season", 1:4) 
-
-own_p_hat <- as.data.frame(own_p_hat) %>% gather(metier, prob)
-own_p_hat$season <- rep(1:4, times = n_met)
-
-
-ggplot(own_p_hat, aes(x = season, y = prob)) +
-	geom_line(aes(colour = metier)) + theme_bw() +
-ggtitle(paste0("Seasonal effect on baseline choice probabilities")) +
-xlab("Season") +
-ylab("Seasonal effect")
-ggsave(paste0("RUM_Seasonal_effect.png"))
-#
-
+ggplot(seas, aes(x = season, y = proportion)) + 
+	geom_line(aes(colour = metier))
+  ggsave("RUM_metier_seasonal_effect.png")
