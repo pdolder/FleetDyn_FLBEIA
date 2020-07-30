@@ -607,6 +607,8 @@ library(doParallel)
 
 sim_data2 <- sim_data[!is.na(sim_data$state.tminus1),]
 
+load(file.path("..", "tests", "Markov_model.RData"))
+rm(Markov_fit)
 ## Define a global model
 ## all covariates on the lhs and rhs
 covars <- c("state.tminus1", "season", "COD", "HAD", "WHG",  "NEP2021", "NEP22","NEP16", "NEP17", "NEP19", "NHKE", "MON", "NMEG")
@@ -699,12 +701,62 @@ BIC(k = length(coefficients(best.mod)),
 best.mod2 <- multinom(state ~ state.tminus1:season + COD + HAD + MON + NEP16 + NEP17 + NEP19 + 
 		     NEP2021 + NEP22 + NHKE + NMEG + WHG, data = sim_data2, maxit = 1e6)
 
-
 coef(best.mod2)
 
 BIC(k = length(coefficients(best.mod2)), 
 	 n = nrow(sim_data2), 
 	 ll = -best.mod2$value)
+
+tmp <- expand.grid(covars[1], covars[2:length(covars)])
+
+best.mod3 <- multinom(formula(paste("state ~", paste(apply(tmp, 1, paste, collapse = ":"), collapse = " + "), sep = " ")), 
+		      data = sim_data2, maxit = 1e6)
+
+BIC(best.mod3)
+
+tmp <- expand.grid(covars[1], covars[c(2,3,5,7,10,11,12)])
+
+best.mod4 <- multinom(formula(paste("state ~", paste(apply(tmp, 1, paste, collapse = ":"), collapse = " + "), sep = " ")), 
+		      data = sim_data2, maxit = 1e6)
+
+BIC(best.mod4)
+
+## best.mod3 wins
+
+
+
+## fitted against data
+sim_data2$fitted <- predict(best.mod3)
+
+prop_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$state, sim_data2$season), margin = c(1,3)))
+fitt_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$fitted, sim_data2$season), margin = c(1,3)))
+
+fitted_data <- rbind(cbind(type = "obs", prop_data),
+		     cbind(type = "pred", fitt_data))
+
+colnames(fitted_data) <- c("type", "state.tminus1", "state", "season", "prop")
+
+fitted_data <- reshape2::dcast(fitted_data, state.tminus1 + state + season ~ type, value.var = "prop")
+
+sim_data2$correct <- sim_data2$state == sim_data2$fitted
+
+
+theme_set(theme_bw())
+
+pdf("Markov_fitted.pdf")
+ggplot(fitted_data, aes(x = obs, y = pred)) +
+	geom_point(aes(colour = season)) + 
+	ggtitle("All data")
+
+  ggplot(fitted_data, aes(x = obs, y = pred)) +
+	geom_point(aes(colour = season)) + facet_grid(state ~ state.tminus1) +
+	ggtitle("By states")
+
+ggplot(sim_data2, aes(x = state)) + 
+	geom_bar(aes(fill = correct)) + 
+	facet_wrap(~state.tminus1) +
+	ggtitle("Classification error (facets are state.tminus1)")
+dev.off() 
 
 ######################
 ## in serial..
@@ -725,9 +777,7 @@ BIC(k = length(coefficients(best.mod2)),
 #}
 
 
-
-
-Markov_fit <- best.mod2 
-save(Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
+Markov_fit <- best.mod3 
+save(sim_data2, Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 
