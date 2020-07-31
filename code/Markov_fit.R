@@ -144,6 +144,18 @@ sim_data$season        <- as.factor(sim_data$season)
 
 colnames(sim_data)[5] <- "effshare"
 
+## Also lag the covariates
+sim_data$state.tminus1 <- c(NA, sim_data$state[1:(nrow(sim_data)-1)])
+sim_data[seq(1,nrow(sim_data), 8),"state.tminus1"] <- NA
+
+## covariates are rows 5 - 16
+for(i in 5:16) {
+sim_data[,i] <- c(NA, sim_data[1:nrow(sim_data)-1,i])
+sim_data[seq(1,nrow(sim_data),8), i] <- NA
+}
+
+save(sim_data, file = "Markov_sim_data.RData")
+
 ## Summarise proportions in data
 prop.table(table(sim_data$state.tminus1, sim_data$state, sim_data$season), margin = c(1,3))
 
@@ -609,8 +621,8 @@ sim_data2 <- sim_data[!is.na(sim_data$state.tminus1),]
 
 ###############################
 ## Load already generated data
-load(file.path("..", "tests", "Markov_model.RData"))
-rm(Markov_fit)
+load(file = "Markov_sim_data.RData")
+sim_data2 <- sim_data[!is.na(sim_data$state.tminus1),]
 ###############################
 
 ## Define a global model
@@ -743,7 +755,7 @@ BIC(simp.mod)
 # But still implausible parameter estimates...
 
 ## fitted against data
-sim_data2$fitted <- predict(best.mod4b)
+sim_data2$fitted <- predict(best.mod4)
 
 prop_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$state, sim_data2$season), margin = c(1,3)))
 fitt_data <- as.data.frame(prop.table(table(sim_data2$state.tminus1, sim_data2$fitted, sim_data2$season), margin = c(1,3)))
@@ -794,7 +806,7 @@ dev.off()
 #}
 
 
-Markov_fit <- best.mod4b 
+Markov_fit <- best.mod4 
 save(sim_data2, Markov_fit, file = file.path("..", "tests","Markov_model.RData"))
 
 
