@@ -48,8 +48,6 @@ ggplot(df, aes(x = year, y = val)) + geom_line(aes(colour = scenario), size = 1.
 ggsave(file.path("..", "plots", "Effort_by_quarter.png"))
 
 
-## in multi-stock example, total effort quite different by season 
-
 ## Effort shares
 
 df2 <- rbind(cbind(scenario = "base", do.call(rbind, lapply(base$fleets[["IE_Otter"]]@metiers, function(x) cbind(metier = x@name, as.data.frame(x@effshare))))),
