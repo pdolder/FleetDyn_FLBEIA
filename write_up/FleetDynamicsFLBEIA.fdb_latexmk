@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1596470387 "FleetDynamicsFLBEIA.tex" "FleetDynamicsFLBEIA.pdf" "FleetDynamicsFLBEIA" 1596470387
+["pdflatex"] 1596484680 "FleetDynamicsFLBEIA.tex" "FleetDynamicsFLBEIA.pdf" "FleetDynamicsFLBEIA" 1596484681
   "/etc/texmf/web2c/texmf.cnf" 1525122473 1101 af7716885e081ab43982cab7b4672c1a ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1480098698 1004 54797486969f23fa377b128694d548df ""
@@ -96,8 +96,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1525122653 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1539516723 4126960 fe533c9aad681c7b649ba409fccc2d03 ""
-  "FleetDynamicsFLBEIA.aux" 1596470387 1637 bda6f2919d69ba23381aac83998b34e2 ""
-  "FleetDynamicsFLBEIA.tex" 1596470386 3693 b25d9088c6c86a5d87ebd061afc92a92 ""
+  "FleetDynamicsFLBEIA.aux" 1596484680 1637 d3542d58998da537da92a4e5affe7fa5 ""
+  "FleetDynamicsFLBEIA.tex" 1596484679 6918 0a300e9c799b460c1cc15a8695b0e80d ""
   "figures/Effort_shares.png" 1596469582 578571 de47512eece7c26fb25c5477cdea521b ""
   "figures/Effort_shares_annual.png" 1596470120 208671 9ac704141370a05a0dc6812e34f6c26a ""
   "figures/F_difference.png" 1596469654 427025 93646a66f6be0302171fa1293bffee2c ""
@@ -108,7 +108,7 @@
   "figures/stock_risks.png" 1596469864 150286 a0a4121b1582df2a19c6a73130fd0f19 ""
   "ouparticle.cls" 1569170824 7208 57d1fbf22ae8876bd5c03ce4754c5532 ""
   (generated)
-  "FleetDynamicsFLBEIA.aux"
-  "FleetDynamicsFLBEIA.pdf"
   "FleetDynamicsFLBEIA.log"
   "FleetDynamicsFLBEIA.ent"
+  "FleetDynamicsFLBEIA.pdf"
+  "FleetDynamicsFLBEIA.aux"

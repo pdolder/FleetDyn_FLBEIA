@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.14)  3 AUG 2020 16:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.14)  3 AUG 2020 20:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -684,12 +684,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <7> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 38.
 
-Underfull \hbox (badness 10000) in paragraph at lines 43--48
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 49--50
+Underfull \hbox (badness 10000) in paragraph at lines 43--50
 
  []
 
@@ -697,71 +692,98 @@ Underfull \hbox (badness 10000) in paragraph at lines 49--50
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 51--52
+Underfull \hbox (badness 10000) in paragraph at lines 51--61
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--81
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--93
+
+ []
+
+[2]
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 58.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 99.
 
-LaTeX Warning: Empty `thebibliography' environment on input line 96.
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 
-[2] [3]
-<figures/Final_Metier_locations.png, id=19, 401.5pt x 501.875pt>
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--131
+
+ []
+
+[3]
+
+LaTeX Warning: Empty `thebibliography' environment on input line 146.
+
+[4]
+<figures/Final_Metier_locations.png, id=22, 401.5pt x 501.875pt>
 File: figures/Final_Metier_locations.png Graphic file (type png)
 <use figures/Final_Metier_locations.png>
-Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 103.
+Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 153.
 (pdftex.def)             Requested size: 362.37569pt x 453.00049pt.
-<figures/Final_Metier_catchcomp.png, id=20, 1204.5pt x 401.5pt>
+<figures/Final_Metier_catchcomp.png, id=23, 1204.5pt x 401.5pt>
 File: figures/Final_Metier_catchcomp.png Graphic file (type png)
 <use figures/Final_Metier_catchcomp.png>
-Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 110.
+Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 160.
 (pdftex.def)             Requested size: 362.37569pt x 120.79399pt.
-[4 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>]
-<figures/Effort_shares.png, id=24, 867.24pt x 505.89pt>
+[5 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>]
+<figures/Effort_shares.png, id=27, 867.24pt x 505.89pt>
 File: figures/Effort_shares.png Graphic file (type png)
 <use figures/Effort_shares.png>
-Package pdftex.def Info: figures/Effort_shares.png  used on input line 119.
+Package pdftex.def Info: figures/Effort_shares.png  used on input line 169.
 (pdftex.def)             Requested size: 700.50687pt x 408.64935pt.
-<figures/Effort_shares_annual.png, id=25, 505.89pt x 505.89pt>
+<figures/Effort_shares_annual.png, id=28, 505.89pt x 505.89pt>
 File: figures/Effort_shares_annual.png Graphic file (type png)
 <use figures/Effort_shares_annual.png>
-Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 128.
+Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 178.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/F_difference.png, id=26, 867.24pt x 505.89pt>
+<figures/F_difference.png, id=29, 867.24pt x 505.89pt>
 File: figures/F_difference.png Graphic file (type png)
 <use figures/F_difference.png>
-Package pdftex.def Info: figures/F_difference.png  used on input line 135.
+Package pdftex.def Info: figures/F_difference.png  used on input line 185.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/IE_Otter_catches.png, id=27, 867.24pt x 505.89pt>
+<figures/IE_Otter_catches.png, id=30, 867.24pt x 505.89pt>
 File: figures/IE_Otter_catches.png Graphic file (type png)
 <use figures/IE_Otter_catches.png>
-Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 142.
+Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 192.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/SSB_difference.png, id=28, 867.24pt x 505.89pt>
+<figures/SSB_difference.png, id=31, 867.24pt x 505.89pt>
 File: figures/SSB_difference.png Graphic file (type png)
 <use figures/SSB_difference.png>
-Package pdftex.def Info: figures/SSB_difference.png  used on input line 150.
+Package pdftex.def Info: figures/SSB_difference.png  used on input line 200.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/stock_risks.png, id=29, 867.24pt x 505.89pt>
+<figures/stock_risks.png, id=32, 867.24pt x 505.89pt>
 File: figures/stock_risks.png Graphic file (type png)
 <use figures/stock_risks.png>
-Package pdftex.def Info: figures/stock_risks.png  used on input line 158.
+Package pdftex.def Info: figures/stock_risks.png  used on input line 208.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-[5 <./figures/Effort_shares.png (PNG copy)>] [6 <./figures/Effort_shares_annual.png (PNG copy)>] [7 <./figures/F_difference.png (PNG copy)> <./figures/IE_Otter_catches.png (PNG copy)>] [8 <./figures/SSB_difference.png (PNG copy)> <./figures/stock_risks.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
+[6 <./figures/Effort_shares.png (PNG copy)>] [7 <./figures/Effort_shares_annual.png (PNG copy)>] [8 <./figures/F_difference.png (PNG copy)> <./figures/IE_Otter_catches.png (PNG copy)>] [9 <./figures/SSB_difference.png (PNG copy)> <./figures/stock_risks.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
 Here is how much of TeX's memory you used:
- 4040 strings out of 492982
- 54030 string characters out of 6134895
- 120955 words of memory out of 5000000
- 7477 multiletter control sequences out of 15000+600000
+ 4041 strings out of 492982
+ 54038 string characters out of 6134895
+ 122955 words of memory out of 5000000
+ 7478 multiletter control sequences out of 15000+600000
  14091 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,8n,28p,286b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on FleetDynamicsFLBEIA.pdf (8 pages, 2140105 bytes).
+Output written on FleetDynamicsFLBEIA.pdf (9 pages, 2144529 bytes).
 PDF statistics:
- 67 PDF objects out of 1000 (max. 8388607)
- 41 compressed objects within 1 object stream
+ 70 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
