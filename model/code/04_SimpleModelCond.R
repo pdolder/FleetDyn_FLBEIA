@@ -24,7 +24,7 @@ ls()
 #####################
 
 n.proj.yrs <- 15 
-ni <- 100
+ni <- 500
 ns <- 4
 
 data.yrs <- c(range(biols)[["minyear"]],

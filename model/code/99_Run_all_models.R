@@ -3,17 +3,22 @@ library(doParallel)
 
 st.time <- Sys.time()
 
+#source('04_SimpleModelCond.R')
+#rm(list=ls())
+
 registerDoParallel(cores = 6)
 
 set.seed(123, kind = "L'Ecuyer-CMRG")
 
-models <- c('05_Run_FLBEIA_Base.R',
-	    '05_Run_FLBEIA_Gravity.R',
-	    '05_Run_FLBEIA_RUM.R',
-	    '05_Run_FLBEIA_Markov.R',
-	    '05_Run_FLBEIA_Gravity_tradition.R'
+#models <- c('05_run_flbeia_base.r',
+#	    '05_run_flbeia_gravity.r',
+#	    '05_run_flbeia_rum.r',
+#	    '05_run_flbeia_markov.r',
+#	    '05_run_flbeia_gravity_tradition.r'
+#	    )
+models <- c('05_run_flbeia_gravity.r',
+	    '05_run_flbeia_gravity_tradition.r'
 	    )
-
 
 foreach(i = models) %dopar% {
 	set.seed(123)
