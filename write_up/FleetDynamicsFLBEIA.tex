@@ -7,7 +7,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lscape}
 \usepackage{rotating}
-
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{subfigure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
@@ -145,21 +147,52 @@ The authors would like to thank...
 ggg
 \end{thebibliography}
 
+\newpage
+
+\begin{table}
+	\center
+	\begin{tabular}{p{4cm} p{3cm} p{2cm} p{2cm} p{2cm}}
+		\toprule
+		Stock & Code & Fmsy & Blim & Bmsytrigger \\
+		\hline
+		Cod & COD & 0.35 & 7,300  & 10,300 \\
+		Haddock & HAD & 0.4 & 6,700 & 10,000 \\
+		Anglerfishes & ANF/MON & 0.28 & 16,032 & 22,278 \\
+		European Hake & HKE & 0.28 & 32,000 & 45,000 \\
+		Megrims & LEZ/NMEG & 0.191 & 37,100 & 41,800 \\
+		Whiting & WHG & 0.52 & 25,000 & 35,000 \\
+		\textit{Nephrops} FU16 & NEP16 & 0.062 & 19,880 & 49,700 \\
+		\textit{Nephrops} FU17 & NEP17 & 0.085 & 4,637 & 11,593 \\
+	        \textit{Nephrops} FU19 & NEP19 & 0.093 & 4,032 & 10,080 \\
+		\textit{Nephrops} FU2021 & NEP2021 & 0.06 & 33,040 & 82,600 \\
+		\textit{Nephrops} FU22 & NEP22 & 0.128 & 7,585 & 18,963 \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:brp}
+	\caption{Biological Reference Points used in the Harvest Control Rules for each
+		stock when setting the overall annual Total Allowable Catch.}
+\end{table}
 
 \newpage
 
 \begin{figure}[!ht]
 	\centering
+\begin{subfigure}
+	\centering
 	\includegraphics[width=0.8\linewidth]{figures/Final_Metier_locations}
-	\caption{The defined spatial metier} 
-	\label{fig:metier}
-\end{figure}	
-
-\begin{figure}[!ht]
+\end{subfigure}
+\begin{subfigure}
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/Final_Metier_catchcomp}
-	\caption{Catch comp for metier} 
-	\label{fig:catchcomp}
+\end{subfigure}
+\caption{The métier defined through spatial clustering of similar catch
+	composition for Irish Otter trawlers modified by using knowledge of
+	fishing grounds to make coherent spatial units. The circles represent
+	relative fishing effort in each of the rectangles. Catch compositions
+	for the métier indicating the dominant stocks in catches for each of
+	the fishing grounds. Stock codes in Table \ref{tab:brp}.} 
+	\label{fig:metier}
+
 \end{figure}	
 
 \newpage
@@ -167,7 +200,12 @@ ggg
 \begin{sidewaysfigure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/Effort_shares}
-	\caption{Effort per location model} 
+	\caption{Quarterly fishing effort share (proportion) for each métier
+		and location choice model (2017 - 2032). Light shading
+		represents 5\% and 95\% variability due to recruitment and
+		catchability. Solid line indicates end of the data/start of
+		simulations and the dashed line the implementation of the
+		spatial closure.} 
 	\label{fig:effort}
 \end{sidewaysfigure}	
 
@@ -176,37 +214,71 @@ ggg
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/Effort_shares_annual}
-	\caption{Annual effort share} 
+	\caption{Annualised effort share (proportion) for each métier
+		and location choice model (2017 - 2032). Light shading
+		represents 5\% and 95\% variability due to recruitment and
+		catchability. Solid line indicates end of the data/start of
+		simulations and the dashed line the implementation of the
+		spatial closure.} 
 	\label{fig:effort_an}
 \end{figure}	
 
 \begin{figure}[!ht]
 	\centering
+	\includegraphics[width=1\linewidth]{figures/Change_effort}
+	\caption{Percentage change in annualised effort share for each of the
+		métier from before (2020) the closure of métier F and first
+		year of the closure (2021).} 
+	\label{fig:effort_chg}
+\end{figure}	
+
+
+
+\begin{figure}[!ht]
+	\centering
 	\includegraphics[width=1\linewidth]{figures/F_difference}
-	\caption{Fishing mortality per scenario} 
+	\caption{Fishing mortality for each stock under the different location
+		choice models. Each stock was targeted to be fished at its Fmsy
+		rate, using the ICES MSY Harvest Control Rule. Light shading
+		represents 5\% and 95\% variability due to recruitment and
+		catchability. Solid line indicates end of the data/start of
+		simulations and the dashed line the implementation of the
+		spatial closure. Dashed red lines indicate the stock Fmsy
+		reference point.} 
 	\label{fig:F}
 \end{figure}	
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/IE_Otter_catches}
-	\caption{Catches for each stock by Irish Otter trawlers under each
-		location model scenario} 
+	\caption{Catches of each stock by Irish Otter trawlers under the
+		different location choice models. Light shading represents 5\%
+		and 95\% variability due to recruitment and catchability. Solid
+		line indicates end of the data/start of simulations and the
+		dashed line the implementation of the spatial closure.} 
 	\label{fig:OtterC}
 \end{figure}	
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/SSB_difference}
-	\caption{SSB for each stock under each
-		location model scenario} 
+	\caption{Spawning Stock Biomass for the fish stocks under each location
+		model scenario. Light shading represents 5\% and 95\%
+		variability due to recruitment and catchability. Solid line
+		indicates end of the data/start of simulations and the dashed
+		line the implementation of the spatial closure.  Dotdashed and
+		dashed blue lines indicate the Blim reference and Btrigger
+		reference points respectively.} 
 	\label{fig:SSB}
 \end{figure}	
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/stock_risks}
-	\caption{Stock indicators per scenario} 
+	\caption{Stock risk indicators for each of the fish stock and location
+		choice model scenarios. Solid
+		line indicates end of the data/start of simulations and the
+		dashed line the implementation of the spatial closure.} 
 	\label{fig:risk}
 \end{figure}	
 
