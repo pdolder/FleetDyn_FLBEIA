@@ -292,20 +292,21 @@ n_clust <- length(unique(df$group))
 p<-make.xyz(df$lon,df$lat,df$groups,as.factor(df$groups))
 col<- brewer.pal(n_clust, "Set3")
 
+size <- 0.5
 
-png(file.path("..", "plots", "Final_Metier_locations.png"), height = 500, width = 400)
-par(mfrow=c(1,1),oma=c(1,1,1,1),mar=c(1,1,1,1))
-basemap(c(we, ea), c(so, no))
-draw.rect()
+png(file.path("..", "plots", "Final_Metier_locations.png"), height = 1500, width = 1200, res = 400)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+basemap(c(we, ea), c(so, no), bg = "grey95", cex.axis = size, mgp = c(1,0.3,0), cex.lab = size)
+#draw.rect()
 draw.barplot2D(p$x, p$y,p$z, width=1, height=0.5, col=col, 
-	       lwd.frame = 0, col.frame = "grey10")
+	       lwd.frame = 0, col.frame = "grey90")
 draw.bubble(x = eff_q$lon, y = eff_q$lat, z = eff_q$Effort, maxradius = 0.2)
-draw.shape(coast, col = "lightgreen")
-axis(2,at=seq(so,no,2), col="gray80")
-axis(1,at=seq(we,ea,2), col="gray80")
-mtext(side=3,las=1,adj=0,line=-3,text=paste("Defined Metier/Areas", sep = " "),cex=1,font=2)
+draw.shape(coast, col = "white")
+#axis(2,at=seq(so,no,2), col="gray80", cex.axis= 0.1) 
+#axis(1,at=seq(we,ea,2), col="gray80", cex.axis = 0.2)
+#mtext(side=3,las=1,adj=0, line=-2,text=paste("  Defined Métier", sep = " "),cex=size,font=2)
 legend('bottomleft', LETTERS[1:n_clust], fill=col, bty='n', 
-       ncol=2,cex=1)
+       ncol=3,cex= 0.7, title = "Métier")
 dev.off()
 
 ## Catch comp
@@ -330,11 +331,12 @@ library(RColorBrewer)
 cols <- c(brewer.pal(13, "Set3"),"white")
 
 
-png(file.path("..", "plots", "Final_Metier_catchcomp.png"), width = 1200, height = 400)
+png(file.path("..", "plots", "Final_Metier_catchcomp.png"), 
+    width = 2600, height = 1600, res = 400)
 
-par(mar=c(4,4,8,4))
-barplot(catch_avg, col = cols) 
+par(mar=c(2,2,8,2))
+barplot(catch_avg, col = cols, mgp = c(1,0.3,0)) 
 par(xpd = TRUE)
-legend(0.3,1.3, legend = spp, fill = cols, cex = 1, ncol = 7)
+legend(0.1,1.4, legend = spp, fill = cols, cex = 0.7, ncol = 5, pt.cex = 2)
 dev.off()
 

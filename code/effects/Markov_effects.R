@@ -69,11 +69,17 @@ cr_effect <- bind_rows(cr_mult)
 
 cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 
-colnames(cr_eff)[3] <- "area"
+colnames(cr_eff)[3] <- "métier"
+
+## Rename the stocks
+cr_eff$stock[cr_eff$stock == "NMEG"] <- "LEZ"
+cr_eff$stock[cr_eff$stock == "MON"]  <- "ANF"
+cr_eff$stock[cr_eff$stock == "NHKE"] <- "HKE"
+
 
 theme_set(theme_bw())
-ggplot(filter(cr_eff, stock %in% c("COD", "WHG", "NEP22", "NEP19", "NHKE", "MON")), aes(x = mult, y = value)) +
-	geom_line(aes(colour = area)) +
+ggplot(filter(cr_eff, stock %in% c("COD", "WHG", "NEP22", "NEP19", "HKE", "ANF")), aes(x = mult, y = value)) +
+	geom_line(aes(colour = métier)) +
 	facet_wrap(~stock) +
 	ggtitle("Catch rate multiplier on choice probabilities") +
 	ylab("Choice probability / share") + xlab("Catch Rate multiplier")# + 
@@ -104,8 +110,10 @@ seas <- cbind(season = 1:4, seas)
 
 seas <- reshape2::melt(as.data.frame(seas), id = c("season"))
 
-colnames(seas) <- c("season", "metier", "proportion")
+colnames(seas) <- c("season", "métier", "proportion")
 
 ggplot(seas, aes(x = season, y = proportion)) + 
-	geom_line(aes(colour = metier))
+	geom_line(aes(colour = métier), size = 2)
   ggsave("Markov_metier_seasonal_effect.png")
+
+

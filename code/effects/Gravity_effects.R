@@ -62,7 +62,7 @@ N[[i]][] <- biols[[i]]@n[,ac(2017),1,1,1]
 
 cr_mult <- lapply(catchNames(fleets[[flnm]]), function(s) {
 
- spp_res <- sapply(seq(0,20,0.1), function(mult) {
+ spp_res <- sapply(seq(0,5,0.01), function(mult) {
     N0 <- N
   
     V.m  <- Reduce('+', lapply(names(q.m), function(x) 
@@ -77,7 +77,7 @@ cr_mult <- lapply(catchNames(fleets[[flnm]]), function(s) {
     return(res)
 })
 
- return(cbind(stock = s, mult= seq(0,20,0.1),as.data.frame(t(spp_res))))
+ return(cbind(stock = s, mult= seq(0,5,0.01),as.data.frame(t(spp_res))))
 
 })
 
@@ -88,6 +88,11 @@ colnames(cr_effect)[3:9] <- LETTERS[1:7]
 cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 
 colnames(cr_eff)[3] <- "area"
+
+## Rename the stocks
+cr_eff$stock[cr_eff$stock == "NMEG"] <- "LEZ"
+cr_eff$stock[cr_eff$stock == "MON"]  <- "ANF"
+cr_eff$stock[cr_eff$stock == "NHKE"] <- "HKE"
 
 theme_set(theme_bw())
 ggplot(cr_eff, aes(x = mult, y = value)) +
