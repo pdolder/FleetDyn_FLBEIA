@@ -99,11 +99,12 @@ levels(bio$stock)[levels(bio$stock) == "MON"] <-  "ANF"
 levels(bio$stock)[levels(bio$stock) == "NHKE"] <- "HKE"
 levels(bio$stock)[levels(bio$stock) == "NMEG"] <- "LEZ"
 
+colnames(bio)[1:2] <- c("scenario", "sc")
 
 ## Fishing mortalities
-ggplot(bio, aes(x = year, y = f_q50, group = sc)) +
-	geom_line(aes(colour = sc), size = 1) +
-       geom_ribbon(aes(ymin = f_q05, ymax = f_q95, fill = sc), alpha = 0.2) + 
+ggplot(bio, aes(x = year, y = f_q50, group = scenario)) +
+	geom_line(aes(colour = scenario), size = 1) +
+       geom_ribbon(aes(ymin = f_q05, ymax = f_q95, fill = scenario), alpha = 0.2) + 
        geom_hline(aes(yintercept = Fmsy), linetype = "dashed", colour = "red") +   
        geom_vline(aes(xintercept = 2018), colour = "grey") +
        geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
@@ -116,9 +117,9 @@ xlab("year") + theme(axis.text.x = element_text(angle = -90),
 ggsave(file.path("figures","F_difference.png"), height = 7, width = 12)
 
 ## SSB
-ggplot(filter(bio,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22")), aes(x = year, y = ssb_q50, group = sc)) +
-	geom_line(aes(colour = sc), size = 1) + 
-	geom_ribbon(aes(ymin = ssb_q05, ymax = ssb_q95, fill = sc), alpha = 0.2) +
+ggplot(filter(bio,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22")), aes(x = year, y = ssb_q50, group = scenario)) +
+	geom_line(aes(colour = scenario), size = 1) + 
+	geom_ribbon(aes(ymin = ssb_q05, ymax = ssb_q95, fill = scenario), alpha = 0.2) +
 	geom_hline(aes(yintercept = Blim), linetype = "dotdash", colour = "blue") + 
 	geom_hline(aes(yintercept = Btrigger), linetype = "dashed", colour = "blue") +  
 	geom_vline(aes(xintercept = 2018), colour = "grey") +
