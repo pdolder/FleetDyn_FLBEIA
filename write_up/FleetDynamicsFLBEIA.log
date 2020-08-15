@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.6.7)  7 AUG 2020 16:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.14)  15 AUG 2020 14:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -769,87 +769,95 @@ Overfull \hbox (5.98691pt too wide) in paragraph at lines 157--158
 []|\OT1/cmr/m/n/12 Bmsytrigger| 
  []
 
-<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=22, 505.89pt x 505.89pt>
-File: figures/Gravity_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
-<use figures/Gravity_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/Gravity_Metier_Catch_Rate_Multiplier.png  used on input line 181.
-(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=23, 505.89pt x 505.89pt>
-File: figures/RUM_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
-<use figures/RUM_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/RUM_Metier_Catch_Rate_Multiplier.png  used on input line 189.
-(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=24, 505.89pt x 505.89pt>
-File: figures/Markov_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
-<use figures/Markov_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/Markov_Metier_Catch_Rate_Multiplier.png  used on input line 197.
-(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/RUM_metier_seasonal_effect.png, id=25, 505.89pt x 505.89pt>
-File: figures/RUM_metier_seasonal_effect.png Graphic file (type png)
-<use figures/RUM_metier_seasonal_effect.png>
-Package pdftex.def Info: figures/RUM_metier_seasonal_effect.png  used on input line 205.
-(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/Markov_metier_seasonal_effect.png, id=26, 504.9264pt x 505.1673pt>
-File: figures/Markov_metier_seasonal_effect.png Graphic file (type png)
-<use figures/Markov_metier_seasonal_effect.png>
-Package pdftex.def Info: figures/Markov_metier_seasonal_effect.png  used on input line 212.
-(pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/Final_Metier_locations.png, id=27, 401.5pt x 501.875pt>
+[5]
+<figures/Final_Metier_locations.png, id=26, 216.81pt x 271.0125pt>
 File: figures/Final_Metier_locations.png Graphic file (type png)
 <use figures/Final_Metier_locations.png>
-Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 224.
-(pdftex.def)             Requested size: 362.37569pt x 453.00049pt.
-<figures/Final_Metier_catchcomp.png, id=28, 1204.5pt x 401.5pt>
+Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 183.
+(pdftex.def)             Requested size: 271.7835pt x 339.76965pt.
+<figures/Final_Metier_catchcomp.png, id=27, 469.755pt x 289.08pt>
 File: figures/Final_Metier_catchcomp.png Graphic file (type png)
 <use figures/Final_Metier_catchcomp.png>
-Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 228.
-(pdftex.def)             Requested size: 362.37569pt x 120.79399pt.
-<figures/Effort_shares.png, id=29, 867.24pt x 505.89pt>
+Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 187.
+(pdftex.def)             Requested size: 362.37569pt x 222.9981pt.
+[6
+
+
+ <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>]
+<figures/Effort_shares.png, id=31, 867.24pt x 505.89pt>
 File: figures/Effort_shares.png Graphic file (type png)
 <use figures/Effort_shares.png>
-Package pdftex.def Info: figures/Effort_shares.png  used on input line 244.
+Package pdftex.def Info: figures/Effort_shares.png  used on input line 203.
 (pdftex.def)             Requested size: 700.50687pt x 408.64935pt.
-<figures/Effort_shares_annual.png, id=30, 505.89pt x 505.89pt>
+<figures/Effort_shares_annual.png, id=32, 505.89pt x 505.89pt>
 File: figures/Effort_shares_annual.png Graphic file (type png)
 <use figures/Effort_shares_annual.png>
-Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 258.
+Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 217.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/Change_effort.png, id=31, 505.89pt x 505.89pt>
+<figures/Change_effort.png, id=33, 505.89pt x 505.89pt>
 File: figures/Change_effort.png Graphic file (type png)
 <use figures/Change_effort.png>
-Package pdftex.def Info: figures/Change_effort.png  used on input line 270.
+Package pdftex.def Info: figures/Change_effort.png  used on input line 229.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/F_difference.png, id=32, 867.24pt x 505.89pt>
+<figures/F_difference.png, id=34, 867.24pt x 505.89pt>
 File: figures/F_difference.png Graphic file (type png)
 <use figures/F_difference.png>
-Package pdftex.def Info: figures/F_difference.png  used on input line 281.
+Package pdftex.def Info: figures/F_difference.png  used on input line 238.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/IE_Otter_catches.png, id=33, 867.24pt x 505.89pt>
+<figures/IE_Otter_catches.png, id=35, 867.24pt x 505.89pt>
 File: figures/IE_Otter_catches.png Graphic file (type png)
 <use figures/IE_Otter_catches.png>
-Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 295.
+Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 252.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/SSB_difference.png, id=34, 867.24pt x 505.89pt>
+<figures/SSB_difference.png, id=36, 867.24pt x 505.89pt>
 File: figures/SSB_difference.png Graphic file (type png)
 <use figures/SSB_difference.png>
-Package pdftex.def Info: figures/SSB_difference.png  used on input line 306.
+Package pdftex.def Info: figures/SSB_difference.png  used on input line 263.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/stock_risks.png, id=35, 867.24pt x 505.89pt>
+<figures/stock_risks.png, id=37, 867.24pt x 505.89pt>
 File: figures/stock_risks.png Graphic file (type png)
 <use figures/stock_risks.png>
-Package pdftex.def Info: figures/stock_risks.png  used on input line 319.
+Package pdftex.def Info: figures/stock_risks.png  used on input line 276.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-[5] [6 <./figures/Gravity_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [7 <./figures/RUM_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [8 <./figures/Markov_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [9 <./figures/RUM_metier_seasonal_effect.png (PNG copy)>] [10 <./figures/Markov_metier_seasonal_effect.png (PNG copy)>] [11 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>] [12 <./figures/Effort_shares.png (PNG copy)>] [13 <./figures/Effort_shares_annual.png (PNG copy)>] [14 <./figures/Change_effort.png (PNG copy)>] [15 <./figures/F_difference.png (PNG copy)>] [16 <./figures/IE_Otter_catches.png (PNG copy)> <./figures/SSB_difference.png (PNG copy)>] [17 <./figures/stock_risks.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
+[7 <./figures/Effort_shares.png (PNG copy)>] [8 <./figures/Effort_shares_annual.png (PNG copy)>] [9 <./figures/Change_effort.png (PNG copy)>] [10 <./figures/F_difference.png (PNG copy)>] [11 <./figures/IE_Otter_catches.png (PNG copy)> <./figures/SSB_difference.png (PNG copy)>] [12 <./figures/stock_risks.png (PNG copy)>]
+<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=57, 505.89pt x 505.89pt>
+File: figures/Gravity_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
+<use figures/Gravity_Metier_Catch_Rate_Multiplier.png>
+Package pdftex.def Info: figures/Gravity_Metier_Catch_Rate_Multiplier.png  used on input line 292.
+(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
+<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=58, 505.89pt x 505.89pt>
+File: figures/RUM_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
+<use figures/RUM_Metier_Catch_Rate_Multiplier.png>
+Package pdftex.def Info: figures/RUM_Metier_Catch_Rate_Multiplier.png  used on input line 300.
+(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
+<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=59, 504.9264pt x 505.1673pt>
+File: figures/Markov_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
+<use figures/Markov_Metier_Catch_Rate_Multiplier.png>
+Package pdftex.def Info: figures/Markov_Metier_Catch_Rate_Multiplier.png  used on input line 308.
+(pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
+<figures/RUM_metier_seasonal_effect.png, id=60, 505.89pt x 505.89pt>
+File: figures/RUM_metier_seasonal_effect.png Graphic file (type png)
+<use figures/RUM_metier_seasonal_effect.png>
+Package pdftex.def Info: figures/RUM_metier_seasonal_effect.png  used on input line 316.
+(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
+<figures/Markov_metier_seasonal_effect.png, id=61, 504.9264pt x 505.1673pt>
+File: figures/Markov_metier_seasonal_effect.png Graphic file (type png)
+<use figures/Markov_metier_seasonal_effect.png>
+Package pdftex.def Info: figures/Markov_metier_seasonal_effect.png  used on input line 323.
+(pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
+[13
+
+ <./figures/Gravity_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [14 <./figures/RUM_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [15 <./figures/Markov_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [16 <./figures/RUM_metier_seasonal_effect.png (PNG copy)>] [17 <./figures/Markov_metier_seasonal_effect.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
 Here is how much of TeX's memory you used:
  4220 strings out of 492982
- 57151 string characters out of 6134897
- 133451 words of memory out of 5000000
+ 57151 string characters out of 6134895
+ 127447 words of memory out of 5000000
  7644 multiletter control sequences out of 15000+600000
  14438 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,10n,28p,564b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,10n,28p,563b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on FleetDynamicsFLBEIA.pdf (17 pages, 3408776 bytes).
+Output written on FleetDynamicsFLBEIA.pdf (17 pages, 3579638 bytes).
 PDF statistics:
  105 PDF objects out of 1000 (max. 8388607)
  63 compressed objects within 1 object stream

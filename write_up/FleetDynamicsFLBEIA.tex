@@ -13,8 +13,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\title{Working title: Integrating location choice models in mixed-fishery
-	management strategy evaluations}
+\title{Working title: Alternative hypothesis for location choice in
+	mixed-fishery management strategy evaluation}
 
 \author{
 	\name{Paul J. Dolder}
@@ -148,7 +148,7 @@ The authors would like to thank...
 ggg
 \end{thebibliography}
 
-\newpage
+\clearpage
 
 \begin{table}
 	\center
@@ -158,9 +158,9 @@ ggg
 		\hline
 		Cod & COD & 0.35 & 7,300  & 10,300 \\
 		Haddock & HAD & 0.4 & 6,700 & 10,000 \\
-		Anglerfishes & ANF/MON & 0.28 & 16,032 & 22,278 \\
+		Anglerfishes & ANF & 0.28 & 16,032 & 22,278 \\
 		European Hake & HKE & 0.28 & 32,000 & 45,000 \\
-		Megrims & LEZ/NMEG & 0.191 & 37,100 & 41,800 \\
+		Megrims & LEZ & 0.191 & 37,100 & 41,800 \\
 		Whiting & WHG & 0.52 & 25,000 & 35,000 \\
 		\textit{Nephrops} FU16 & NEP16 & 0.062 & 19,880 & 49,700 \\
 		\textit{Nephrops} FU17 & NEP17 & 0.085 & 4,637 & 11,593 \\
@@ -174,54 +174,13 @@ ggg
 		stock when setting the overall annual Total Allowable Catch.}
 \end{table}
 
-\newpage
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/Gravity_Metier_Catch_Rate_Multiplier}
-	\caption{The influence of changes in catch rates of different stocks on
-	effort allocation among métier from the Gravity model.} 
-	\label{fig:Grav_CR}
-\end{figure}	
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/RUM_Metier_Catch_Rate_Multiplier}
-	\caption{The influence of changes in catch rates of different stocks on
-	effort allocation among métier from the RUM.} 
-	\label{fig:RUM_CR}
-\end{figure}	
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/Markov_Metier_Catch_Rate_Multiplier}
-	\caption{The influence of changes in catch rates of different stocks on
-	effort allocation among métier from the Markov model.} 
-	\label{fig:Markov_CR}
-\end{figure}	
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/RUM_metier_seasonal_effect}
-	\caption{Seasonal effect in the RUM model.} 
-	\label{fig:RUM_Seas}
-\end{figure}	
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/Markov_metier_seasonal_effect}
-	\caption{Seasonal effect in the Markov model.} 
-	\label{fig:Markov_Seas}
-\end{figure}	
-
-
-
+\clearpage
 
 \begin{figure}[!ht]
 	\centering
 \begin{subfigure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{figures/Final_Metier_locations}
+	\includegraphics[width=0.6\linewidth]{figures/Final_Metier_locations}
 \end{subfigure}
 \begin{subfigure}
 	\centering
@@ -274,8 +233,6 @@ ggg
 	\label{fig:effort_chg}
 \end{figure}	
 
-
-
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1\linewidth]{figures/F_difference}
@@ -309,7 +266,7 @@ ggg
 		variability due to recruitment and catchability. Solid line
 		indicates end of the data/start of simulations and the dashed
 		line the implementation of the spatial closure.  Dotdashed and
-		dashed blue lines indicate the Blim reference and Btrigger
+		dashed blue lines indicate the Blim reference and Bmsytrigger
 		reference points respectively.} 
 	\label{fig:SSB}
 \end{figure}	
@@ -323,6 +280,53 @@ ggg
 		dashed line the implementation of the spatial closure.} 
 	\label{fig:risk}
 \end{figure}	
+
+\clearpage
+
+\section{Appendices}
+
+\textbf{Appendix A}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1\linewidth]{figures/Gravity_Metier_Catch_Rate_Multiplier}
+	\caption{The influence of changes in catch rates of different stocks on
+	effort allocation among métier from the Gravity model.} 
+	\label{fig:Grav_CR}
+\end{figure}	
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1\linewidth]{figures/RUM_Metier_Catch_Rate_Multiplier}
+	\caption{The influence of changes in catch rates of different stocks on
+	effort allocation among métier from the RUM.} 
+	\label{fig:RUM_CR}
+\end{figure}	
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1\linewidth]{figures/Markov_Metier_Catch_Rate_Multiplier}
+	\caption{The influence of changes in catch rates of different stocks on
+	effort allocation among métier from the Markov model.} 
+	\label{fig:Markov_CR}
+\end{figure}	
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1\linewidth]{figures/RUM_metier_seasonal_effect}
+	\caption{Seasonal effect in the RUM model.} 
+	\label{fig:RUM_Seas}
+\end{figure}	
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1\linewidth]{figures/Markov_metier_seasonal_effect}
+	\caption{Seasonal effect in the Markov model.} 
+	\label{fig:Markov_Seas}
+\end{figure}	
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

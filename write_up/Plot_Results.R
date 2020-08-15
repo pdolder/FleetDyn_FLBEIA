@@ -89,6 +89,13 @@ bio$Blim     <- Blim$Blim[match(bio$stock, rownames(Blim))]
 bio$Btrigger <- Btrigger$Btrigger[match(bio$stock, rownames(Btrigger))]
 bio$Fmsy     <- Fmsy$Fmsy[match(bio$stock, rownames(Fmsy))]
 
+## Rename MON, NHKE and NMEG for consistency
+
+levels(bio$stock)[levels(bio$stock) == "MON"] <-  "ANF"
+levels(bio$stock)[levels(bio$stock) == "NHKE"] <- "HKE"
+levels(bio$stock)[levels(bio$stock) == "NMEG"] <- "LEZ"
+
+
 ## Fishing mortalities
 ggplot(bio, aes(x = year, y = f_q50, group = sc)) +
 	geom_line(aes(colour = sc), size = 1) +
@@ -147,6 +154,10 @@ ggsave(file.path("figures", "Fmsy_risk.png"), height = 7, width = 12)
 
 risk2 <- reshape2::melt(risk, id = c("scenario", "stock", "year"), value.name = "data")
 
+
+## Order the plots so Fmsy.risk is first
+risk2$variable <- factor(risk2$variable, c("Fmsy.risk", "Blim.risk", "Btrigger.risk")) 
+levels(risk2$variable)[levels(risk2$variable) == "Btrigger.risk"] <- "Bmsytrigger.risk"
 
 
 ggplot(filter(risk2,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22", "MON", "NHKE","WHG")), 
