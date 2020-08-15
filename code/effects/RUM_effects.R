@@ -70,7 +70,7 @@ colnames(cr_effect)[3:9] <- LETTERS[1:7]
 
 cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 
-colnames(cr_eff)[3] <- "area"
+colnames(cr_eff)[3] <- "métier"
 
 exp(coef(RUM_model_fit))
 
@@ -80,11 +80,15 @@ cr_eff$stock[cr_eff$stock == "MON"]  <- "ANF"
 cr_eff$stock[cr_eff$stock == "NHKE"] <- "HKE"
 
 theme_set(theme_bw())
-ggplot(cr_eff, aes(x = mult, y = value)) +
-	geom_line(aes(colour = area)) +
+ggplot(cr_eff, aes(x = mult, y = value, colour = métier)) +
+	geom_line(aes(colour = métier)) +
 	facet_wrap(~stock) +
-	ggtitle("Catch rate multiplier on choice probabilities") +
-	ylab("Choice probability / share") + xlab("Catch Rate multiplier") #+ 
+	ggtitle("Catch rate multiplier on choice probabilities (RUM model)") +
+	ylab("Choice probability / share") + xlab("Catch Rate multiplier") +
+	theme(panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(),
+	      legend.position = "top") + 
+guides(colour = guide_legend(nrow = 1, byrow = TRUE))
 #	scale_x_log10()
 ggsave("RUM_Metier_Catch_Rate_Multiplier.png")
 
@@ -112,5 +116,10 @@ seas <- reshape2::melt(as.data.frame(seas), id = c("season"))
 colnames(seas) <- c("season", "métier", "proportion")
 
 ggplot(seas, aes(x = season, y = proportion)) + 
-	geom_line(aes(colour = métier), size = 2)
+	geom_line(aes(colour = métier), size = 2) +
+	theme(panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(),
+legend.position = "top") +
+	guides(colour = guide_legend(nrow = 1)) +
+	ggtitle("Seasonal effect on choice probabilities (RUM model)")
   ggsave("RUM_metier_seasonal_effect.png")

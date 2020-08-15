@@ -6,7 +6,6 @@ library(tidyverse)
 lapply(list.files(file.path("..", "..","model","model_inputs"), full.names = TRUE), load, .GlobalEnv)
 
 
-
 ## Get the data
 flnm <- "IE_Otter"
 
@@ -87,7 +86,7 @@ colnames(cr_effect)[3:9] <- LETTERS[1:7]
 
 cr_eff <- reshape2::melt(cr_effect, id = c("stock", "mult"))
 
-colnames(cr_eff)[3] <- "area"
+colnames(cr_eff)[3] <- "métier"
 
 ## Rename the stocks
 cr_eff$stock[cr_eff$stock == "NMEG"] <- "LEZ"
@@ -96,10 +95,14 @@ cr_eff$stock[cr_eff$stock == "NHKE"] <- "HKE"
 
 theme_set(theme_bw())
 ggplot(cr_eff, aes(x = mult, y = value)) +
-	geom_line(aes(colour = area)) +
+	geom_line(aes(colour = métier)) +
 	facet_wrap(~stock) +
-	ggtitle("Catch rate multiplier on choice probabilities") +
-	ylab("Choice probability / share") + xlab("Catch Rate multiplier")# + 
+	ggtitle("Catch rate multiplier on choice probabilities (Gravity model)") +
+	ylab("Choice probability / share") + xlab("Catch Rate multiplier") +
+	theme(panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(), 
+	      legend.position = "top") + 
+guides(colour = guide_legend(nrow = 1))
 #	scale_x_log10()
 ggsave("Gravity_Metier_Catch_Rate_Multiplier.png")
 

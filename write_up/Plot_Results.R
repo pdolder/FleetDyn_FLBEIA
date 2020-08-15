@@ -41,7 +41,8 @@ ggplot(filter(effort_means,year > 2016), aes(x = year, y = q50, group = scenario
        geom_vline(aes(xintercept = 2018), colour = "grey") +
        geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_wrap(~metier) + 	theme_bw() +
-	theme(axis.text.x = element_text(angle = -90),
+	theme(axis.text.x = element_text(angle = -90),, panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(),
 	      legend.position = "top")  + xlab("year") + 
 ylab("Proportion Effort")
 ggsave(file.path("figures", "Effort_shares_annual.png"), height = 7, width = 7)
@@ -69,8 +70,11 @@ eff_diff$Cup  <- (eff_diff$Cq95 - eff_diff$q95) / eff_diff$q95 * 100
 ggplot(eff_diff, aes(x = metier, y = Cmid)) +
 	geom_bar(stat = "identity", aes(fill = metier)) + 
 	facet_wrap(~ scenario) + ylab("Median % change in effort") + 
-	xlab("métier")
-ggsave(file.path("figures", "Change_effort.png"), height = 7, width = 7)
+	xlab("métier") + theme_bw() +
+	theme(axis.text.x = element_text(angle = -90),, panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(),
+	      legend.position = "none")  
+	ggsave(file.path("figures", "Change_effort.png"), height = 7, width = 7)
 
 
 ## Add reference points
@@ -104,9 +108,11 @@ ggplot(bio, aes(x = year, y = f_q50, group = sc)) +
        geom_vline(aes(xintercept = 2018), colour = "grey") +
        geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_wrap(~stock, scale = "free_y") + 
-	theme_bw() + ggtitle("Fishing mortality") +
+	theme_bw()  +
 expand_limits(y = 0) + ylab("Fishing mortality") + 
-xlab("year") + theme(axis.text.x = element_text(angle = -90))
+xlab("year") + theme(axis.text.x = element_text(angle = -90),
+		     panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(), legend.position = "top")
 ggsave(file.path("figures","F_difference.png"), height = 7, width = 12)
 
 ## SSB
@@ -118,9 +124,10 @@ ggplot(filter(bio,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22")),
 	geom_vline(aes(xintercept = 2018), colour = "grey") +
        geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_wrap(~stock, scale = "free_y") + 
-	theme_bw() + expand_limits(y = 0) + 
-	ggtitle("SSB differences") + xlab("year") + ylab("Spawning Stock Biomass") + 
-	theme(axis.text.x = element_text(angle = -90))
+	theme_bw() + expand_limits(y = 0) + xlab("year") + ylab("Spawning Stock Biomass (tonnes)") + 
+	theme(axis.text.x = element_text(angle = -90),
+		     panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(), legend.position = "top")
 ggsave(file.path("figures","SSB_difference.png"), height = 7, width = 12)
 
 # IE Otter catches
@@ -132,7 +139,9 @@ ggplot(filter(ie_otter_summary, year > 2003), aes(x = year, y = q50)) +
         geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_wrap(~stock) +
 theme_bw() + xlab("year") + ylab("Catch (tonnes)") + 
-theme(axis.text.x = element_text(angle = -90))
+theme(axis.text.x = element_text(angle = -90),
+		     panel.grid.major = element_blank(),
+	      panel.grid.minor = element_blank(), legend.position = "top")
 ggsave(file.path("figures","IE_Otter_catches.png"), height = 7, width = 12)
 
 
@@ -148,7 +157,7 @@ ggplot(filter(risk, stock == "COD"), aes(x = year, y = Btrigger.risk)) +
 
 ggplot(filter(risk, stock %in% c("COD", "HAD", "WHG")), aes(x = year, y = Fmsy.risk)) + 
 	geom_line(aes(colour = scenario)) + 
-	facet_wrap(~stock)
+	facet_wrap(~stock) + 
 ggsave(file.path("figures", "Fmsy_risk.png"), height = 7, width = 12)
 
 
@@ -167,7 +176,7 @@ ggplot(filter(risk2,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22",
         geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_grid(variable ~ stock) + 
 	scale_fill_gradient("stock risk",low = "#2dc937", high = "#cc3232") +
-	theme(axis.text.x = element_text(angle = -90)) + 
+	theme(axis.text.x = element_text(angle = -90), legend.position = "top") + 
 	ylab("Risk type")
 	
 ggsave(file.path("figures", "stock_risks.png"), height = 7, width = 12)
