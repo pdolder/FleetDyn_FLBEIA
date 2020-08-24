@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.14)  24 AUG 2020 16:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.14)  24 AUG 2020 20:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -651,18 +651,18 @@ File: lstlang3.sty 2015/06/04 1.6 listings language file
 ) (./FleetDynamicsFLBEIA.aux)
 \openout1 = `FleetDynamicsFLBEIA.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count137
@@ -749,28 +749,28 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \c@lstlisting=\count143
-LaTeX Font Info:    Try loading font information for U+msa on input line 57.
+LaTeX Font Info:    Try loading font information for U+msa on input line 58.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 57.
+LaTeX Font Info:    Try loading font information for U+msb on input line 58.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 57.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 58.
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 57.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 58.
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 57.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 58.
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <7> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 57.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 58.
 
-Underfull \hbox (badness 10000) in paragraph at lines 62--69
+Underfull \hbox (badness 10000) in paragraph at lines 63--70
 
  []
 
@@ -778,226 +778,237 @@ Underfull \hbox (badness 10000) in paragraph at lines 62--69
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 70--80
+Underfull \hbox (badness 10000) in paragraph at lines 71--81
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--88
+Underfull \hbox (badness 10000) in paragraph at lines 82--89
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 89--100
+Underfull \hbox (badness 10000) in paragraph at lines 90--101
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 101--112
+Underfull \hbox (badness 10000) in paragraph at lines 102--113
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 122--128
+Underfull \hbox (badness 10000) in paragraph at lines 123--130
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 148--155
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 156--162
+Underfull \hbox (badness 10000) in paragraph at lines 151--158
 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 170--171
+Underfull \hbox (badness 10000) in paragraph at lines 159--165
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 178--180
+Underfull \hbox (badness 10000) in paragraph at lines 173--174
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 194--199
+Underfull \hbox (badness 10000) in paragraph at lines 181--183
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 197--202
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 207--209
+Underfull \hbox (badness 10000) in paragraph at lines 210--212
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 218--221
+Underfull \hbox (badness 10000) in paragraph at lines 221--224
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 240--245
+Underfull \hbox (badness 10000) in paragraph at lines 243--248
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 246--252
-
- []
-
-[5]
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 258.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 257.
 (/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 258.
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--262
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 273--274
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 257.
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 260--263
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 283--284
+Underfull \hbox (badness 10000) in paragraph at lines 264--265
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--295
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 309--322
+Underfull \hbox (badness 10000) in paragraph at lines 286--287
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 297--298
 
  []
 
 [6]
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 330.
-
-Underfull \hbox (badness 10000) in paragraph at lines 356--357
+Underfull \hbox (badness 10000) in paragraph at lines 318--332
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 360--362
+Underfull \hbox (badness 10000) in paragraph at lines 340--348
 
  []
 
-(./FleetDynamicsFLBEIA.bbl [7]) [8]
-Overfull \hbox (5.98691pt too wide) in paragraph at lines 384--385
+
+Underfull \hbox (badness 10000) in paragraph at lines 349--356
+
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 357--361
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 397--398
+
+ []
+
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 401--403
+
+ []
+
+(./FleetDynamicsFLBEIA.bbl [9]) [10]
+Overfull \hbox (5.98691pt too wide) in paragraph at lines 425--426
 []|\OT1/cmr/m/n/12 Bmsytrigger| 
  []
 
-[9]
-<figures/FLBEIA.jpg, id=47, 1588.93625pt x 1875.005pt>
+[11]
+<figures/FLBEIA.jpg, id=53, 1588.93625pt x 1875.005pt>
 File: figures/FLBEIA.jpg Graphic file (type jpg)
 <use figures/FLBEIA.jpg>
-Package pdftex.def Info: figures/FLBEIA.jpg  used on input line 408.
+Package pdftex.def Info: figures/FLBEIA.jpg  used on input line 449.
 (pdftex.def)             Requested size: 271.7835pt x 320.69212pt.
-<figures/Final_Metier_locations.png, id=48, 216.81pt x 271.0125pt>
+<figures/Final_Metier_locations.png, id=54, 216.81pt x 271.0125pt>
 File: figures/Final_Metier_locations.png Graphic file (type png)
 <use figures/Final_Metier_locations.png>
-Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 419.
+Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line 460.
 (pdftex.def)             Requested size: 271.7835pt x 339.76965pt.
-<figures/Final_Metier_catchcomp.png, id=49, 469.755pt x 289.08pt>
+<figures/Final_Metier_catchcomp.png, id=55, 469.755pt x 289.08pt>
 File: figures/Final_Metier_catchcomp.png Graphic file (type png)
 <use figures/Final_Metier_catchcomp.png>
-Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 423.
+Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line 464.
 (pdftex.def)             Requested size: 362.37569pt x 222.9981pt.
-[10
+[12
 
 
  <./figures/FLBEIA.jpg>]
 
-LaTeX Warning: Text page 11 contains only floats.
+LaTeX Warning: Text page 13 contains only floats.
 
-[11 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>]
-<figures/Effort_shares.png, id=56, 867.24pt x 505.89pt>
+[13 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_catchcomp.png (PNG copy)>]
+<figures/Effort_shares.png, id=63, 867.24pt x 505.89pt>
 File: figures/Effort_shares.png Graphic file (type png)
 <use figures/Effort_shares.png>
-Package pdftex.def Info: figures/Effort_shares.png  used on input line 439.
+Package pdftex.def Info: figures/Effort_shares.png  used on input line 480.
 (pdftex.def)             Requested size: 700.50687pt x 408.64935pt.
-<figures/Effort_shares_annual.png, id=57, 505.89pt x 505.89pt>
+<figures/Effort_shares_annual.png, id=64, 505.89pt x 505.89pt>
 File: figures/Effort_shares_annual.png Graphic file (type png)
 <use figures/Effort_shares_annual.png>
-Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 453.
+Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 494.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/Change_effort.png, id=58, 505.89pt x 505.89pt>
+<figures/Change_effort.png, id=65, 505.89pt x 505.89pt>
 File: figures/Change_effort.png Graphic file (type png)
 <use figures/Change_effort.png>
-Package pdftex.def Info: figures/Change_effort.png  used on input line 465.
+Package pdftex.def Info: figures/Change_effort.png  used on input line 506.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/F_difference.png, id=59, 867.24pt x 505.89pt>
+<figures/F_difference.png, id=66, 867.24pt x 505.89pt>
 File: figures/F_difference.png Graphic file (type png)
 <use figures/F_difference.png>
-Package pdftex.def Info: figures/F_difference.png  used on input line 474.
+Package pdftex.def Info: figures/F_difference.png  used on input line 515.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/IE_Otter_catches.png, id=60, 867.24pt x 505.89pt>
+<figures/IE_Otter_catches.png, id=67, 867.24pt x 505.89pt>
 File: figures/IE_Otter_catches.png Graphic file (type png)
 <use figures/IE_Otter_catches.png>
-Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 488.
+Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 529.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/SSB_difference.png, id=61, 867.24pt x 505.89pt>
+<figures/SSB_difference.png, id=68, 867.24pt x 505.89pt>
 File: figures/SSB_difference.png Graphic file (type png)
 <use figures/SSB_difference.png>
-Package pdftex.def Info: figures/SSB_difference.png  used on input line 499.
+Package pdftex.def Info: figures/SSB_difference.png  used on input line 540.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/stock_risks.png, id=62, 867.24pt x 505.89pt>
+<figures/stock_risks.png, id=69, 867.24pt x 505.89pt>
 File: figures/stock_risks.png Graphic file (type png)
 <use figures/stock_risks.png>
-Package pdftex.def Info: figures/stock_risks.png  used on input line 512.
+Package pdftex.def Info: figures/stock_risks.png  used on input line 553.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-[12 <./figures/Effort_shares.png (PNG copy)>] [13 <./figures/Effort_shares_annual.png (PNG copy)>] [14 <./figures/Change_effort.png (PNG copy)>] [15 <./figures/F_difference.png (PNG copy)>] [16 <./figures/IE_Otter_catches.png (PNG copy)> <./figures/SSB_difference.png (PNG copy)>] [17 <./figures/stock_risks.png (PNG copy)>]
-<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=82, 504.9264pt x 505.1673pt>
+[14 <./figures/Effort_shares.png (PNG copy)>] [15 <./figures/Effort_shares_annual.png (PNG copy)>] [16 <./figures/Change_effort.png (PNG copy)>] [17 <./figures/F_difference.png (PNG copy)>] [18 <./figures/IE_Otter_catches.png (PNG copy)> <./figures/SSB_difference.png (PNG copy)>] [19 <./figures/stock_risks.png (PNG copy)>]
+<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=89, 504.9264pt x 505.1673pt>
 File: figures/Gravity_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/Gravity_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/Gravity_Metier_Catch_Rate_Multiplier.png  used on input line 528.
+Package pdftex.def Info: figures/Gravity_Metier_Catch_Rate_Multiplier.png  used on input line 569.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=83, 504.9264pt x 505.1673pt>
+<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=90, 504.9264pt x 505.1673pt>
 File: figures/RUM_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/RUM_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/RUM_Metier_Catch_Rate_Multiplier.png  used on input line 536.
+Package pdftex.def Info: figures/RUM_Metier_Catch_Rate_Multiplier.png  used on input line 577.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=84, 504.9264pt x 505.1673pt>
+<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=91, 504.9264pt x 505.1673pt>
 File: figures/Markov_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/Markov_Metier_Catch_Rate_Multiplier.png>
-Package pdftex.def Info: figures/Markov_Metier_Catch_Rate_Multiplier.png  used on input line 544.
+Package pdftex.def Info: figures/Markov_Metier_Catch_Rate_Multiplier.png  used on input line 585.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/RUM_metier_seasonal_effect.png, id=85, 504.9264pt x 505.1673pt>
+<figures/RUM_metier_seasonal_effect.png, id=92, 504.9264pt x 505.1673pt>
 File: figures/RUM_metier_seasonal_effect.png Graphic file (type png)
 <use figures/RUM_metier_seasonal_effect.png>
-Package pdftex.def Info: figures/RUM_metier_seasonal_effect.png  used on input line 552.
+Package pdftex.def Info: figures/RUM_metier_seasonal_effect.png  used on input line 593.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/Markov_metier_seasonal_effect.png, id=86, 505.89pt x 505.89pt>
+<figures/Markov_metier_seasonal_effect.png, id=93, 505.89pt x 505.89pt>
 File: figures/Markov_metier_seasonal_effect.png Graphic file (type png)
 <use figures/Markov_metier_seasonal_effect.png>
-Package pdftex.def Info: figures/Markov_metier_seasonal_effect.png  used on input line 559.
+Package pdftex.def Info: figures/Markov_metier_seasonal_effect.png  used on input line 600.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-[18
+[20
 
- <./figures/Gravity_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [19 <./figures/RUM_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [20 <./figures/Markov_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [21 <./figures/RUM_metier_seasonal_effect.png (PNG copy)>] [22 <./figures/Markov_metier_seasonal_effect.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
+ <./figures/Gravity_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [21 <./figures/RUM_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [22 <./figures/Markov_Metier_Catch_Rate_Multiplier.png (PNG copy)>] [23 <./figures/RUM_metier_seasonal_effect.png (PNG copy)>] [24 <./figures/Markov_metier_seasonal_effect.png (PNG copy)>] (./FleetDynamicsFLBEIA.aux) ) 
 Here is how much of TeX's memory you used:
- 7478 strings out of 492982
- 97449 string characters out of 6134895
- 253454 words of memory out of 5000000
- 10860 multiletter control sequences out of 15000+600000
+ 7476 strings out of 492982
+ 97421 string characters out of 6134895
+ 252565 words of memory out of 5000000
+ 10858 multiletter control sequences out of 15000+600000
  14914 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,10n,40p,563b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on FleetDynamicsFLBEIA.pdf (22 pages, 4102074 bytes).
+Output written on FleetDynamicsFLBEIA.pdf (24 pages, 4106540 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 98 compressed objects within 1 object stream
+ 161 PDF objects out of 1000 (max. 8388607)
+ 102 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  76 words of extra memory for PDF output out of 10000 (max. 10000000)
 
