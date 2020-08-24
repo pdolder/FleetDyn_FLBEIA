@@ -165,7 +165,7 @@ FLBEIA can be installed directly as a library in R from github
 simulation can be found in the technical manual \citep{Garcia2017a} and
 examples (\url{https://flr-project.org/doc/FLBEIA_A_Simple_Example.html}). 
 
-\subsection{Location choice models}
+\subsection{Derivation of the location choice models}
 
 The five models implemented include:\\
 
@@ -174,6 +174,9 @@ $t$ is:
 \begin{equation}
 p^{b}_{m,t} = \overline{p}_{m}
 \end{equation}
+
+This ensures that future effort is simply determined by the past share of
+effort, as an average over the past years defined by the user. \\
 
 (ii) A \textbf{Gravity model} (g) where the proportion of effort in métier $m$ at
 time $t$ is given by: 
@@ -194,11 +197,11 @@ implement this approach based on profit per unit effort, where the cost per
 unit of effort of fishing in a particular métier are subtracted from equation
 \ref{eqn:ppue}. \\
 
-(iii) A \textbf{Gravity and Past Share Combination}, an alternative formulation
+(iii) A \textbf{Gravity and tradition Combination}, an alternative formulation
 of a gravity model was included, where 80\% (denoted by $\alpha$) of the effort
 allocation was determined by past effort (tradition, or inertia) and 20\% by
 the gravity model (economic opportunism). This Gravity-Tradition combination
-model (superscripted $c$) is given by:
+model ($c$) is given by:
 \begin{equation}
 	p^{c}_{m,t} = \alpha \cdot p^{p}_{m,t} + (1 - \alpha) \cdot p^{g}_{m,t}
 \end{equation}
@@ -232,7 +235,7 @@ p^m_{z,m,t} = \frac{e^{\beta_{z,m} X_{t}}}{1+e^{\beta_{z,m} X_{t}}}
 Seasonal changes can be included through the effect of month in the vector
 $X_t$. 
 
-\subsection{Location choice model specification in FLBEIA}
+\subsection{Implementing location choice models in FLBEIA}
 
 Each of the models has been implemented flexibly so that the covariates can be
 derived from any of the stocks catch rates or elements from an internal FLBEIA
@@ -299,14 +302,27 @@ fleets.ctrl[[fleet]][['effshare.model']] <-  'Markov.flbeia'
 fleets.ctrl[[fleet]][['Markov.model']]   <-  Markov_fit 
 \end{lstlisting}
 
-
-
 \subsection{Applied example}
+
+\subsubsection{FLBEIA model for the Celtic Sea}
+
+To demonstrate the use of the location choice models we conditioned an FLBEIA
+model based on the Celtic Sea (ICES sub-divisions 7bc,e-k) demersal fisheries.
+It included seven species; six with age-based population dynamics: European cod
+(\textit{Gadus morhua}), haddock (\textit{Melanogrammus aeglefinus}),
+anglerfishes (\textit{Lophius spp.}), European Hake (\textit{Merluccius
+	merluccius}), Megrims (\textit{Lepidorhombus spp.}), European Whiting
+(\textit{Merlangius merlangus}) and five \textit{Nephrops norvegicus} stocks
+(Functional Units 16, 17, 19, 20-21 and 22) with biomass-based population
+dynamics. The model was setup to be seasonal, with quarterly time-steps and
+included 12 fleets; the Irish Otter trawl fleet was explicitly modelled while
+the remaining catches were aggregated into a "COD\_fleet", "HAD\_fleet" etc..
+This approach ensured that any differences observed between scenarios was down
+to the choice of location model for the Irish otter trawl fleet only. \\
 
 We assume that the Irish Otter trawl fleet stops fishing when the effort
 corresponding to the closest stock specific effort in the previous year for all
-location choice models. Thus the difference in the location choice model
-scenarios was down exclusively to  \\ 
+location choice models.
 
 
 
