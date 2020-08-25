@@ -91,7 +91,7 @@ Here, we extend application of FLBEIA to include commonly used fleet dynamics
 models for location choice. This includes the Caddy Gravity model, the
 conditional logit Random Utility model and a Markov transition model. We apply
 the models to the Celtic Sea demersal fisheries, with location choice for Irish
-otter trawlers among nine areas determined by each of the location choice
+otter trawlers among seven areas determined by each of the location choice
 models and compared to a base case of constant effort. In doing so we show how
 different outcomes may be achieved given different assumptions about location
 choice. We recommend implementation of different fleet location choice
@@ -121,52 +121,62 @@ fisheries strategies.
 \label{meth}
 
 We implemented five location choice models within the FLBEIA modelling
-framework: a base `tradition' model where effort remains the same as in the
-past, a gravity model, a hybrid gravity-tradition model, a conditional logit
-Random Utility Model (RUM) and a Markov transition model. Each of the models
-were fitted to data and effort share among métier was predicted within the
-FLBEIA simulation, with coefficients informing the effort allocations updated
-dynamically based on changes in the fishery dynamics.  \\
+framework: i) a base `tradition' model where effort remains the same as in the
+past, ii) a gravity model, iii) a hybrid gravity-tradition model, iv) a
+conditional logit Random Utility Model (RUM) and v) a Markov transition model.
+Each of the models were fitted to data and effort share among métier was
+predicted within the FLBEIA simulation, with coefficients informing the effort
+allocations updated dynamically based on changes in the fishery dynamics.  \\
 
-We applied the models to the Irish Otter trawl fleet in selecting among 9
-different locations (defined as métier) fishing in the Celtic Sea (ICES
-subdivisions 7bc,e-k) and implemented a closure of one of the métier part way
-through the simulations. We then compared the outcomes for the fisheries in
-terms of catch for the fleet and stock-based fishery indicators to assess the
-differences in outcome given the location choice model used.
+We applied the models in the FLBEIA simulation framework to the Irish Otter
+trawl fleet in selecting among 9 different locations (defined as métier)
+fishing in the Celtic Sea (ICES subdivisions 7bc,e-k) and implemented a closure
+of one of the métier part way through the simulations. We then compared the
+outcomes for the fisheries catch projections for the fleet and stock-based
+fishery indicators to assess the differences in outcome given the location
+choice model used.
 
 \subsection{FLBEIA}
 
-To model inter-annual fleet dynamics, FLBEIA explicitly defines the
-relationships between the fishing effort of each fleet and the catch of each
-stock: this is determined by the overall effort by a fleet, the allocation of
-that effort among different métier and the catchability for each stock within
-the métier \citep{Garcia2017a}:
+Here we concentrate only on the methods that relate to the allocation of
+fishing effort and catch production dynamics. Full details of the population,
+management and fleet capital dynamics as well as details on setting up an
+FLBEIA simulation and can be found in the technical manual \citep{Garcia2017a},
+with examples here:
+(\url{https://flr-project.org/doc/FLBEIA_A_Simple_Example.html}). FLBEIA can be
+installed as a library in R from github (\url{www.github.com/flr/FLBEIA}).  \\ 
+
+To model seasonal and inter-annual fleet dynamics, FLBEIA explicitly defines
+the relationships between the fishing effort of each fleet and the catch of
+each stock: this is determined by the overall effort by a fleet, the allocation
+of that effort among different métier and the catchability for each stock
+within the métier \citep{Garcia2017a}:
 
 \begin{equation}
  C_{f,s} = q_{f,m,s}\cdot B_{s}^{\beta_{f,m,s}} \cdot \left(E_{f}\cdot
 	 \delta_{f,m} \right)^{\alpha_{f,m,s}}	
 \end{equation}
 
-Where $C_{f,s}$ is the catch of fleet $f$ for stock $s$, $q$ is the
-catchability for métier $m$ and $B$ biomass for the stock, with $E_{f}\cdot
-\delta_{f,m}$ the Effort $E$ and $\delta$ the métier effort share (0...1).
-$\alpha$ and $\beta$ are Cobb-Douglas production coefficients, where when set
-to 1 gives a linear relationship between fishing effort and catch for a given
-biomass. For simplicity, the age subscript has been dropped but the equation
-also applies on an age-by-age basis. \\
+Where within a given timestep $C_{f,s}$ is the catch of fleet $f$ for stock
+$s$, $q$ is the catchability for métier $m$ and $B$ biomass for the stock, with
+$E_{f}\cdot \delta_{f,m}$ the Effort $E$ and $\delta$ the métier effort share
+(0...1).  $\alpha$ and $\beta$ are Cobb-Douglas production coefficients, where
+when set to 1 gives a linear relationship between fishing effort and catch for
+a given biomass. For simplicity, the time and age subscripts have been dropped,
+but the equation also applies on an age-by-age basis for catch, catchability
+and biomass. \\
 
-The overall effort deployed by the fleet determines the catch of each stock. An
-assumption must be made as to how much effort a fleet deploys in response to
-the available fishing opportunities. Options include stopping fishing when the
-first quota is reached (`min'), the last quota is reached (`max') or a spectrum
-in between for each of the available stocks `st': this approach is known within
-FLBEIA as `Simple Mixed Fishery Behaviour'n (SMFB).  \\
+The overall effort deployed by the fleet determines the catch of each stock,
+but a prediction must be made as to how much effort a fleet deploys in response
+to the available fishing opportunities. Optional rules include stopping fishing
+when the first quota is reached (`min'), the last quota is reached (`max') or a
+spectrum in between: this approach is known within FLBEIA as `Simple Mixed
+Fishery Behaviour' (SMFB). \\
 
-FLBEIA can be installed directly as a library in R from github
-(\url{www.github.com/flr/FLBEIA}). Full details of setting up an FLBEIA
-simulation can be found in the technical manual \citep{Garcia2017a} and
-examples (\url{https://flr-project.org/doc/FLBEIA_A_Simple_Example.html}). 
+Our focus in implementing location choice models within FLBEIA is on
+determining how $\delta_{f,m}$ for $m=1...M$ might respond to changing fishing
+opportunities and management regulation to provide plausible alternative fleet
+operating models in evaluating multi-stock mixed fishery management strategies. 
 
 \subsection{Derivation of the location choice models}
 
@@ -239,6 +249,7 @@ Seasonal changes can be included through the effect of month in the vector
 $X_t$. 
 
 \subsection{Implementing location choice models in FLBEIA}
+\label{sec:imp}
 
 Each of the models has been implemented flexibly within FLBEIA so that the
 covariates can be derived from any of the stock-specific catch rates or
@@ -258,15 +269,15 @@ fleets.ctrl[[fleet]][['effort.model']]   <- 'SMFB_ES'
 \end{lstlisting} 
 
 Each of the location choice models can then be specified through the following
-changes (as (i) is the base case, no changes are needed to implement this
-approach): \\
+changes. As (i) is the base case, no changes are needed to implement this
+approach, so it is not detailed here: \\
 
 (ii) \textbf{Gravity model} \\
 
 To implement the gravity model requires no model formula to be passed to
 FLBEIA, but you can set different options once the effort share model has been
-set. The following implements a gravity model based only on the revenue from
-each of the métier:
+specified. The following implements a gravity model based only on the revenue
+from each of the métier:
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][['effshare.model']] <- 'gravity.flbeia'
@@ -275,9 +286,9 @@ fleets.ctrl[[fleet]][['gravity.model']] <- 'revenue' ## alternative:profit
 
 (iii) \textbf{Gravity tradition model} \\
 
-To implement the gravity-tradition hybrid model requires an additional option
-to be passed to FLBEIA specifying the proportion of the métiers effort that
-should be determined by the past share, or tradition:
+To extend (i) to the gravity-tradition hybrid model requires an additional
+option to be passed to FLBEIA specifying the proportion of the métiers effort
+that should be determined by the past share (or tradition):
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][["gravity.tradition"]] <- 0.8 ## 80 % from tradition
@@ -286,32 +297,53 @@ fleets.ctrl[[fleet]][["gravity.tradition"]] <- 0.8 ## 80 % from tradition
 (iv) \textbf{Random Utility Model} \\
 
 To implement a RUM, the model must first be estimated using the R package
-\textit{mlogit} \citep{Croissant2019} and the function \textbf{mlogit}.
+\textit{mlogit} \citep{Croissant2019} and the function \textbf{mlogit}. This
+takes a specifically formatted data frame which includes values for both the
+choice and the alternatives (see \textit{mlogit.data} for details) and a
+standard formula and returns a model object. For example, a model with `cod'
+and `had' catch rates as choice specific covariates and season as a case
+specific covariate is specified as:
+
+\begin{lstlisting}[language=R]
+model <- mlogit(choice ~ Cod + Had .... | season, data = data)
+\end{lstlisting}
+
+
 Following estimation, the model object should be passed to FLBEIA as follows:
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][['effshare.model']] <-  'mlogit.flbeia'
-fleets.ctrl[[fleet]][['mlogit.model']]   <-  RUM_model_fit
+fleets.ctrl[[fleet]][['mlogit.model']]   <-  model 
 \end{lstlisting}
 
 (v) \textbf{Markov transition model} \\
 
 The Markov model is implemented with the R package \textit{nnet} and the
-function \textbf{multinom}. Following estimation, the model object should be
-passed to FLBEIA as follows:
+function \textbf{multinom}. In order to enforce the Markov property and
+generate transition probabilities between states, the previous state should be
+included as a covariate, for example:
+
+\begin{lstlisting}[language=R]
+model <- multinom(choice ~ choice.tminus1 + Cod.tminus1 + Had.tminus1 +
+season.tminus1, data = data)
+\end{lstlisting}
+
+Following estimation, the model object should be passed to FLBEIA as follows:
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][['effshare.model']] <-  'Markov.flbeia'
-fleets.ctrl[[fleet]][['Markov.model']]   <-  Markov_fit 
+fleets.ctrl[[fleet]][['Markov.model']]   <-   model 
 \end{lstlisting}
 
 \subsection{Applied example}
 
-The following demonstrates the application of the location choice models in a
-management strategy evaluation scenario. For the purposes we've defined a
-multi-stock multi-fleet fishery and applied the same management measures with
-each of the location choice models, utilising the models as alternative fleet
-dynamics in a wider MSE setup.
+Here we demonstrate application of the location choice models as alternate
+hypothesis for short-term fleet dynamics in a management strategy evaluation.
+For the purposes we've defined a multi-stock multi-fleet fishery and applied
+the same management measures with each of the location choice models, utilising
+the models as alternative fleet dynamics in a wider MSE setup. Focus has been
+solely on the location choice models to demonstrate their use, rather than the
+wider MSE set up.
 
 \subsubsection{FLBEIA model for the Celtic Sea}
 
@@ -323,54 +355,91 @@ anglerfishes (\textit{Lophius spp.}), European Hake (\textit{Merluccius
 	merluccius}), Megrims (\textit{Lepidorhombus spp.}), European Whiting
 (\textit{Merlangius merlangus}) and five \textit{Nephrops norvegicus} stocks
 (Functional Units 16, 17, 19, 20-21 and 22) with biomass-based population
-dynamics. The model was setup to be seasonal, with quarterly time-steps and
-included 12 fleets; the Irish Otter trawl fleet was explicitly modelled while
-the remaining catches were aggregated into a separate fleet (``COD\_fleet",
-``HAD\_fleet" etc..). This approach ensured that any differences observed
-between scenarios was down to the choice of location model for the Irish otter
-trawl fleet only. \\
+dynamics. The model was conditioned to be seasonal, with quarterly time-steps
+and included 12 fleets; the Irish Otter trawl fleet was explicitly modelled
+while the remaining catches were aggregated into a separate fleet
+(``COD\_fleet", ``HAD\_fleet" etc..). This approach ensured that any
+differences observed between scenarios was down to the choice of location model
+for the Irish otter trawl fleet only. \\
 
 We assume that the Irish Otter trawl fleet stops fishing when the effort
 corresponding to the closest stock specific effort in the previous year for all
-location choice models. While other choices are available, we considered this
-to be a reasonable representation of dynamics in the fishery. 
+location choice models. While other choices are available (as outlined in
+Section \ref{sec:imp}), we considered this to be a reasonable representation of
+dynamics in the fishery. 
 
 \subsubsection{Model conditioning}
 
 The data used to condition the model included the assessment outputs from the
-ICES single stock assessments undertaken in 2018 (last year of data was
-2017; REF WGCSE) which include the biological parameters such as
-numbers-at-age, weights-at-age, maturity and natural mortality as well as
-recent fishing mortality rates. As the data is annual we partitioned the data
-into quarterly estimates by fitting a Von Bertalanffy Growth curve to the mean
-weights and allocating the catch at age according to the quarterly weighted
-estimates from the fleet data. \\
+ICES single stock assessments undertaken in 2018 \citep{ICES2018} which include
+the biological parameters such as numbers-at-age, weights-at-age, maturity and
+natural mortality as well as recent fishing mortality rates. As the data is
+annual we partitioned the data into quarterly estimates by fitting a Von
+Bertalanffy Growth curve to the mean weights and allocating the catch at age
+according to the quarterly weighted estimates from the fleet data. \\
 
-The fleet data on catches was derived from STECF (2004 - 2017; REF STECF) which
-was spatially disaggregated landings and spatially aggregated fishing effort in
-kilowatt-days and landings and discards in tonnes. We used the spatial data as
-relative as it did not sum to the total estimates, and disaggregated across
-ages according to the division in the ICES assessment data. While we would in
-reality want to make this fleet and métier specific, the data were processed
-for illustrative purposes to demonstrate use of the location choice model. \\
+The fleet data on catches was derived from STECF \citep{STECF2017} which
+included spatially disaggregated landings and fishing effort, and spatially
+aggregated fishing effort in kilowatt-days and landings and discards in tonnes.
+We used the spatial data as relative as it did not include discards, and
+disaggregated the landings, discard and effort data spatially using the spatial
+relative data, and across ages according to the division in the ICES assessment
+data. While we would in reality want to make the age-structure of the catch
+data fleet and métier specific, the data were processed for illustrative
+purposes to demonstrate use of the location choice model rather than an
+assessment of specific management options. \\
 
 Métier were defined by using the STECF spatial data set to aggregate ICES
-statistical rectangles into groups that were similar in catch profile, as
-defined by the ward clustering algorithm implemented in R 3.6.3 (REF VERS),
-adjusted based on expert knowledge of contiguous fishing areas. \\ 
+statistical rectangles into groups of spatial areas that were similar in catch
+profile, as defined by the ward clustering algorithm implemented in R 3.6.3
+\citep{Team2020}, which were subsequently adjusted based on expert knowledge of
+contiguous fishing areas. \\ 
+
+\subsubsection{Location choice model fits}
+
+To fit the RUM and Markov model we allocated the historical activity of the
+fleets to each of the métier. As the data we had was aggregated to quarterly
+information, which was unsuitable for fitting the conditional logit (for the
+RUM) and the multinomial (for the Markov model) we generated some pseudo-data
+at the trip level by i) sampling 1000 times with replacement from the observed
+proportions in each of the métier in each year, ii) sampling from the observed
+mean catch rates with a standard deviation of 0.2 x mean for each of the
+stocks, iii) using the generated data as individual observations for trips in a
+given season and year.  \\
+
+We then use the pseudo-dataset to fit all 8192 possible combinations of RUM
+covariates (11 stocks, plus past effort share and season = $11^2 \times 4$)
+using \textit{mlogit} to find the best fitting model according to BIC
+\citep{Schwarz1978}. Due to computing limitations, rather than fit all
+combinations of the Markov model we used the same covariates as identified for
+the RUM. 
+
+\subsubsection{Simulations with location choice models}
+
+For each stock the harvest rate was set according to the ICES Fmsy strategy
+where fishing mortality is targeted at Fmsy unless the stock is below the
+biomass reference point Bmsytrigger, in which case it is reduced linearly to
+zero (see Table \ref{tab:brp} for reference points). Resultant seasonal catch
+was determined by the fishing opportunities, total fleet effort as predicted by
+the SFMB (taking account of mixed-fishery interactions) and effort share among
+métier according to the location choice model. \\
 
 Simulations were run from 2018 - 2030 with a closure introduced in year 2021
-for métier F.  Variability in the simulations was introduced by fitting a
+for métier F. Variability in the simulations was introduced by fitting a
 hockey-stock stock-recruit relationship for each of the stocks and lognormal
 uncertainty around the estimated fit used to generate draws for 500 iterations.
-The \textit{Nephrops} growth was assumed to be deterministic, as biomass
-dynamic growth and capacity parameters were used to simulate stock development.
-As a further element, the catchability for the past three years for the métier
-and stocks were used to generate variability in the within-métier
-catchabilities among species (these were kept the same within years as
-variability may reflect some historic inter-annual variability in targeting for
-a métier). The same seed was used for each run in order to ensure the
-stochastic variability was identical across location choice models.
+The \textit{Nephrops} growth was assumed to be deterministic with biomass
+dynamic growth rate ($r$) and capacity ($K$) parameters used to simulate stock
+development with a Pella-Tomlinson model. \\
+
+In addition to stochasticity in recruitment for the age-structure stocks, the
+Irish otter trawl fleet catchability for each métier and stock was drawn from
+the last three years estimates, to generate variability in the within-métier
+catchabilities among species. These were kept to ensure the same relationship
+between stocks as variability may reflect some historic inter-annual
+variability in targeting for a métier. The same seed was used for each location
+choice model in order to ensure the stochastic variability was identical in
+comparison.
 
 \subsubsection{Comparison}
 
@@ -386,13 +455,112 @@ towards a mixed-fishery MSE approach.
 \section{Results}
 \label{res}
 
-\subsection{Métier definitions (fig 2)}
+\subsection{Métier definitions}
 
-\subsection{Species influence from gravity, rum and markov models}
+The spatial métier identified for the Irish Otter trawl fleet (Figure
+\ref{fig:metier}) show seven distinct areas with different catch patterns.
+Métier A is a large area defined by a broad mix of stocks where there is
+relatively low fishing effort compared to the concentration of effort in the
+other areas. Métier B is defined by catches of \textit{Nephrops FU16}
+(Porcupine bank) but also includes catch of anglerfishes, hake and megrim and a
+small proportion of haddock. Métier C is defined by catches of \textit{Nephrops
+	FU20-21} (Labadie, Jones and Cockburn grounds) but also includes a mix
+of megrims, hake, haddock, cod and anglerfishes. Métier D covers an area
+South-West of Ireland and is characterised by catches of whiting, haddock,
+megrims, hake, anglerfishes, \textit{Nephrops FU19}, and a small proportion of
+cod. Métier E covers an area South-East of Ireland and includes a large
+proportion of whiting and haddock, and shares of megrims, \textit{Nephrops
+	FU19}, anglerfishes, cod, hake and \textit{Nephrops FU22}.  Métier F is
+a single ICES statistical rectangle, with the majority of catch
+\textit{Nephrops FU22} and whiting, but also with catches of haddock, cod and
+anglerfishes and smaller proportions of megrims and hake. Finally, métier G is
+an area off the West coast of Ireland (Aran grounds) which is predominately
+catches of \textit{Nephrops FU17} with a mix of whiting, megrims, haddock and
+anglerfish and a small catch of hake.
 
-\subsection{Effort allocations (fig 3, 4, 5)}
+\subsection{Catch rate influence on gravity, rum and markov predictions}
 
-\subsection{Stock indicators}
+For the gravity model the influence of a stock catch rate on effort allocation
+was determined directly by the relative abundance of a stock in a métier and
+the relative price. For example, an increase in abundance of hake results in an
+increase in allocation of effort to métier D while an increase in abundance of
+\textit{Nephrops FU16} results in an increase in effort allocation to métier B
+(Figure \ref{fig:Grav_CR}). \\
+
+For the RUM we found that the model that included catch rates of anglerfishes,
+cod, hake, \textit{Nephrops} FU19, \textit{Nephrops} FU22 and whiting along
+with a seasonal affect (Figure \ref{fig:RUM_Seas}) was best. Unlike the gravity
+model the influence of a stock catch rate (beyond the allocation determined by
+the intercept from the model) could be both negative when increasing as well as
+positive; for example we found that increasing abundance of anglerfishes led to
+more fishing effort being allocated to métier F and less to métier A, while the
+relationship with métier E was concave (Figure \ref{fig:RUM_CR}). \\
+
+For the Markov model (beyond the intercept) a sesaonal effect (Figure
+\ref{fig:Markov_Seas}) and increasing abundance of anglerfishes led to more
+effort allocated to métier C while increasing abundance of whiting led to more
+effort allocated to métier E (Figure \ref{fig:Markov_CR}).
+
+\subsection{Effort allocations under different location choice assumptions}
+
+The influence of different catch rates and seasonal effects was a product of
+all the changes in population dynamics; all of the models demonstrated seasonal
+differences in allocation of fishing effort to the different métier and
+differences dependent on the iteration and recruitment for the stocks (Figure
+\ref{fig:effort}), except the base case which was determined only based on past
+allocations). We found that prior to the closure of métier F the Gravity model
+allocated more effort to métier B and G than the base case or the other models,
+while the RUM allocated more effort to métiers E and F (Figure Figure
+(\ref{fig:effort_an}). The Markov model allocated more effort to métier D and A
+and less to and B than the rest of the models (Figure \ref{fig:effort_an}). The
+gravity-tradition model was a compromise between the base case and the pure
+gravity model, as to be expected. \\
+
+Following the closure of métier F differences can be seen in how the location
+choice models allocated the effort to other areas (Figure
+\ref{fig:effort_chg}). While the baseline run allocated effort proportionally
+to the existing allocations, the gravity model also reduced effort in métier B
+and allocated a greater proportion of the effort to métiers C, D and E. The RUM
+allocated a greater proportion of effort to métier E and C than the others,
+while the Markov showed the greatest variation in allocating a greater
+proportion of the effort to métier C followed by B and only a small part of the
+effort to métier D.
+
+\subsection{Impact of choices on stock level indicators}
+
+The impact at the stock level was limited by the fact that the fleet dynamics
+model was only implemented for the Irish otter trawl fleet, which only catches
+a proportion of the total catch for each of the stocks. Nonetheless, the
+location choice model led to differences in median catches of all stocks
+(Figure \ref{fig:OtterC}), with lower catches of cod and haddock under the
+gravity model and higher catches of megrims under both the gravity and RUM
+choice models. Higher catches of whiting and hake were observed with the Markov
+model.  In general, however, the scale of catches was more influences by the
+recruitment and within métier catchability variability than the location choice
+model. \\
+
+At the stock level the difference in catches under the different choice models,
+while again influenced more by recruitment for the different stocks, led to a
+lower median fishing mortality on cod with the gravity model, while there was a
+higher fishing mortality on megrims with the markov and the gravity models and
+a lower fishing mortality with the RUM model. Conversely there was a higher
+fishing mortality on whiting with the RUM and Markov models (Figure
+\ref{fig:F}). These difference led to some differences in spawning stock
+biomass development (Figure \ref{fig:SSB}) with cod rebuilding more quickly
+under the gravity model assumption and megrims SSB plateauing at a lower level
+under the gravity and markov models. \\
+
+THOUGHT HERE: COULD TRY PLOTTING THE MEDIAN WITH A NUMBER OF THE INDIVIDUAL
+ITERATIONS, MIGHT HAVE LED TO MORE INTERESTING DYNAMICS AT THAT LEVEL WHERE THE
+MEDIAN IS SMOOTHED ??
+
+While the differences among the location choice models for the main stock
+indicators was small, it did lead to an appreciate difference in the ability to
+meet the Fmsy objective for cod, haddock and megrim as well as some impact on
+the biomass based indicators (Figure \ref{fig:risk}). \\
+
+\section{Discussion}
+\label{dis}
 
 Characteristics of the different modelling approaches. \\
 
@@ -401,9 +569,6 @@ How each model is affecting by different species catch rates \\.
 Combining inference from the models (different location choice OM, conclusions
 about overall strategy. \\
 
-
-\section{Discussion}
-\label{dis}
 
 \section{Conclusions}
 \label{con}
@@ -420,26 +585,33 @@ The authors would like to thank...
 
 \begin{table}
 	\center
-	\begin{tabular}{p{4cm} p{3cm} p{2cm} p{2cm} p{2cm}}
+	\begin{tabular}{p{3.2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{1cm} p {1cm}}
 		\toprule
-		Stock & Code & Fmsy & Blim & Bmsytrigger \\
+		Stock & Code & Fmsy & Blim & Bmsytrigger & $r$ & $K$ \\
 		\hline
-		Cod & COD & 0.35 & 7,300  & 10,300 \\
-		Haddock & HAD & 0.4 & 6,700 & 10,000 \\
-		Anglerfishes & ANF & 0.28 & 16,032 & 22,278 \\
-		European Hake & HKE & 0.28 & 32,000 & 45,000 \\
-		Megrims & LEZ & 0.191 & 37,100 & 41,800 \\
-		Whiting & WHG & 0.52 & 25,000 & 35,000 \\
-		\textit{Nephrops} FU16 & NEP16 & 0.062 & 19,880 & 49,700 \\
-		\textit{Nephrops} FU17 & NEP17 & 0.085 & 4,637 & 11,593 \\
-	        \textit{Nephrops} FU19 & NEP19 & 0.093 & 4,032 & 10,080 \\
-		\textit{Nephrops} FU2021 & NEP2021 & 0.06 & 33,040 & 82,600 \\
-		\textit{Nephrops} FU22 & NEP22 & 0.128 & 7,585 & 18,963 \\
+		Cod & COD & 0.35 & 7,300  & 10,300 & - & - \\
+		Haddock & HAD & 0.4 & 6,700 & 10,000 & - & -  \\
+		Anglerfishes & ANF & 0.28 & 16,032 & 22,278 & - & -  \\
+		European Hake & HKE & 0.28 & 32,000 & 45,000 & - & -  \\
+		Megrims & LEZ & 0.191 & 37,100 & 41,800 & - & -  \\
+		Whiting & WHG & 0.52 & 25,000 & 35,000 & - & -   \\
+		\textit{Nephrops} FU16 & NEP16 & 0.062 & 19,880 & 49,700 & 0.25
+		& 71,000  \\
+		\textit{Nephrops} FU17 & NEP17 & 0.085 & 4,637 & 11,593 & 0.6 &
+		16,000 \\
+	        \textit{Nephrops} FU19 & NEP19 & 0.093 & 4,032 & 10,080 & 0.6 &
+		24,000 \\
+		\textit{Nephrops} FU2021 & NEP2021 & 0.06 & 33,040 & 82,600 &
+		0.6 & 118,000 \\
+		\textit{Nephrops} FU22 & NEP22 & 0.128 & 7,585 & 18,963 & 0.6 &
+		29,000 \\
 		\bottomrule
 	\end{tabular}
 	\label{tab:brp}
-	\caption{Biological Reference Points used in the Harvest Control Rules for each
-		stock when setting the overall annual Total Allowable Catch.}
+	\caption{Biological Reference Points used in the Harvest Control Rules
+		for each stock when setting the overall annual Total Allowable
+		Catch.  Biomass dynamic growth ($r$) and capacity ($K$) only
+		shown for BD stocks.}
 \end{table}
 
 \clearpage
@@ -512,6 +684,17 @@ The authors would like to thank...
 
 \begin{figure}[!ht]
 	\centering
+	\includegraphics[width=1\linewidth]{figures/IE_Otter_catches}
+	\caption{Catches of each stock by Irish Otter trawlers under the
+		different location choice models. Light shading represents 5\%
+		and 95\% variability due to recruitment and catchability. Solid
+		line indicates end of the data/start of simulations and the
+		dashed line the implementation of the spatial closure.} 
+	\label{fig:OtterC}
+\end{figure}	
+
+\begin{figure}[!ht]
+	\centering
 	\includegraphics[width=1\linewidth]{figures/F_difference}
 	\caption{Fishing mortality for each stock under the different location
 		choice models. Each stock was targeted to be fished at its Fmsy
@@ -522,17 +705,6 @@ The authors would like to thank...
 		spatial closure. Dashed red lines indicate the stock Fmsy
 		reference point.} 
 	\label{fig:F}
-\end{figure}	
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1\linewidth]{figures/IE_Otter_catches}
-	\caption{Catches of each stock by Irish Otter trawlers under the
-		different location choice models. Light shading represents 5\%
-		and 95\% variability due to recruitment and catchability. Solid
-		line indicates end of the data/start of simulations and the
-		dashed line the implementation of the spatial closure.} 
-	\label{fig:OtterC}
 \end{figure}	
 
 \begin{figure}[!ht]

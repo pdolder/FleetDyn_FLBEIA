@@ -168,6 +168,7 @@ risk2 <- reshape2::melt(risk, id = c("scenario", "stock", "year"), value.name = 
 ## Order the plots so Fmsy.risk is first
 risk2$variable <- factor(risk2$variable, c("Fmsy.risk", "Blim.risk", "Btrigger.risk")) 
 levels(risk2$variable)[levels(risk2$variable) == "Btrigger.risk"] <- "Bmsytrigger.risk"
+levels(risk2$stock)[levels(risk2$stock) == "NMEG"] <- "LEZ"
 
 
 ggplot(filter(risk2,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22", "MON", "NHKE","WHG")), 

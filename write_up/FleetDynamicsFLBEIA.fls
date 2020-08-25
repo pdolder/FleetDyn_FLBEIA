@@ -172,6 +172,7 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT FleetDynamicsFLBEIA.pdf
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
@@ -192,7 +193,6 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy6.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
@@ -217,12 +217,12 @@ INPUT ./figures/Effort_shares_annual.png
 INPUT figures/Change_effort.png
 INPUT ./figures/Change_effort.png
 INPUT ./figures/Change_effort.png
-INPUT figures/F_difference.png
-INPUT ./figures/F_difference.png
-INPUT ./figures/F_difference.png
 INPUT figures/IE_Otter_catches.png
 INPUT ./figures/IE_Otter_catches.png
 INPUT ./figures/IE_Otter_catches.png
+INPUT figures/F_difference.png
+INPUT ./figures/F_difference.png
+INPUT ./figures/F_difference.png
 INPUT figures/SSB_difference.png
 INPUT ./figures/SSB_difference.png
 INPUT ./figures/SSB_difference.png
