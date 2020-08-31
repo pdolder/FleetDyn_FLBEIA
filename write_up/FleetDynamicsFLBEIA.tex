@@ -575,12 +575,45 @@ the biomass based indicators (Figure \ref{fig:risk}). \\
 \section{Discussion}
 \label{dis}
 
-The influence of different stock on predictions depended on the model fits,
-even when estimated from the same data. \\ 
+There is increasing interest in fishery-based management approaches to reduce
+incompatibilities in quotas for stocks caught as part of mixed fisheries. To
+support the move away from single stock management towards a multi-stock
+approach requires scientific tools to evaluate how a management measure impacts
+all the stocks caught together in the fishery. Such a mixed-fishery approach
+necessitates modelling framework evaluating management strategies to not only
+take account of existing technical interactions, but how short- and long-term
+decisions making by fishers might affect the development of those interactions
+over time, and thus how such decisions might affect management outcome. \\
 
-Characteristics of the different modelling approaches. \\
+The location choice models implemented in the FLBEIA framework range from a
+simple process-based gravity model to more complex RUM and Markov transition
+models but all are flexible, providing the user with the ability to tailor the
+model to the specificities of the fishery. At present, the possible covariates
+include stock specific catch rates as well costs, a seasonal effect and past
+share spent in the métier but the framework is easily extendable by using the
+covariates input to FLBEIA. \\
 
-How each model is affecting by different species catch rates \\.
+We implement three different approaches to modelling location choice within a
+mixed-fishery management strategy evaluation framework and demonstrate how it
+can be used to provide alternative hypotheses through fleet operating models.
+We argue that inclusion of location choice models in a mixed-fishery MSE is
+essential to consider the potential impact of fleet dynamics on management
+outcomes. While no single model may provide the `best' approach, a range of
+models could be included to evaluate these hypotheses and find solutions that
+meet the overall objectives. This is similar to how uncertainty about the form
+of recruitment dynamics is included in single stock MSEs
+\citep[e.g.][]{ICES2020}. \\
+
+Through application to a case study for the Celtic Sea demersal fishery we
+demonstrate how the stock specific and seasonal covariates introduced might
+influence effort allocations across different métier representing fishing
+grounds in a gravity, RUM and Markov model. Further, we show through simulation
+how this leads to different allocations of effort across the métier and how
+this effects management outcome. While our MSE was only implemented as a
+demonstration, we show clearly that the decisions of fishers on where to fish
+can effect the conclusions about the sustainability of a particular approach -
+thus consideration of location choice is crucial when evaluating mixed fishery
+management measures. \\
 
 Combining inference from the models (different location choice OM, conclusions
 about overall strategy. \\
@@ -608,9 +641,11 @@ The authors would like to thank...
 
 \clearpage
 
-\begin{table}
+\section{Tables}
+
+\begin{table}[!ht]
 	\center
-	\begin{tabular}{p{3.2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{1cm} p {1cm}}
+	\begin{tabular}{p{3.2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{1cm} p{1cm}}
 		\toprule
 		Stock & Code & Fmsy & Blim & Bmsytrigger & $r$ & $K$ \\
 		\hline
@@ -640,6 +675,8 @@ The authors would like to thank...
 \end{table}
 
 \clearpage
+
+\section{Figures}
 
 \begin{figure}[!ht]
 	\centering
