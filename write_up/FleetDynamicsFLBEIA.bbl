@@ -1,0 +1,188 @@
+\begin{thebibliography}{}
+
+\bibitem[Andersen et~al., 2010]{Andersen2010a}
+Andersen, B.~S., Vermard, Y., Ulrich, C., Hutton, T., and Poos, J.~J. (2010).
+\newblock {Challenges in integrating short-term behaviour in a mixed-fishery
+  Management Strategies Evaluation frame: A case study of the North Sea
+  flatfish fishery}.
+\newblock {\em Fisheries Research}, 102(1-2):26--40.
+
+\bibitem[Caddy, 1975]{Caddy1975}
+Caddy, J.~F. (1975).
+\newblock {Spatial Model for an Exploited Shellfish Population, and its
+  Application to the Georges Bank Scallop Fishery}.
+\newblock {\em Journal of the Fisheries Research Board of Canada},
+  32(8):1305--1328.
+
+\bibitem[Dichmont et~al., 2006]{Dichmont2006}
+Dichmont, C.~M., Deng, A.~R., Punt, A.~E., Venables, W., and Haddon, M. (2006).
+\newblock {Management strategies for short-lived species: The case of
+  Australia's Northern Prawn Fishery. 1. Accounting for multiple species,
+  spatial structure and implementation uncertainty when evaluating risk}.
+\newblock {\em Fisheries Research}.
+
+\bibitem[Dolder et~al., 2020a]{Dolder2020}
+Dolder, P.~J., Minto, C., Garcia, D., and Poos, J.~J. (2020a).
+\newblock {Comparing fleet dynamics models for predicting fishing location
+  choice: what work well, when?}
+
+\bibitem[Dolder et~al., 2020b]{Dolder2020a}
+Dolder, P.~J., Minto, C., Guarini, J.~M., and Poos, J.~J. (2020b).
+\newblock {Highly resolved spatiotemporal simulations for exploring mixed
+  fishery dynamics}.
+\newblock {\em Ecological Modelling}, 424(January):109000.
+
+\bibitem[Garcia et~al., 2020]{Garcia2020}
+Garcia, D., Dolder, P.~J., Iriondo, A., Moore, C., Prellezo, R., and
+  Urtizberea, A. (2020).
+\newblock {A multi-stock harvest control rule based on "pretty good yield"
+  ranges to support mixed-fisheries management}.
+\newblock {\em ICES Journal of Marine Science}, 77(1):119--135.
+
+\bibitem[Garcia et~al., 2017a]{Garcia2017a}
+Garcia, D., Prellezo, R., Sanchez, S., Andres, M., Urtizberea, A., and Carmona,
+  I. (2017a).
+\newblock {Technical manual for FLBEIA a R package to conduct Bio-Economic
+  Impact assessments using FLR (version 1.15)}.
+
+\bibitem[Garcia et~al., 2017b]{Garcia2017}
+Garcia, D., S{\'{a}}nchez, S., Prellezo, R., Urtizberea, A., and Andr{\'{e}}s,
+  M. (2017b).
+\newblock {FLBEIA: A simulation model to conduct Bio-Economic evaluation of
+  fisheries management strategies}.
+\newblock {\em SoftwareX}, 6:141--147.
+
+\bibitem[Gerritsen et~al., 2012]{Gerritsen2012}
+Gerritsen, H.~D., Lordan, C., Minto, C., and Kraak, S. B.~M. (2012).
+\newblock {Spatial patterns in the retained catch composition of Irish demersal
+  otter trawlers: High-resolution fisheries data as a management tool}.
+\newblock {\em Fisheries Research}, 129-130:127--136.
+
+\bibitem[Hynes et~al., 2016]{Hynes2016}
+Hynes, S., Gerritsen, H., Breen, B., and Johnson, M. (2016).
+\newblock {Discrete choice modelling of fisheries with nuanced spatial
+  information}.
+\newblock {\em Marine Policy}, 72:156--165.
+
+\bibitem[ICES, 2018]{ICES2018}
+ICES (2018).
+\newblock {Report of the Working Group on Celtic Seas Ecoregion (WGCSE)}.
+\newblock Technical report, ICES, Copenhagen, Denmark.
+
+\bibitem[ICES, 2019]{ICES2019}
+ICES (2019).
+\newblock {Celtic Seas Ecosystem – Fisheries Overview. In Report of the ICES
+  Advisory Committee, 2019}.
+\newblock Technical report, ICES, Copenhagen, Denmark.
+
+\bibitem[ICES, 2020]{ICES2020}
+ICES (2020).
+\newblock {EU, Norway, and the Faroe Islands request for advice on the
+  long-term management strategies for Northeast Atlantic mackerel (full
+  feedback approach).}
+\newblock Technical report, ICES, Copenhagen, Denmark.
+
+\bibitem[Iriondo et~al., 2012]{Iriondo2012a}
+Iriondo, A., Garc{\'{i}}a, D., Santurt{\'{u}}n, M., Castro, J., Quincoces, I.,
+  Lehuta, S., Mah{\'{e}}vas, S., Marchal, P., Tidd, A., and Ulrich, C. (2012).
+\newblock {Managing mixed fisheries in the European Western Waters: Application
+  of Fcube methodology}.
+\newblock {\em Fisheries Research}, 134-136(2010):6--16.
+
+\bibitem[Kell et~al., 2007]{Kell2007}
+Kell, L.~T., Mosqueira, I., Grosjean, P., Fromentin, J.-M., Garcia, D.,
+  Hillary, R., Jardim, E., Mardle, S., Pastoors, M.~a., Poos, J.~J., Scott, F.,
+  and Scott, R.~D. (2007).
+\newblock {FLR: an open-source framework for the evaluation and development of
+  management strategies}.
+\newblock {\em ICES Journal of Marine Science}, 64(4):640--646.
+
+\bibitem[Liao, 2011]{Croissant2019}
+Liao, T. (2011).
+\newblock {Multinomial Logit Models}.
+
+\bibitem[Marchal et~al., 2013]{Marchal2013}
+Marchal, P., {a.a. De Oliveira}, J., Lorance, P., Baulier, L., and Pawlowski,
+  L. (2013).
+\newblock {What is the added value of including fleet dynamics processes in
+  fisheries models?}
+\newblock {\em Canadian Journal of Fisheries and Aquatic Sciences},
+  70(7):992--1010.
+
+\bibitem[Mateo et~al., 2017]{Mateo2016}
+Mateo, M., Pawlowski, L., and Robert, M. (2017).
+\newblock {Highly mixed fisheries: Fine-scale spatial patterns in retained
+  catches of French fisheries in the Celtic Sea}.
+\newblock {\em ICES Journal of Marine Science}, 74(1):91--101.
+
+\bibitem[McFadden, 1973]{McFadden1973}
+McFadden, D. (1973).
+\newblock {Conditional logit analysis of qualitative choice behavior}.
+\newblock {\em Frontiers in Econometrics}, pages 105--142.
+
+\bibitem[Pella and Tomlinson, 1969]{Pella1969}
+Pella, J.~J. and Tomlinson, P.~K. (1969).
+\newblock {A generalized stock production model}.
+
+\bibitem[Punt et~al., 2016]{Punt2014}
+Punt, A.~E., Butterworth, D.~S., de~Moor, C.~L., {De Oliveira}, J.~A., and
+  Haddon, M. (2016).
+\newblock {Management strategy evaluation: Best practices}.
+\newblock {\em Fish and Fisheries}, 17(2):303--334.
+
+\bibitem[RCoreTeam, 2020]{Team2020}
+RCoreTeam (2020).
+\newblock {R: A Language and Environment for Statistical Computing}.
+
+\bibitem[Schwarz, 1978]{Schwarz1978}
+Schwarz, G. (1978).
+\newblock {Estimating the Dimension of a Model}.
+\newblock {\em The Annals of Statistics}.
+
+\bibitem[STECF, 2017]{STECF2017}
+STECF (2017).
+\newblock {Fisheries Dependent Information - Classic}.
+\newblock Technical report, JRC, Ispra, Italy.
+
+\bibitem[Thorpe et~al., 2016]{Thorpe2016}
+Thorpe, R.~B., Dolder, P.~J., Reeves, S., Robinson, P., and Jennings, S.
+  (2016).
+\newblock {Assessing fishery and ecological consequences of alternative
+  management options for multispecies fisheries}.
+\newblock {\em ICES Journal of Marine Science}.
+
+\bibitem[Ulrich et~al., 2001]{Ulrich2001}
+Ulrich, C., Gascuel, D., Dunn, M., {Le Gallic}, B., and Dintheer, C. (2001).
+\newblock {Estimation of technical interactions due to the competition for
+  resource in a mixed-species shery, and the typology of eets and m{\'{e}}tiers
+  in the English Channel}.
+\newblock {\em Aquatic Living Resources}, 14:267--281.
+
+\bibitem[Ulrich et~al., 2011]{Ulrich2011}
+Ulrich, C., Reeves, S.~a., Vermard, Y., Holmes, S.~J., and Vanhee, W. (2011).
+\newblock {Reconciling single-species TACs in the North Sea demersal fisheries
+  using the Fcube mixed-fisheries advice framework}.
+\newblock {\em ICES Journal of Marine Science}, 68(7):1535--1547.
+
+\bibitem[Ulrich et~al., 2017]{Ulrich2016}
+Ulrich, C., Vermard, Y., Dolder, P. P.~J., Brunel, T., Jardim, E., Holmes, S.
+  S.~J., Kempf, A., Mortensen, L. L.~O., Poos, J.-J. J.~J., and Rindorf, A.
+  (2017).
+\newblock {Achieving maximum sustainable yield in mixed fisheries: A management
+  approach for the North Sea demersal fisheries}.
+\newblock {\em ICES Journal of Marine Science}, 74(2):566--575.
+
+\bibitem[{Van Putten} et~al., 2012]{VanPutten2012a}
+{Van Putten}, I.~E., Kulmala, S., Th{\'{e}}baud, O., Dowling, N., Hamon, K.~G.,
+  Hutton, T., and Pascoe, S. (2012).
+\newblock {Theories and behavioural drivers underlying fleet dynamics models}.
+\newblock {\em Fish and Fisheries}, 13(2):216--235.
+
+\bibitem[Venables et~al., 2009]{Venables2009}
+Venables, W.~N., Ellis, N., Punt, A.~E., Dichmont, C.~M., and Deng, R.~A.
+  (2009).
+\newblock {A simulation strategy for fleet dynamics in Australia's northern
+  prawn fishery: Effort allocation at two scales}.
+\newblock {\em ICES Journal of Marine Science}, 66(4):631--645.
+
+\end{thebibliography}
