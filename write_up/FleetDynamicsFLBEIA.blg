@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: FleetDynamicsFLBEIA.aux
+The style file: apalike.bst
+Database file #1: FLBEIA.bib
+Warning--empty journal in Dolder2020
+You've used 30 entries,
+            1935 wiz_defined-function locations,
+            668 strings with 10314 characters,
+and the built_in function-call counts, 12739 in all, are:
+= -- 1214
+> -- 711
+< -- 11
++ -- 254
+- -- 252
+* -- 1163
+:= -- 2312
+add.period$ -- 85
+call.type$ -- 30
+change.case$ -- 280
+chr.to.int$ -- 28
+cite$ -- 31
+duplicate$ -- 397
+empty$ -- 752
+format.name$ -- 284
+if$ -- 2375
+int.to.chr$ -- 3
+int.to.str$ -- 0
+missing$ -- 22
+newline$ -- 148
+num.names$ -- 90
+pop$ -- 222
+preamble$ -- 1
+purify$ -- 276
+quote$ -- 0
+skip$ -- 305
+stack$ -- 0
+substring$ -- 807
+swap$ -- 30
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 180
+warning$ -- 1
+while$ -- 96
+width$ -- 0
+write$ -- 378
+(There was 1 warning)
