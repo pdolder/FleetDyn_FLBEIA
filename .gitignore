@@ -1,9 +1,6 @@
 
 !*.csv
 
-.pdf
-*.pdf
-**/.pdf
 !*.RData
 
 /tests/*
