@@ -82,12 +82,15 @@ part of the fleet operating model for Irish otter trawlers fishing in the mixed
 demersal fishery in the Celtic Sea. \\
 
 % Result
-Results show how different models provide for alternative realisations
-of future effort allocations among métier, and how this affects fisheries
+Results show how different models provide for alternative realisations of
+future effort allocations among métier, and how this affects fisheries
 indicators and the potential outcomes of management measures within a mixed
-fishery. We argue that explicitly modelling location choice dynamics in a mixed
+fishery. For example, while the gravity location choice model predicts low risk
+to fishing \textgreater Fmsy for haddock in the mixed fishery, the other models
+predict a risk \textgreater 50\%, qualitatively changing the conclusions of the
+MSE. We argue that explicitly modelling location choice dynamics in a mixed
 fishery MSE framework even when no `best' model is available improves
-robustness of management advice. [INCLUDE MORE QUANTIFIABLE RESULTS]
+robustness of management advice. 
 }
 
 \date{\today}
@@ -100,40 +103,42 @@ robustness of management advice. [INCLUDE MORE QUANTIFIABLE RESULTS]
 \label{intro}
 
 Most of the world's fisheries are mixed with several different species being
-exploited together in the same fishing operation [REFS]. [SUGGEST BROADENING THIS PARAGRAPH TO A GENERIC MIXED FISHERY INTRO AND LEAD INTO NEED TO EVALUATE OPTIONS THAT COME NEXT].
+exploited together in the same fishing operation \citep{Ulrich2012a}. When the
+species caught have varying quota limits and exploitation rates such technical
+interactions can result in discarding unwanted catch or ``choking" of quota
+where the quota of the species whose catch is most easily obtained is reached.
+This can have a fundamental impact on management outcome as the intended
+restrictions on catches may not be achieved or the full quota may not be
+caught, having implications for both stock status and fisheries yield. \\
 
-However, evaluation of the
-performance of management rules, generally undertaken through management
-strategy evaluation \citep[MSE,][]{Punt2014}, is still largely based on
-single-species models that do not take account of the interactions between
-stocks. These interactions include both predator-prey biological
+Evaluation of the performance of management rules is generally undertaken
+through management strategy evaluation \citep[MSE,][]{Punt2014}, but while this
+method is considered the gold-standard in fisheries science it is largely still
+based on single-species models that do not take account of the interactions
+between stocks. These interactions, including predator-prey biological
 \citep{Thorpe2016} and technical (mixed-fishery) interactions
-\citep{Ulrich2001}. [MAYBE MOVE DOWN TO AFTER NEXT PARAGRAPH WHERE IT LINKS NICELY?]\\
+\citep{Ulrich2001}, are treated only as random noise around biological
+parameters or directed bias in catches in single stock MSEs when assessing
+harvest rates for sustainability \citep[known in MSE frameworks as
+``implementation error",][]{Sethi2005, Dichmont2006} \\
 
-Technical interactions result in discarding unwanted catch or ``choking" of
-quota when the quota of the species whose catch is most easily obtained is reached and can have a fundamental impact on management
-outcome as the intended restrictions on catches may not be achieved or the full
-quota may not be caught \citep[known in MSE frameworks as ``implementation
-error",][]{Ulrich2011}. It's crucial for MSEs to take account of these
-interactions when evaluating management strategies for stocks caught mixed
-fisheries to better understand the impact they have on management outcome.
-Presently such aspects manifest in MSEs as only a bias or uncertainty on
-catches \citep{Dichmont2006} without explicit incorporation of the
-processes leading to these biases. Failure to account for these processes
-may result in misleading conclusions when comparing different management
-approaches and suboptimal management. \\
+In order to progress evaluation of fishery-based management strategies it's
+crucial for MSEs to take account of multi-stock processes, to better understand
+the impact they have on management outcome. Failure to account for these
+processes may result in misleading conclusions when comparing different
+management approaches and suboptimal management. \\
 
-To address this gap, mixed fishery methods have been developed and
-applied to numerous case studies \citep{Ulrich2011, Ulrich2016, Iriondo2012a,
-	Garcia2020}. The mixed-fishery approach used in Europe to provide
-management advice \citep{ICES2019} models activity of fleets (vessels of
-similar physical characteristic) and how the deployment of fishing effort in
-different métiers (activity defined by similar catch patterns) to predict catch
-of multiple stocks caught together. As each métier has a different catch
-pattern and catchability (the biomass-standardised catch per unit of effort)
-for each stock, the choice of which métiers to fish results in different catch
-outcomes for the fishery and exploitation rates for each of the stocks.
-Considered together, the sum of the different fleets activity (and their unique
+To address this gap, mixed fishery methods have been developed and applied to
+numerous case studies \citep{Ulrich2011, Ulrich2016, Iriondo2012a, Garcia2020}.
+The mixed-fishery approach used in Europe to provide management advice
+\citep{ICES2019} models activity of fleets (vessels of similar physical
+characteristic) and how the deployment of fishing effort in different métiers
+(activity defined by similar catch patterns) to predict catch of multiple
+stocks caught together. As each métier has a different catch pattern and
+catchability (the biomass-standardised catch per unit of effort) for each
+stock, the choice of which métiers to fish results in different catch outcomes
+for the fishery and exploitation rates for each of the stocks.  Considered
+together, the sum of the different fleets activity (and their unique
 catchability patterns) provide an alternative way to forecast how the
 exploitation of stocks caught together in numerous different fisheries might
 develop by taking account of their technical interactions. \\ 
@@ -143,12 +148,14 @@ is rarely taken into account in simulations of management strategies. Different
 locations have different density of target and non-target species, therefore
 choice of where to fish determines how much of each species caught. However,
 with the absence of an alternative mixed fishery models often assume that the
-proportional share of fishing effort among different métier remains unchanged from one year
-to the next. This is despite the fact that fishers are known to change their
-behaviour in response to available fishing opportunities
+proportional share of fishing effort among different métier remains unchanged
+from one year to the next. This is despite the fact that fishers are known to
+change their behaviour in response to available fishing opportunities
 \citep{VanPutten2012a}. A lack of operating model to account for how fisher
 behaviour affects catch of multiple stocks limits the ability to evaluate
-management strategies from a mixed fishery perspective. [NICE, ARE THERE EXAMPLES WHERE IT HAS BEEN ACHIEVED THAT CAN BE NOTED?]\\
+management strategies from a mixed fishery perspective. There are few examples
+\citep[e.g.][]{Dichmont2008, Fulton2014} where such an operating model has been
+incorporated in an MSE. \\
 
 FLBEIA \citep{Garcia2017} is a bioeconomic framework for simulating management
 strategies for multi-stock multi-fleet fisheries taking account of
@@ -162,11 +169,16 @@ account of the perceived state of the system and implementation of defined
 management rules, thus taking account of full feedback and uncertainty in
 management outcome (See Figure \ref{fig:flbeia}). \\
 
-FLBEIA applications typically assume constant share of a fleets fishing effort among
-different métier \citep{Ulrich2016, Garcia2020}, with exploitation per unit of
-effort for different fleets remaining static inter-annually. [GIVE A CONCRETE DESCRIPTIVE STRAWMAN EXAMPLE HERE]. This limits
-understanding of the impact of fleet dynamics on outcomes for different
-fisheries strategies. \\ 
+FLBEIA applications typically assume constant share of a fleets fishing effort
+among different métier \citep{Ulrich2016, Garcia2020}, with exploitation per
+unit of effort for different fleets remaining static inter-annually. Therefore
+while the fleet and its activity among different métier are characterised and
+parameterised in the model, these interactions are not dynamic in the
+simulation. For example, no account is taken of how vessels might switch
+between a demersal fish fishery and a \textit{Nephrops} fishery due to changing
+prices and fishing opportunities, though these dynamics are known to exist
+\citep{Davie2011}. This limits understanding of the impact of fleet dynamics on
+outcomes for different fisheries strategies. \\ 
 
 Here, we extend application of FLBEIA to include three commonly used fleet
 dynamics models for location choice. These are the Caddy Gravity model
@@ -174,11 +186,15 @@ dynamics models for location choice. These are the Caddy Gravity model
 \citep{McFadden1973} and a Markov transition model \citep{Venables2009}. We
 apply the models to the Celtic Sea demersal fisheries, with location choice for
 Irish otter trawlers among seven areas determined by each of the models and
-compared to a base case of constant effort share. In doing so we show how
-different outcomes may be achieved given different assumptions about location
-choice. \\
+compared to a base case of constant effort share. \\ 
 
-[INCLUDE A ``WE ASK X QUESTIONS: 1) ...'' PARAGRAPH]
+In applying the different location choice models to a case study in the Irish
+otter trawl fishery in the Celtic Sea we seek to establish if i) the models
+provide different predictions of fishing effort share among métier, ii) if
+those differences result in different exploitations patterns for the stocks
+exploited, and iii) if the differences would lead to qualitatively different
+conclusions on the sustainability of a management strategy given the different
+assumptions on location choice. \\
 
 \section{Methods}
 \label{meth}

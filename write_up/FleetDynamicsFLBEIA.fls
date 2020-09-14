@@ -165,12 +165,16 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 OUTPUT FleetDynamicsFLBEIA.pdf
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
@@ -194,9 +198,6 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/latex-fonts/lasy6.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
-INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
-INPUT /usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT FleetDynamicsFLBEIA.bbl
 INPUT FleetDynamicsFLBEIA.bbl
 INPUT figures/FLBEIA.jpg

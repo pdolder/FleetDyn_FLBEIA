@@ -14,6 +14,19 @@ Caddy, J.~F. (1975).
 \newblock {\em Journal of the Fisheries Research Board of Canada},
   32(8):1305--1328.
 
+\bibitem[Davie and Lordan, 2011]{Davie2011}
+Davie, S. and Lordan, C. (2011).
+\newblock {Examining changes in Irish fishing practices in response to the cod
+  long-term plan}.
+
+\bibitem[Dichmont et~al., 2008]{Dichmont2008}
+Dichmont, C.~M., Deng, A., Punt, A.~E., Ellis, N., Venables, W.~N., Kompas, T.,
+  Ye, Y., Zhou, S., and Bishop, J. (2008).
+\newblock {Beyond biological performance measures in management strategy
+  evaluation: Bringing in economics and the effects of trawling on the
+  benthos}.
+\newblock {\em Fisheries Research}.
+
 \bibitem[Dichmont et~al., 2006]{Dichmont2006}
 Dichmont, C.~M., Deng, A.~R., Punt, A.~E., Venables, W., and Haddon, M. (2006).
 \newblock {Management strategies for short-lived species: The case of
@@ -31,6 +44,12 @@ Dolder, P.~J., Minto, C., Guarini, J.~M., and Poos, J.~J. (2020b).
 \newblock {Highly resolved spatiotemporal simulations for exploring mixed
   fishery dynamics}.
 \newblock {\em Ecological Modelling}, 424(January):109000.
+
+\bibitem[Fulton et~al., 2014]{Fulton2014}
+Fulton, E.~A., Smith, A.~D., Smith, D.~C., and Johnson, P. (2014).
+\newblock {An integrated approach is needed for ecosystem based fisheries
+  management: Insights from ecosystem-level management strategy evaluation}.
+\newblock {\em PLoS ONE}.
 
 \bibitem[Garcia et~al., 2020]{Garcia2020}
 Garcia, D., Dolder, P.~J., Iriondo, A., Moore, C., Prellezo, R., and
@@ -139,6 +158,11 @@ Schwarz, G. (1978).
 \newblock {Estimating the Dimension of a Model}.
 \newblock {\em The Annals of Statistics}.
 
+\bibitem[Sethi et~al., 2005]{Sethi2005}
+Sethi, G., Costello, C., Fisher, A., Hanemann, M., and Karp, L. (2005).
+\newblock {Fishery management under multiple uncertainty}.
+\newblock {\em Journal of Environmental Economics and Management}.
+
 \bibitem[STECF, 2017]{STECF2017}
 STECF (2017).
 \newblock {Fisheries Dependent Information - Classic}.
@@ -171,6 +195,13 @@ Ulrich, C., Vermard, Y., Dolder, P. P.~J., Brunel, T., Jardim, E., Holmes, S.
 \newblock {Achieving maximum sustainable yield in mixed fisheries: A management
   approach for the North Sea demersal fisheries}.
 \newblock {\em ICES Journal of Marine Science}, 74(2):566--575.
+
+\bibitem[Ulrich et~al., 2012]{Ulrich2012a}
+Ulrich, C., Wilson, D. C.~K., Nielsen, J.~R., Bastardie, F., Reeves, S.~a.,
+  Andersen, B.~S., and Eigaard, O.~R. (2012).
+\newblock {Challenges and opportunities for fleet- and m??tier-based approaches
+  for fisheries management under the European Common Fishery Policy}.
+\newblock {\em Ocean and Coastal Management}, 70:38--47.
 
 \bibitem[{Van Putten} et~al., 2012]{VanPutten2012a}
 {Van Putten}, I.~E., Kulmala, S., Th{\'{e}}baud, O., Dowling, N., Hamon, K.~G.,
