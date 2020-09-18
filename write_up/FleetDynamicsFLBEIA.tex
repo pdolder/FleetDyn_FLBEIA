@@ -274,7 +274,7 @@ among métier include:\\
 (i) A \textbf{base model} (b) where the proportion of effort in métier $m$ at time
 $t$ is:
 \begin{equation}
-p^{b}_{m,t} = \overline{p}_{m}
+p^{(b)}_{m,t} = \overline{p}_{m}
 \end{equation}
 
 This ensures that future effort is simply determined by the past share of
@@ -283,7 +283,7 @@ effort, as an average over the past years defined by the user. \\
 (ii) A \textbf{gravity model} (g) where the proportion of effort in métier $m$ at
 time $t$ is given by: 
 \begin{equation}
-p^{g}_{m,t} = \frac{\overline{R}_{m}}{\sum\limits_{m=1}^{M}\overline{R}_{m}} 
+p^{(g)}_{m,t} = \frac{\overline{R}_{m}}{\sum\limits_{m=1}^{M}\overline{R}_{m}} 
 \end{equation}
 
 where $\overline{R}_m$ is the expected revenue per unit effort in a given
@@ -304,14 +304,14 @@ allocation was determined by past effort (tradition, or inertia) and 20\% by
 the gravity model (economic opportunism). This Gravity-Tradition combination
 model ($c$) is given by:
 \begin{equation}
-	p^{c}_{m,t} = \phi \cdot p^{b}_{m,t} + (1 - \phi) \cdot p^{g}_{m,t}
+	p^{(c)}_{m,t} = \phi \cdot p^{(b)}_{m,t} + (1 - \phi) \cdot p^{(g)}_{m,t}
 \end{equation}
 where $\phi$ controls the proportional weighting of either model. \\ 
 
 (iv) A \textbf{Random Utility Model} where a case- and choice- specific
 multinomial logit RUM ($r$) is implemented so that:  
 \begin{equation}
-p^{r}_{m,t} = \frac{e^{\beta_{m} \cdot X_{t} + \gamma \cdot Z_{m,t}}}{1 + 
+p^{(r)}_{m,t} = \frac{e^{\beta_{m} \cdot X_{t} + \gamma \cdot Z_{m,t}}}{1 + 
 	e^{\beta_{m} \cdot X_{t} + \gamma \cdot Z_{m,t}}}
 \label{eqn:rum}
 \end{equation} 
@@ -324,13 +324,13 @@ from stocks from fishing in the métier, while the case-specific covariates
 $m$ at time $t$ is the sum of the transitioned proportions of effort from
 métier $z$ (the departing métier) at time $t-1$:
 \begin{equation}
-p^m_{m,t} = \sum_{z = 1}^{M} p^m_{z, t-1} p^m_{z,m,t}
+p^{(m)}_{m,t} = \sum_{z = 1}^{M} p^{(m)}_{z, t-1} p_{z,m,t}
 \end{equation}
 
 where the transition probabilities are given by the logit function:
 
 \begin{equation}
-p^m_{z,m,t} = \frac{e^{\beta_{z,m} X_{t}}}{1+e^{\beta_{z,m} X_{t}}}
+p_{z,m,t} = \frac{e^{\beta_{z,m} X_{t}}}{1+e^{\beta_{z,m} X_{t}}}
 \end{equation}
 
 Seasonal changes can be included through the effect of month in the vector
