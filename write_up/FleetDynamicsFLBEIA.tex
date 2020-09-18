@@ -434,9 +434,9 @@ We demonstrate use of the location choice models as alternate hypotheses for
 short-term fleet dynamics though application to an MSE for the Celtic Sea
 demersal fisheries. We defined a multi-stock multi-fleet fishery and applied
 the same management measures with each of the location choice models, utilising
-the models as alternative fleet dynamics in a wider MSE setup. Focus has been
+the models as alternative fleet dynamics in a wider MSE setup. Focus is
 solely on the location choice models to demonstrate their use, rather than the
-wider MSE set up.
+wider MSE set up [CITE DAMARA REPORT?].
 
 \subsubsection{FLBEIA model for the Celtic Sea}
 
@@ -444,8 +444,8 @@ To demonstrate the use of the location choice models we conditioned an FLBEIA
 model based on the Celtic Sea (ICES sub-divisions 7bc,e-k) demersal fisheries.
 It included 11 stocks; six with age-based population dynamics: European cod
 (\textit{Gadus morhua}), haddock (\textit{Melanogrammus aeglefinus}),
-anglerfishes (\textit{Lophius spp.}), European Hake (\textit{Merluccius
-	merluccius}), Megrims (\textit{Lepidorhombus spp.}), European Whiting
+anglerfishes (\textit{Lophius spp.}), European hake (\textit{Merluccius
+	merluccius}), Megrims (\textit{Lepidorhombus spp.}), European whiting
 (\textit{Merlangius merlangus}) and five \textit{Nephrops norvegicus} stocks
 (Functional Units 16, 17, 19, 20-21 and 22) with biomass-based population
 dynamics. The model was conditioned to be seasonal, with quarterly time-steps
@@ -456,8 +456,8 @@ differences observed between scenarios was down to the choice of location model
 for the Irish otter trawl fleet only. \\
 
 We assumed that the Irish Otter trawl fleet stops fishing when the effort
-corresponding to the closest stock specific effort in the previous year for all
-location choice models. While other choices are available (as outlined in
+corresponding to the closest stock-specific effort in the previous year for all
+location choice models [NOT CLEAR WHAT CLOSEST MEANS]. While other choices are available (as outlined in
 Section \ref{sec:imp}), we considered this to be a reasonable representation of
 dynamics in the fishery. 
 
@@ -472,17 +472,17 @@ Bertalanffy Growth curve to the mean weights and allocating the catch at age
 according to the quarterly weighted estimates of catches from the fleet data.
 \\
 
-The fleet catch data was derived from the EU Fisheries Dependent Information
-(FDI) database \citep{STECF2017} which included spatially disaggregated
-landings (in tonnes) and fishing effort (in hours fished), and spatially
-aggregated fishing effort (kilowatt-days) and landings and discards (in
+Fleet catch data was derived from the EU Fisheries Dependent Information
+(FDI) database \citep{STECF2017} which included spatially-disaggregated
+landings (in tonnes) and fishing effort (in hours fished), and spatially-aggregated 
+fishing effort (kilowatt-days) and landings and discards (in
 tonnes). We used the spatial data as relative as it did not include discards,
 and disaggregated the landings, discard and effort data spatially using the
 spatial data data as a relative reference, and across ages according to the
-division in the ICES assessment data. While we would ideally want to make the
+division in the ICES assessment data [BREAK UP SENTENCE]. While we would ideally want to make the
 age-structure of the catch data fleet and métier specific, the data were
 processed for illustrative purposes to demonstrate use of the location choice
-model rather than an assessment of specific management options. \\
+model rather than a detailed assessment of management-ready options. \\
 
 Métier were defined by using the FDI spatial data set to aggregate ICES
 statistical rectangles into groups of spatial areas that were similar in catch
@@ -493,37 +493,37 @@ form contiguous fishing areas. \\
 \subsubsection{Location choice model fits}
 
 To fit the RUM and Markov model we allocated the historical activity of the
-fleets to each of the métier. As the data we had was aggregated to quarterly
+fleets to each of the métier. As the data were aggregated to quarterly
 information, which was unsuitable for fitting the conditional logit (for the
-RUM) and the multinomial (for the Markov model) we generated some pseudo-data
+RUM) and the multinomial (for the Markov model) we generated pseudo-data
 at the trip level by i) sampling 1000 times with replacement from the observed
 proportions in each of the métier in each year, ii) sampling from the observed
 mean catch rates with a standard deviation of 0.2 x mean for each of the
 stocks, iii) using the generated data as individual observations for trips in a
-given season and year.  \\
+given season and year. \\
 
 We then use the pseudo-dataset to fit all 8192 possible combinations of RUM
 covariates (11 stocks, plus past effort share and season = $11^2 \times 4$)
 using \textit{mlogit} to find the best fitting model according to BIC
 \citep{Schwarz1978}. Due to computing limitations, rather than fit all
 combinations of the Markov model we used the same covariates as identified for
-the RUM. 
+the RUM.
 
 \subsubsection{Simulations with location choice models}
 
 For each stock the harvest rate was set according to the ICES Fmsy strategy
-where fishing mortality is targeted at Fmsy unless the stock is below the
-biomass reference point Bmsytrigger, in which case it is reduced linearly to
+where fishing mortality is targeted at $F_{MSY}$ unless the stock is below the
+biomass reference point $MSY_{Btrigger}$, in which case it is reduced linearly to
 zero (see Table \ref{tab:brp} for reference points). Resultant seasonal catch
 was determined by the fishing opportunities, total fleet effort as predicted by
 the SFMB (taking account of mixed-fishery interactions) and effort share among
 métier according to the location choice model. \\
 
 Simulations were run from 2018 - 2030 with a closure introduced in year 2021
-for the métier `F'. Variability in the simulations was introduced by fitting a
+for métier `F'. Population variability in the simulations was introduced by fitting a
 hockey-stock stock-recruit relationship for each of the stocks and lognormal
-uncertainty around the estimated fit used to generate draws for 500 iterations.
-The \textit{Nephrops} growth was assumed to be deterministic with biomass
+variability around the estimated fit used to generate draws for 500 iterations.
+The \textit{Nephrops} population growth was assumed to be deterministic with biomass
 dynamic growth rate ($r$) and capacity ($K$) parameters used to simulate stock
 development with a Pella-Tomlinson biomass dynamic model \citep{Pella1969}. \\
 
@@ -531,18 +531,18 @@ In addition to stochasticity in recruitment for the age-structure stocks, we
 added variation in the catchability for each métier-stock combination for the
 Irish otter trawl fleet by sampling from the last three years estimates, to
 generate variability in the within-métier catchabilities among species. These
-were kept to ensure the same relationship between stocks as observed variance
+were sampled jointly to ensure the same relationship between stocks as observed variance
 may reflect some historic inter-annual differences in targeting for a métier.
 Recruitment and catchability variance were multiplicative and the same seed was
 used for each location choice model in order to ensure the stochasticity was
-identical in comparison.
+identical for comparison across location choice models.
 
 \subsubsection{Comparison}
 
-The location choice models were implemented as plausible alternative fleet
+Location choice models were implemented as plausible alternative fleet
 operating models in a management strategy evaluation for a multi-stock
 mixed-fishery. As such no ``correct" approach is to be identified; instead we
-compare the impact the different assumptions might have on i) realised fishing
+compare the impact different assumptions might have on i) realised fishing
 mortality given the mixed-fishery interactions, ii) catches for the Irish otter
 trawl fleet, iii) development of spawning stock biomass (SSB), iv) risk based
 stock indicators. These differences are discussed in the context of progressing

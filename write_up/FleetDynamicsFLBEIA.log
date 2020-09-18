@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.17)  18 SEP 2020 15:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.17)  18 SEP 2020 16:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1177,12 +1177,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 514--521
 
  []
 
-
+[11]
 Underfull \hbox (badness 10000) in paragraph at lines 522--529
 
  []
 
-[11] [12]
+[12]
 Underfull \hbox (badness 10000) in paragraph at lines 579--585
 
  []
@@ -1400,7 +1400,7 @@ e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmtt12.pfb>
-Output written on FleetDynamicsFLBEIA.pdf (33 pages, 4148247 bytes).
+Output written on FleetDynamicsFLBEIA.pdf (33 pages, 4150173 bytes).
 PDF statistics:
  205 PDF objects out of 1000 (max. 8388607)
  134 compressed objects within 2 object streams
