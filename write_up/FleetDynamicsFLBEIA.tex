@@ -75,7 +75,7 @@ without reliance on a `best' model. \\
 We implement three different location choice models in the bioeconomic
 management strategy evaluation framework FLBEIA: a Gravity model, a Random
 Utility Model and a Markov transition model. Each are integrated into FLBEIA in
-a flexible manner, updating predictions of effort allocation among métier
+a flexible manner, updating predictions of effort share and allocation among métier
 dynamically in the simulation through integration with the biological and
 economic components of the model. We illustrate application of the models as
 part of the fleet operating model for Irish otter trawlers fishing in the mixed
@@ -191,7 +191,7 @@ compared to a base case of constant effort share. \\
 In applying the different location choice models to a case study in the Irish
 otter trawl fishery in the Celtic Sea we seek to establish if i) the models
 provide different predictions of fishing effort share among métier, ii) if
-those differences result in different exploitations patterns for the stocks
+those differences result in different exploitation patterns for the stocks
 exploited, and iii) if the differences would lead to qualitatively different
 conclusions on the sustainability of a management strategy given the different
 assumptions on location choice. \\
@@ -199,71 +199,72 @@ assumptions on location choice. \\
 \section{Methods}
 \label{meth}
 
-We implemented five location choice models within the FLBEIA modelling
+As an overview of the methods, we implemented five location choice models within the FLBEIA modelling
 framework; i) a base `tradition' model where effort share among métier remains
 the same as in the past, ii) a gravity model where effort is predicted from
 attractiveness based on revenue per unit effort, iii) a hybrid
 gravity-tradition model, iv) a conditional logit Random Utility Model (RUM) and
 v) a Markov transition model, both of which include catch rates for a selection
-of stocks and season as predictors. Each of the models were fitted to data and
-effort share among métier was forecast within the FLBEIA simulation, with
-coefficients informing the effort allocations updated dynamically based on
-changes in the fishery dynamics.  \\
+of stocks and season as predictors. Each of the models were fitted to real data and
+relevant coefficients used to forecast effort share among métier within the FLBEIA simulation.
+Effort allocations were thus updated dynamically based on
+changes in the fishery dynamics.\\
 
-We applied the models to the Irish Otter trawl fleet in selecting among 9
+We implemented the models based on the Irish Otter trawl fleet with 9
 different locations (defined as métier) within a management strategy evaluation
 framework for a mixed fishery exploiting 11 stocks in the Celtic Sea (ICES
-subdivisions 7bc,e-k) and implemented a closure of one of the métier part way
+subdivisions 7bc,e-k). A closure of one of the métier was implemented part way
 through the simulations. We then compared the outcomes for the fisheries catch
 projections for the fleet and stock-based fishery indicators to assess the
-differences in outcome given the location choice model used.
+differences in outcome given the location choice model used. We now describe each component in detail.
 
 \subsection{FLBEIA}
 
-Here, we focus only on the methods implemented that control the allocation of
-fishing effort among métier and how that affects catch for the fleets. Full
+Here, we focus only on the methods implemented that control allocation of
+fishing effort among métier and how that affects catches, fishing mortality and biomass across the assemblage. Full
 details of the population, management and fleet capital dynamics as well as
 details on setting up an FLBEIA simulation and can be found in the technical
 manual \citep{Garcia2017a}, with examples found here:
-(\url{https://flr-project.org/doc/FLBEIA_A_Simple_Example.html}). While FLBEIA
+(\url{https://flr-project.org/doc/FLBEIA_A_Simple_Example.html}). FLBEIA
 can be installed as a library in R from github
 (\url{www.github.com/flr/FLBEIA}).\\ 
 
-To model seasonal and inter-annual fleet dynamics FLBEIA explicitly defines the
+To model seasonal and inter-annual fleet dynamics, FLBEIA explicitly defines the
 relationships between the fishing effort of each fleet and the catch of each
-stock: this is determined by the overall effort by a fleet, the allocation of
-that effort among different métier and the catchability for each stock within
+stock using a Cobb-Douglas catch equation: determined by the overall effort by a fleet, allocation of
+that effort among different métier and catchability for each stock within
 the métier \citep{Garcia2017a}:
 
 \begin{equation}
  C_{f,s} = q_{f,m,s}\cdot B_{s}^{\beta_{f,m,s}} \cdot \left(E_{f}\cdot
 	 \delta_{f,m} \right)^{\alpha_{f,m,s}}	
+	 \label{eqn:catch}
 \end{equation}
 
 Where within a given timestep $C_{f,s}$ is the catch of fleet $f$ for stock
 $s$, $q$ is the catchability for métier $m$ for the stock (which is a function
 of both selectivity and availability to capture) and $B$ biomass for the stock,
 with $E_{f}\cdot \delta_{f,m}$ the Effort $E$ and $\delta$ the métier effort
-share (0...1). $\alpha$ and $\beta$ are Cobb-Douglas production coefficients,
-where when set to 1 gives a linear relationship between fishing effort and
+share ($0 \le \delta_{f,m} \le 1$). $\alpha$ and $\beta$ are Cobb-Douglas production coefficients,
+where when set to 1 gives a proportional relationship between fishing effort and
 catch for a given biomass. For simplicity, the time and age subscripts have
-been dropped, but the equation also applies on an age-by-age basis for catch,
+been dropped, but Equation~(\ref{eqn:catch}) also applies on an age-by-age basis for catch,
 catchability and biomass. \\
 
 Our focus in implementing location choice models within FLBEIA is on
 determining how $\delta_{f,m}$ for $m=1...M$ might respond to changing fishing
-opportunities and management regulation. By making different hypotheses on how
-this parameter might change over time, we provide plausible alternative fleet
-operating models in evaluating multi-stock mixed fishery management strategies.
+opportunities and management regulation. By proposing alternative hypotheses on how
+effort share might change over time, we provide plausible alternative fleet
+operating models that can be used in evaluating multi-stock mixed fishery management strategies.
 \\
 
-Once the division of effort among métier is decided the overall effort deployed
+Once the division of effort among métier is decided, the overall effort deployed
 by the fleet determines the catch of each stock. However, a prediction must be
 made as to how much effort a fleet would deploy in response to the available
 fishing opportunities. Optional rules include stopping fishing when the first
 quota is reached (`min'), the last quota is reached (`max') or a spectrum in
 between: this approach is known within FLBEIA as `Simple Mixed Fishery
-Behaviour' (SMFB).
+Behaviour' (SMFB). [SAY HERE WHICH WE CHOOSE OR IS THAT SPECIFIED LATER?]
 
 \subsection{Derivation of the location choice models}
 
@@ -279,7 +280,7 @@ p^{b}_{m,t} = \overline{p}_{m}
 This ensures that future effort is simply determined by the past share of
 effort, as an average over the past years defined by the user. \\
 
-(ii) A \textbf{Gravity model} (g) where the proportion of effort in métier $m$ at
+(ii) A \textbf{gravity model} (g) where the proportion of effort in métier $m$ at
 time $t$ is given by: 
 \begin{equation}
 p^{g}_{m,t} = \frac{\overline{R}_{m}}{\sum\limits_{m=1}^{M}\overline{R}_{m}} 
@@ -292,21 +293,20 @@ R_{m,t} =  \sum\limits_{s=1}^{S} L_{m,t,s} P\text{x}_{s}
 \label{eqn:ppue}
 \end{equation}
 
-comprised of the sum of the landings $L$ of each species $s$ for métier $m$ at
-time $t$ multiplied by the price $P\text{x}_{s}$. It's also possible to
+comprised of the sum of the landings per unit effort $L$ of each species $s$ for métier $m$ at
+time $t$ multiplied by the price $P\text{x}_{s}$ [SPECIFY WHAT TIME PERIOD EXACTLY THE LANDINGS PERTAIN TO - PAST OR FUTURE?]. It's also possible to
 implement this approach based on profit per unit effort, where the cost per
-unit of effort of fishing in a particular métier are subtracted from equation
-\ref{eqn:ppue}. \\
+unit of effort of fishing in a particular métier are subtracted from Equation~(\ref{eqn:ppue}). \\
 
-(iii) A \textbf{Gravity and tradition Combination}, an alternative formulation
-of a gravity model was included, where 80\% (denoted by $\alpha$) of the effort
+(iii) A \textbf{gravity and tradition combination}, an alternative formulation
+of a gravity model was included, where 80\% (denoted by $\phi$)[$\alpha$ USED ALREADY IN COBB-DOUGLAS] of the effort
 allocation was determined by past effort (tradition, or inertia) and 20\% by
 the gravity model (economic opportunism). This Gravity-Tradition combination
 model ($c$) is given by:
 \begin{equation}
-	p^{c}_{m,t} = \alpha \cdot p^{p}_{m,t} + (1 - \alpha) \cdot p^{g}_{m,t}
+	p^{c}_{m,t} = \phi \cdot p^{b}_{m,t} + (1 - \phi) \cdot p^{g}_{m,t}
 \end{equation}
-where $\alpha$ controls the proportional weighting of either model. \\ 
+where $\phi$ controls the proportional weighting of either model. \\ 
 
 (iv) A \textbf{Random Utility Model} where a case- and choice- specific
 multinomial logit RUM ($r$) is implemented so that:  
