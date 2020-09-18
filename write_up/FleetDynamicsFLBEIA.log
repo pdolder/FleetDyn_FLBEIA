@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.17)  18 SEP 2020 15:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.17)  18 SEP 2020 15:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -686,6 +686,162 @@ File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
+(/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2017/04/05 v2.0i Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+Now handling font encoding TS1 ...
+... processing UTF-8 mapping file for font encoding TS1
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu
+File: ts1enc.dfu 2017/01/28 v1.1t UTF-8 support for inputenc
+   defining Unicode char U+00A2 (decimal 162)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00A4 (decimal 164)
+   defining Unicode char U+00A5 (decimal 165)
+   defining Unicode char U+00A6 (decimal 166)
+   defining Unicode char U+00A7 (decimal 167)
+   defining Unicode char U+00A8 (decimal 168)
+   defining Unicode char U+00A9 (decimal 169)
+   defining Unicode char U+00AA (decimal 170)
+   defining Unicode char U+00AC (decimal 172)
+   defining Unicode char U+00AE (decimal 174)
+   defining Unicode char U+00AF (decimal 175)
+   defining Unicode char U+00B0 (decimal 176)
+   defining Unicode char U+00B1 (decimal 177)
+   defining Unicode char U+00B2 (decimal 178)
+   defining Unicode char U+00B3 (decimal 179)
+   defining Unicode char U+00B4 (decimal 180)
+   defining Unicode char U+00B5 (decimal 181)
+   defining Unicode char U+00B6 (decimal 182)
+   defining Unicode char U+00B7 (decimal 183)
+   defining Unicode char U+00B9 (decimal 185)
+   defining Unicode char U+00BA (decimal 186)
+   defining Unicode char U+00BC (decimal 188)
+   defining Unicode char U+00BD (decimal 189)
+   defining Unicode char U+00BE (decimal 190)
+   defining Unicode char U+00D7 (decimal 215)
+   defining Unicode char U+00F7 (decimal 247)
+   defining Unicode char U+0192 (decimal 402)
+   defining Unicode char U+02C7 (decimal 711)
+   defining Unicode char U+02D8 (decimal 728)
+   defining Unicode char U+02DD (decimal 733)
+   defining Unicode char U+0E3F (decimal 3647)
+   defining Unicode char U+2016 (decimal 8214)
+   defining Unicode char U+2020 (decimal 8224)
+   defining Unicode char U+2021 (decimal 8225)
+   defining Unicode char U+2022 (decimal 8226)
+   defining Unicode char U+2030 (decimal 8240)
+   defining Unicode char U+2031 (decimal 8241)
+   defining Unicode char U+203B (decimal 8251)
+   defining Unicode char U+203D (decimal 8253)
+   defining Unicode char U+2044 (decimal 8260)
+   defining Unicode char U+204E (decimal 8270)
+   defining Unicode char U+2052 (decimal 8274)
+   defining Unicode char U+20A1 (decimal 8353)
+   defining Unicode char U+20A4 (decimal 8356)
+   defining Unicode char U+20A6 (decimal 8358)
+   defining Unicode char U+20A9 (decimal 8361)
+   defining Unicode char U+20AB (decimal 8363)
+   defining Unicode char U+20AC (decimal 8364)
+   defining Unicode char U+20B1 (decimal 8369)
+   defining Unicode char U+2103 (decimal 8451)
+   defining Unicode char U+2116 (decimal 8470)
+   defining Unicode char U+2117 (decimal 8471)
+   defining Unicode char U+211E (decimal 8478)
+   defining Unicode char U+2120 (decimal 8480)
+   defining Unicode char U+2122 (decimal 8482)
+   defining Unicode char U+2126 (decimal 8486)
+   defining Unicode char U+2127 (decimal 8487)
+   defining Unicode char U+212E (decimal 8494)
+   defining Unicode char U+2190 (decimal 8592)
+   defining Unicode char U+2191 (decimal 8593)
+   defining Unicode char U+2192 (decimal 8594)
+   defining Unicode char U+2193 (decimal 8595)
+   defining Unicode char U+2329 (decimal 9001)
+   defining Unicode char U+232A (decimal 9002)
+   defining Unicode char U+2422 (decimal 9250)
+   defining Unicode char U+25E6 (decimal 9702)
+   defining Unicode char U+25EF (decimal 9711)
+   defining Unicode char U+266A (decimal 9834)
+))
+LaTeX Info: Redefining \oldstylenums on input line 334.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 349.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 350.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 351.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 352.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 353.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 354.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 355.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 356.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 357.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 358.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 359.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 360.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 361.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 362.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 363.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 364.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 365.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 366.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 367.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 368.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 369.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 370.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 371.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 372.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 373.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 374.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 375.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 376.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 377.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 378.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 379.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 380.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 381.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 382.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 383.
+Package textcomp Info: Setting lmtt sub-encoding to TS1/0 on input line 384.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 385.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 386.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 387.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 388.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 389.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 390.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 391.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 392.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 393.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 394.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 395.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 396.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 397.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 398.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 399.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 400.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 401.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 402.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 403.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 404.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 405.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
+)
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
@@ -698,18 +854,25 @@ File: lstlang3.sty 2015/06/04 1.6 listings language file
 (./FleetDynamicsFLBEIA.aux)
 \openout1 = `FleetDynamicsFLBEIA.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 33.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 33.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 33.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -811,35 +974,26 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \c@lstlisting=\count143
-LaTeX Font Info:    Try loading font information for U+msa on input line 100.
+LaTeX Font Info:    Try loading font information for U+msa on input line 101.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 100.
+LaTeX Font Info:    Try loading font information for U+msb on input line 101.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 100.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 101.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 100.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 100.
-
-Underfull \hbox (badness 10000) in paragraph at lines 100--100
+Underfull \hbox (badness 10000) in paragraph at lines 101--101
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100--100
+Underfull \hbox (badness 10000) in paragraph at lines 101--101
 
  []
 
@@ -847,276 +1001,286 @@ Underfull \hbox (badness 10000) in paragraph at lines 100--100
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 100--100
+Underfull \hbox (badness 10000) in paragraph at lines 101--101
 
  []
 
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 100.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 101.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 100.
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <7> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 100.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 101.
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--113
+Underfull \hbox (badness 10000) in paragraph at lines 106--114
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--124
+Underfull \hbox (badness 10000) in paragraph at lines 115--125
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 125--130
+Underfull \hbox (badness 10000) in paragraph at lines 126--131
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 131--145
+Underfull \hbox (badness 10000) in paragraph at lines 132--146
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 146--159
+Underfull \hbox (badness 10000) in paragraph at lines 147--160
 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 160--171
+Underfull \hbox (badness 10000) in paragraph at lines 161--172
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 172--182
+Underfull \hbox (badness 10000) in paragraph at lines 173--183
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 183--190
+Underfull \hbox (badness 10000) in paragraph at lines 184--191
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--198
+Underfull \hbox (badness 10000) in paragraph at lines 192--199
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 202--212
+Underfull \hbox (badness 10000) in paragraph at lines 203--213
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 223--231
+Underfull \hbox (badness 10000) in paragraph at lines 224--232
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 244--253
+Underfull \hbox (badness 10000) in paragraph at lines 245--254
 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 254--260
+Underfull \hbox (badness 10000) in paragraph at lines 255--261
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 271--273
+Underfull \hbox (badness 10000) in paragraph at lines 272--274
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 280--282
+Underfull \hbox (badness 10000) in paragraph at lines 281--283
 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 296--300
+Underfull \hbox (badness 10000) in paragraph at lines 297--301
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 308--310
+Underfull \hbox (badness 10000) in paragraph at lines 309--311
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 319--322
+Underfull \hbox (badness 10000) in paragraph at lines 320--323
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 342--347
+Underfull \hbox (badness 10000) in paragraph at lines 343--348
 
  []
 
 [7]
-LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 356.
-
-Underfull \hbox (badness 10000) in paragraph at lines 359--362
-
- []
-
-
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 357
+.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmtt.fd
+File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
 Underfull \hbox (badness 10000) in paragraph at lines 363--364
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 375--376
+Underfull \hbox (badness 10000) in paragraph at lines 365--366
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 385--386
+Underfull \hbox (badness 10000) in paragraph at lines 367--368
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 379--380
 
  []
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 407--408
+Underfull \hbox (badness 10000) in paragraph at lines 388--389
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 438--452
+Underfull \hbox (badness 10000) in paragraph at lines 390--391
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 412--413
 
  []
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 461--469
+Underfull \hbox (badness 10000) in paragraph at lines 443--457
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 470--481
+Underfull \hbox (badness 10000) in paragraph at lines 466--474
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 482--487
+Underfull \hbox (badness 10000) in paragraph at lines 475--486
 
  []
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 490--499
+Underfull \hbox (badness 10000) in paragraph at lines 487--492
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 509--516
+Underfull \hbox (badness 10000) in paragraph at lines 495--504
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 517--524
-
- []
-
-[11]
-Underfull \hbox (badness 10000) in paragraph at lines 574--580
-
- []
-
-[12]
-Underfull \hbox (badness 10000) in paragraph at lines 581--589
+Underfull \hbox (badness 10000) in paragraph at lines 514--521
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 597--610
+Underfull \hbox (badness 10000) in paragraph at lines 522--529
+
+ []
+
+[11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 579--585
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 586--594
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 602--615
 
  []
 
 [13]
-Underfull \hbox (badness 10000) in paragraph at lines 623--633
+Underfull \hbox (badness 10000) in paragraph at lines 628--638
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 634--644
+Underfull \hbox (badness 10000) in paragraph at lines 639--649
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 653--663
+Underfull \hbox (badness 10000) in paragraph at lines 658--668
 
  []
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 664--671
+Underfull \hbox (badness 10000) in paragraph at lines 669--676
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 672--687
+Underfull \hbox (badness 10000) in paragraph at lines 677--692
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 688--699
+Underfull \hbox (badness 10000) in paragraph at lines 693--704
 
  []
 
 [15] (./FleetDynamicsFLBEIA.bbl [16] [17] [18]) [19]
-Overfull \hbox (5.98691pt too wide) in paragraph at lines 742--742
+Overfull \hbox (5.98691pt too wide) in paragraph at lines 747--747
 []|\OT1/cmr/m/n/12 Bmsytrigger| 
  []
 
 
-Overfull \hbox (4.1858pt too wide) in paragraph at lines 751--752
+Overfull \hbox (4.1858pt too wide) in paragraph at lines 756--757
 []|\OT1/cmr/m/n/12 71,000| 
  []
 
 
-Overfull \hbox (4.1858pt too wide) in paragraph at lines 753--754
+Overfull \hbox (4.1858pt too wide) in paragraph at lines 758--759
 []|\OT1/cmr/m/n/12 16,000| 
  []
 
 
-Overfull \hbox (4.1858pt too wide) in paragraph at lines 755--756
+Overfull \hbox (4.1858pt too wide) in paragraph at lines 760--761
 []|\OT1/cmr/m/n/12 24,000| 
  []
 
 
-Overfull \hbox (10.06075pt too wide) in paragraph at lines 757--758
+Overfull \hbox (10.06075pt too wide) in paragraph at lines 762--763
 []|\OT1/cmr/m/n/12 118,000| 
  []
 
 
-Overfull \hbox (4.1858pt too wide) in paragraph at lines 759--760
+Overfull \hbox (4.1858pt too wide) in paragraph at lines 764--765
 []|\OT1/cmr/m/n/12 29,000| 
  []
 
 
-Overfull \hbox (6.60832pt too wide) in paragraph at lines 740--766
+Overfull \hbox (6.60832pt too wide) in paragraph at lines 745--771
  [] 
  []
 
 [20
 
 ]
-<figures/FLBEIA.jpg, id=82, 1588.93625pt x 1875.005pt>
+<figures/FLBEIA.jpg, id=85, 1588.93625pt x 1875.005pt>
 File: figures/FLBEIA.jpg Graphic file (type jpg)
 <use figures/FLBEIA.jpg>
-Package pdftex.def Info: figures/FLBEIA.jpg  used on input line 775.
+Package pdftex.def Info: figures/FLBEIA.jpg  used on input line 780.
 (pdftex.def)             Requested size: 271.7835pt x 320.69212pt.
-<figures/Final_Metier_locations.png, id=83, 216.81pt x 271.0125pt>
+<figures/Final_Metier_locations.png, id=86, 216.81pt x 271.0125pt>
 File: figures/Final_Metier_locations.png Graphic file (type png)
 <use figures/Final_Metier_locations.png>
 Package pdftex.def Info: figures/Final_Metier_locations.png  used on input line
- 786.
+ 791.
 (pdftex.def)             Requested size: 271.7835pt x 339.76965pt.
-<figures/Final_Metier_catchcomp.png, id=84, 469.755pt x 289.08pt>
+<figures/Final_Metier_catchcomp.png, id=87, 469.755pt x 289.08pt>
 File: figures/Final_Metier_catchcomp.png Graphic file (type png)
 <use figures/Final_Metier_catchcomp.png>
 Package pdftex.def Info: figures/Final_Metier_catchcomp.png  used on input line
- 790.
+ 795.
 (pdftex.def)             Requested size: 362.37569pt x 222.9981pt.
  [21
 
@@ -1126,80 +1290,80 @@ LaTeX Warning: Text page 22 contains only floats.
 
 [22 <./figures/Final_Metier_locations.png (PNG copy)> <./figures/Final_Metier_c
 atchcomp.png (PNG copy)>]
-<figures/Effort_shares.png, id=91, 867.24pt x 505.89pt>
+<figures/Effort_shares.png, id=94, 867.24pt x 505.89pt>
 File: figures/Effort_shares.png Graphic file (type png)
 <use figures/Effort_shares.png>
-Package pdftex.def Info: figures/Effort_shares.png  used on input line 806.
+Package pdftex.def Info: figures/Effort_shares.png  used on input line 811.
 (pdftex.def)             Requested size: 700.50687pt x 408.64935pt.
  Adding sideways figure on  right hand page
-<figures/Effort_shares_annual.png, id=92, 505.89pt x 505.89pt>
+<figures/Effort_shares_annual.png, id=95, 505.89pt x 505.89pt>
 File: figures/Effort_shares_annual.png Graphic file (type png)
 <use figures/Effort_shares_annual.png>
 Package pdftex.def Info: figures/Effort_shares_annual.png  used on input line 8
-20.
+25.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/Change_effort.png, id=93, 505.89pt x 505.89pt>
+<figures/Change_effort.png, id=96, 505.89pt x 505.89pt>
 File: figures/Change_effort.png Graphic file (type png)
 <use figures/Change_effort.png>
-Package pdftex.def Info: figures/Change_effort.png  used on input line 832.
+Package pdftex.def Info: figures/Change_effort.png  used on input line 837.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
-<figures/IE_Otter_catches.png, id=94, 867.24pt x 505.89pt>
+<figures/IE_Otter_catches.png, id=97, 867.24pt x 505.89pt>
 File: figures/IE_Otter_catches.png Graphic file (type png)
 <use figures/IE_Otter_catches.png>
-Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 841.
+Package pdftex.def Info: figures/IE_Otter_catches.png  used on input line 846.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/F_difference.png, id=95, 867.24pt x 505.89pt>
+<figures/F_difference.png, id=98, 867.24pt x 505.89pt>
 File: figures/F_difference.png Graphic file (type png)
 <use figures/F_difference.png>
-Package pdftex.def Info: figures/F_difference.png  used on input line 852.
+Package pdftex.def Info: figures/F_difference.png  used on input line 857.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/SSB_difference.png, id=96, 867.24pt x 505.89pt>
+<figures/SSB_difference.png, id=99, 867.24pt x 505.89pt>
 File: figures/SSB_difference.png Graphic file (type png)
 <use figures/SSB_difference.png>
-Package pdftex.def Info: figures/SSB_difference.png  used on input line 866.
+Package pdftex.def Info: figures/SSB_difference.png  used on input line 871.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
-<figures/stock_risks.png, id=97, 867.24pt x 505.89pt>
+<figures/stock_risks.png, id=100, 867.24pt x 505.89pt>
 File: figures/stock_risks.png Graphic file (type png)
 <use figures/stock_risks.png>
-Package pdftex.def Info: figures/stock_risks.png  used on input line 879.
+Package pdftex.def Info: figures/stock_risks.png  used on input line 884.
 (pdftex.def)             Requested size: 452.9679pt x 264.2299pt.
  [23 <./figures/Effort_shares.png (PNG copy)>] [24 <./figures/Effort_shares_ann
 ual.png (PNG copy)>] [25 <./figures/Change_effort.png (PNG copy)>] [26 <./figur
 es/IE_Otter_catches.png (PNG copy)>] [27 <./figures/F_difference.png (PNG copy)
 >] [28 <./figures/SSB_difference.png (PNG copy)> <./figures/stock_risks.png (PN
 G copy)>]
-<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=117, 504.9264pt x 505.167
+<figures/Gravity_Metier_Catch_Rate_Multiplier.png, id=120, 504.9264pt x 505.167
 3pt>
 File: figures/Gravity_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/Gravity_Metier_Catch_Rate_Multiplier.png>
 Package pdftex.def Info: figures/Gravity_Metier_Catch_Rate_Multiplier.png  used
- on input line 895.
+ on input line 900.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=118, 504.9264pt x 505.1673pt>
+<figures/RUM_Metier_Catch_Rate_Multiplier.png, id=121, 504.9264pt x 505.1673pt>
 
 File: figures/RUM_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/RUM_Metier_Catch_Rate_Multiplier.png>
 Package pdftex.def Info: figures/RUM_Metier_Catch_Rate_Multiplier.png  used on 
-input line 903.
+input line 908.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=119, 504.9264pt x 505.1673
+<figures/Markov_Metier_Catch_Rate_Multiplier.png, id=122, 504.9264pt x 505.1673
 pt>
 File: figures/Markov_Metier_Catch_Rate_Multiplier.png Graphic file (type png)
 <use figures/Markov_Metier_Catch_Rate_Multiplier.png>
 Package pdftex.def Info: figures/Markov_Metier_Catch_Rate_Multiplier.png  used 
-on input line 911.
+on input line 916.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/RUM_metier_seasonal_effect.png, id=120, 504.9264pt x 505.1673pt>
+<figures/RUM_metier_seasonal_effect.png, id=123, 504.9264pt x 505.1673pt>
 File: figures/RUM_metier_seasonal_effect.png Graphic file (type png)
 <use figures/RUM_metier_seasonal_effect.png>
 Package pdftex.def Info: figures/RUM_metier_seasonal_effect.png  used on input 
-line 919.
+line 924.
 (pdftex.def)             Requested size: 452.9679pt x 453.19722pt.
-<figures/Markov_metier_seasonal_effect.png, id=121, 505.89pt x 505.89pt>
+<figures/Markov_metier_seasonal_effect.png, id=124, 505.89pt x 505.89pt>
 File: figures/Markov_metier_seasonal_effect.png Graphic file (type png)
 <use figures/Markov_metier_seasonal_effect.png>
 Package pdftex.def Info: figures/Markov_metier_seasonal_effect.png  used on inp
-ut line 926.
+ut line 931.
 (pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
 
 [29
@@ -1210,33 +1374,36 @@ r_Catch_Rate_Multiplier.png (PNG copy)>] [32 <./figures/RUM_metier_seasonal_eff
 ect.png (PNG copy)>] [33 <./figures/Markov_metier_seasonal_effect.png (PNG copy
 )>] (./FleetDynamicsFLBEIA.aux) ) 
 Here is how much of TeX's memory you used:
- 7560 strings out of 494847
- 98842 string characters out of 6179079
- 243288 words of memory out of 5000000
- 10702 multiletter control sequences out of 15000+600000
- 15273 words of font info for 63 fonts, out of 8000000 for 9000
+ 8078 strings out of 494847
+ 106543 string characters out of 6179079
+ 244911 words of memory out of 5000000
+ 11205 multiletter control sequences out of 15000+600000
+ 16412 words of font info for 67 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 41i,11n,40p,563b,1847s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-mi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt
-12.pfb>
-Output written on FleetDynamicsFLBEIA.pdf (33 pages, 4140734 bytes).
+ 41i,11n,40p,563b,2043s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/coilin/.texlive2017/texmf-var/fonts/pk
+/ljfour/jknappen/ec/tctt1000.600pk> </home/coilin/.texlive2017/texmf-var/fonts/
+pk/ljfour/jknappen/ec/tcrm0700.600pk> </home/coilin/.texlive2017/texmf-var/font
+s/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+mi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmtt12.pfb>
+Output written on FleetDynamicsFLBEIA.pdf (33 pages, 4148247 bytes).
 PDF statistics:
- 190 PDF objects out of 1000 (max. 8388607)
- 122 compressed objects within 2 object streams
+ 205 PDF objects out of 1000 (max. 8388607)
+ 134 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  76 words of extra memory for PDF output out of 10000 (max. 10000000)
 

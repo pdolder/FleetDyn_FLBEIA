@@ -14,16 +14,17 @@
 \usepackage{natbib}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{textcomp}
 
 %% For embedding R code
 \lstset{language=R,
-basicstyle=\footnotesize,
+basicstyle=\ttfamily\footnotesize,
 breaklines=true,
 backgroundcolor=\color{aliceblue},
 keywordstyle=\color{blue},
 commentstyle=\color{darkgreen},
 stringstyle=\color{purple},
-aboveskip = 20pt, belowskip = 20pt}
+aboveskip = 20pt, belowskip = 20pt, upquote=true}
 
 \definecolor{aliceblue}{rgb}{0.94,0.97,1.0}
 \definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
@@ -271,7 +272,7 @@ Behaviour' (SMFB). [SAY HERE WHICH WE CHOOSE OR IS THAT SPECIFIED LATER?]
 The five models implemented to provide alternative hypotheses of effort share
 among métier include:\\
 
-(i) A \textbf{base model} (b) where the proportion of effort in métier $m$ at time
+(i) A \textbf{Base model} (b) where the proportion of effort in métier $m$ at time
 $t$ is:
 \begin{equation}
 p^{(b)}_{m,t} = \overline{p}_{m}
@@ -280,7 +281,7 @@ p^{(b)}_{m,t} = \overline{p}_{m}
 This ensures that future effort is simply determined by the past share of
 effort, as an average over the past years defined by the user. \\
 
-(ii) A \textbf{gravity model} (g) where the proportion of effort in métier $m$ at
+(ii) A \textbf{Gravity model} (g) where the proportion of effort in métier $m$ at
 time $t$ is given by: 
 \begin{equation}
 p^{(g)}_{m,t} = \frac{\overline{R}_{m}}{\sum\limits_{m=1}^{M}\overline{R}_{m}} 
@@ -298,7 +299,7 @@ time $t$ multiplied by the price $P\text{x}_{s}$ [SPECIFY WHAT TIME PERIOD EXACT
 implement this approach based on profit per unit effort, where the cost per
 unit of effort of fishing in a particular métier are subtracted from Equation~(\ref{eqn:ppue}). \\
 
-(iii) A \textbf{gravity and tradition combination}, an alternative formulation
+(iii) A \textbf{Gravity and Tradition combination}, an alternative formulation
 of a gravity model was included, where 80\% (denoted by $\phi$)[$\alpha$ USED ALREADY IN COBB-DOUGLAS] of the effort
 allocation was determined by past effort (tradition, or inertia) and 20\% by
 the gravity model (economic opportunism). This Gravity-Tradition combination
@@ -339,10 +340,10 @@ $X_t$.
 \subsection{Implementing location choice models in FLBEIA}
 \label{sec:imp}
 
-Each of the models has been implemented flexibly within FLBEIA so that the
+We implemented each of the location choice models flexibly within FLBEIA so that the
 covariates are derived from one or more of the stock-specific catch rates or
 elements from an internal FLBEIA object. For example, by specifying a
-particular stock or slot from an FLMetierExt (e.g. effshare) it can be included
+particular stock or slot from an FLMetierExt (e.g., effshare) it can be included
 in the model estimation and prediction of effort allocation among métier. \\
 
 Here we describe the changes to a model setup required to implement the
@@ -357,15 +358,18 @@ fleets.ctrl[[fleet]][['effort.model']]   <- 'SMFB_ES'
 \end{lstlisting} 
 
 Each of the location choice models can then be specified through the following
-changes. As (i) is the base case, no changes are needed to implement this
-approach, so it is not detailed here: \\
+changes. 
+
+(i) \textbf{Base model} \\
+
+No changes to existing FLBEIA code are needed to implement this approach as it is the default. \\
 
 (ii) \textbf{Gravity model} \\
 
 To implement the gravity model requires no model formula to be passed to
 FLBEIA, but you can set different options once the effort share model has been
 specified. The following implements a gravity model based only on the revenue
-from each of the métier:
+from each métier:
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][['effshare.model']] <- 'gravity.flbeia'
@@ -381,6 +385,7 @@ that should be determined by the past share (or tradition):
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][["gravity.tradition"]] <- 0.8 ## 80 % from tradition
 \end{lstlisting}
+[DO YOU NEED TO SPECIFY THE VARIABLE (REVENUE, PROFIT) FOR THE GRAVITY MODEL ALSO?]\\
 
 (iv) \textbf{Random Utility Model} \\
 
@@ -393,11 +398,11 @@ and `had' catch rates as choice specific covariates and season as a case
 specific covariate is specified as:
 
 \begin{lstlisting}[language=R]
-model <- mlogit(choice ~ Cod + Had .... | season, data = data)
+model <- mlogit(choice ~ Cod + Had | season, data = data)
 \end{lstlisting}
 
 
-Following estimation, the model object should be passed to FLBEIA as follows:
+Following estimation, the model object can then be passed directly to FLBEIA as follows:
 
 \begin{lstlisting}[language=R]
 fleets.ctrl[[fleet]][['effshare.model']] <-  'mlogit.flbeia'
@@ -406,8 +411,8 @@ fleets.ctrl[[fleet]][['mlogit.model']]   <-  model
 
 (v) \textbf{Markov transition model} \\
 
-The Markov model is implemented with the R package \textit{nnet} and the
-function \textbf{multinom}. In order to enforce the Markov property and
+The Markov model is estimated with the R package \textit{nnet} and the
+function \textbf{multinom}. To enforce the Markov property and
 generate transition probabilities between states, the previous state should be
 included as a covariate, for example:
 
@@ -415,7 +420,7 @@ included as a covariate, for example:
 model <- multinom(choice ~ choice.tminus1 + Cod.tminus1 + Had.tminus1 +
 season.tminus1, data = data)
 \end{lstlisting}
-
+[HERE COD AND HADDOCK CATCHES AFFECT CHOICE THE SAME WAY IRRESPECTIVE OF DEPARTING METIER? IF WE WANT DIFFERENT EFFECTS OF COD AND HADDOCK CATCHES ON TRANSITIONS, INTERACT THEM WITH choice.tminus1]\\
 Following estimation, the model object should be passed to FLBEIA as follows:
 
 \begin{lstlisting}[language=R]
