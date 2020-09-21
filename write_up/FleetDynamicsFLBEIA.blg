@@ -4,45 +4,45 @@ The top-level auxiliary file: FleetDynamicsFLBEIA.aux
 The style file: apalike.bst
 Database file #1: FLBEIA.bib
 Warning--empty journal in Dolder2020
-You've used 35 entries,
+You've used 36 entries,
             1935 wiz_defined-function locations,
-            696 strings with 11565 characters,
-and the built_in function-call counts, 14833 in all, are:
-= -- 1402
-> -- 861
+            702 strings with 11955 characters,
+and the built_in function-call counts, 15421 in all, are:
+= -- 1454
+> -- 909
 < -- 12
-+ -- 308
-- -- 306
-* -- 1353
-:= -- 2707
-add.period$ -- 99
-call.type$ -- 35
-change.case$ -- 332
-chr.to.int$ -- 33
-cite$ -- 36
-duplicate$ -- 460
-empty$ -- 854
-format.name$ -- 345
-if$ -- 2754
++ -- 326
+- -- 324
+* -- 1415
+:= -- 2814
+add.period$ -- 102
+call.type$ -- 36
+change.case$ -- 346
+chr.to.int$ -- 34
+cite$ -- 37
+duplicate$ -- 474
+empty$ -- 881
+format.name$ -- 364
+if$ -- 2860
 int.to.chr$ -- 3
 int.to.str$ -- 0
-missing$ -- 26
-newline$ -- 172
-num.names$ -- 105
-pop$ -- 270
+missing$ -- 27
+newline$ -- 177
+num.names$ -- 108
+pop$ -- 282
 preamble$ -- 1
-purify$ -- 328
+purify$ -- 342
 quote$ -- 0
-skip$ -- 354
+skip$ -- 364
 stack$ -- 0
-substring$ -- 886
-swap$ -- 34
+substring$ -- 914
+swap$ -- 35
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 210
+type$ -- 216
 warning$ -- 1
-while$ -- 108
+while$ -- 112
 width$ -- 0
-write$ -- 437
+write$ -- 450
 (There was 1 warning)

@@ -650,7 +650,7 @@ under the gravity model assumption and megrims SSB plateauing at a lower level
 under the gravity and markov models. \\
 
 While the differences among the location choice models for the main stock
-indicators was comparatively small, it did lead to appreciable differences in the ris based indicators (Figure~\ref{fig:risk}). Risk to being above $F_{MSY}$ objective was lower for cod and haddock under the gravity model than the other models. Whereas for megrims the risk was greater under the gravity model than the others (except the Markov model). Interestingly the risk under the gravity-tradition model was less for megrims than either component (Figure \ref{fig:risk}). Relatively minor differences in risk to biomass-based indicators were observed under each model (Figure \ref{fig:risk}). 
+indicators was comparatively small, it did lead to appreciable differences in the ris based indicators (Figure~\ref{fig:risk}). Risk to being above $F_{MSY}$ objective was lower for cod and haddock under the gravity model than the other models. Whereas for megrims the risk was greater under the gravity model than the others (except the Markov model). Interestingly the risk under the gravity-tradition model was less for megrims than either component (Figure \ref{fig:risk}). Relatively minor differences in risk to biomass-based indicators were observed under each model (Figure \ref{fig:risk}).
 
 \section{Discussion}
 \label{dis}
@@ -666,44 +666,46 @@ short- and long-term decisions made by fishers affect the development of those
 interactions over time to effectively evaluate management strategies and how
 fleet dynamics might affect management outcome \citep{Marchal2013}. \\
 
-We implement a range of location choice models in the FLBEIA framework; from a
-simple process-based gravity model to more complex RUM and Markov transition
+We generally implemented a range of location choice models in the FLBEIA framework; from a
+simple process-based gravity model to more complex statistical RUM and Markov transition
 models. All have been implemented in a flexible way, to provide the user with
-the ability to tailor the model to the specificities of the fishery. At
-present, the possible covariates include stock specific catch rates as well
-costs, a seasonal effect and past share spent in the métier but the framework
-is easily extendable by using the covariates input to FLBEIA. \\
+the ability to tailor the model to the specificities of the fishery. A key development was to identify effort share within a fleet as the most suitable entry point in which to embed these models. Transitions among fleets is not typically possible but how vessels within a fleet operate is replete with choices and hence naturally accommodates location choice models. 
+
+As implemented currently, possible covariates include stock-specific catch rates as well
+as costs, seasonal effects and past share spent in the métier. The framework is, however,
+easily extendable by using the ``covariates'' input to FLBEIA. Basing the model fitting and estimation on extant model implementations (e.g., mlogit, nnet::multinom) and processing those models internally, we enable flexibility to cover widely used methods in familiar modelling frameworks \citep{Venables2009, Dichmont2006, Hynes2016}. We also envisage compatability with other methods in the future, reflecting the modular structure. Importantly, we broaden the scope of previous applications to ask what their impact might be when used as operating model hypotheses to test management strategies, over their traditional use as stand-alone model fitting investigations.\\
 
 The approach is dependent on being able to characterise fishing grounds at the
-right spatial and temporal resolution to capture the important spatiotemporal
+right spatial and temporal resolution to capture important spatiotemporal
 interactions \citep{Dolder2020a}. While information on spatial dynamics
-generally needs to be inferred from fisheries dependent information the
-increasing availability of fine scale data on fishing activity makes this
+generally needs to be inferred from fisheries-dependent information, the
+increasing availability of fine-scale data on fishing activity makes this
 possible \citep{Gerritsen2012, Mateo2016} and has been applied to define choice
-sets in a location choice framework \citep{Hynes2016}. We argue that while
-predicting fisher response to management regulation continues to present
+sets in a location choice framework \citep{Hynes2016}. The modelling frameworks therefore synthesise highly-resolved decisions into formulations with parameters that reflect choice and variability of choice that can thus be brought into a strategy evaluation operating at a less resolved scale. It may also be possible to include stakeholder-informed formulations based on scenarios developed by stakeholders that could be formalised as discrete choice experiments \citep{johnson2013constructing}. Including stakeholder understanding opens interesting avenues for meaningful engagement and input into management strategy evaluation.\\ 
+
+While predicting fisher response to management regulation continues to present
 challenges \citep{Andersen2010a} by using different models and model
-formulations it's possible to develop a range of hypotheses on the likely
+formulations it is possible to develop a range of hypotheses on the likely
 effect of location choice dynamics on fisheries management measures
-\citep[][\textit{in prep}]{Dolder2020}. In this way including hypotheses on
-location choice in mixed-fishery MSEs provides a robust framework to potential
+\citep[][\textit{in prep}]{Dolder2020}. Including hypotheses on
+location choice in mixed-fishery MSEs thus provides a robust framework to potential
 formulation, similar to how uncertainty about the form of recruitment dynamics
 is included in single stock MSEs \citep[e.g.][]{ICES2020}.  \\
 
 Through application to a case study for the Celtic Sea demersal fishery we
 demonstrate how the stock specific and seasonal covariates introduced might
 influence effort allocations across different métier (representing fishing
-grounds) in a gravity, RUM and Markov model. Further, we show through
-simulation how this leads to different allocations of effort across the métier
+grounds) in a gravity, RUM and Markov model (Figures~\ref{fig:effort}). Further, we show through
+simulation how this leads to different allocations of effort across métier
 and how this effects management outcome including catches, fishing mortality
-and SSB and risk-based indicators. While our MSE was only implemented as a
+and SSB and risk-based indicators (Figures~\ref{fig:OtterC} -- \ref{fig:risk}). While our MSE was only implemented as a
 demonstration, we show clearly that the decisions of fishers on where to fish
 can effect the conclusions about the sustainability of a particular approach -
 thus consideration of location choice is crucial when evaluating mixed fishery
 management measures. \\
 
 We argue that inclusion of location choice models as part of a fleet operating
-model in a mixed-fishery MSE is essential to consider the potential impact of
+model in a mixed-fishery MSE is essential to consider the potential impact
 on management outcome, and show how conclusions might be affected by these
 short-term fleet dynamics. Future MSE approaches for evaluations of
 mixed-fishery management measures should consider plausible location choice
@@ -711,7 +713,7 @@ dynamics and include them alongside the biological and management operating
 models when conducting mixed-fishery MSEs. This will allow the framework to
 better quantitatively characterise the range of potential outcomes for
 fisheries and strengthen the scientific basis for assessing the robustness of
-management measures to implementation error and outcomes uncertainty. 
+management measures to implementation error and outcome uncertainty. 
 
 \section{Conclusions} \label{con}
 
@@ -719,18 +721,18 @@ We demonstrate the importance of considering the short-term dynamics arising
 from location choice by implementing a range of plausible models for a
 multi-stock mixed fishery in the Celtic Sea. While predicting the location
 choice of fishers is challenging due to the complexity of factors involved
-there are a range of different approaches that can characterise the influence
+there are a range of different approaches that once embedded in an MSE framework can characterise the influence
 on management outcome. As different models lead to different predictions we
-show to they can be used as alternative hypotheses in an MSE setting. We
+leave their choice to the user but show how they can be used as alternative hypotheses in an MSE setting. We
 recommend implementation of different fleet location choice operating models
 when undertaking mixed-fishery MSEs in order to incorporate this important
 dynamic alongside plausible biological dynamics to better characterise outcomes
-for fisheries indicators. 
+for fisheries indicators.
 
-\begin{notes}[Acknowledgements] The authors would like to thank the team at
-	AZTI working to develop and
+\begin{notes}[Acknowledgements] The authors would like to thank the team at AZTI working to develop and
 maintain the FLBEIA framework and members of the ICES Working group
-WGMIXFISH-Methods for discussions on the approaches employed.
+WGMIXFISH-Methods for discussions on the approaches employed. This work was supported by the MARES doctoral training program
+(MARES\_14\_15) and the Centre for Environment, Fisheries and Aquaculture Science seedcorn program (DP227AC). 
 \end{notes}
 
 \bibliographystyle{apalike}
