@@ -567,74 +567,76 @@ megrims, hake, anglerfishes, \textit{Nephrops FU19}, and a small proportion of
 cod. Métier E covers an area South-East of Ireland and includes a large
 proportion of whiting and haddock, and shares of megrims, \textit{Nephrops
 	FU19}, anglerfishes, cod, hake and \textit{Nephrops FU22}.  Métier F is
-a single ICES statistical rectangle, with the majority of catch
+a single ICES statistical rectangle on the Smalls grounds, with the majority of catch comprised of
 \textit{Nephrops FU22} and whiting, but also with catches of haddock, cod and
 anglerfishes and smaller proportions of megrims and hake. Finally, métier G is
 an area off the West coast of Ireland (Aran grounds) which is predominately
 catches of \textit{Nephrops FU17} with a mix of whiting, megrims, haddock and
-anglerfish and a small catch of hake.
+anglerfish and a small catch of hake.\\
 
-\subsection{Catch rate influence on gravity, rum and markov predictions}
+[INCLUDE PANEL LABELS ON FIGURE 2 FOR TOP AND BOTTOM. INDICATE FOR BOTTOM PANEL IF THIS IS PROPORTION OF CATCH BY WEIGHT FROM EACH OF THE METIER]
+
+\subsection{Catch rate influence on Gravity, RUM and Markov predictions}
 
 For the gravity model the influence of a stock catch rate on effort allocation
 was determined directly by the relative abundance of a stock in a métier and
-the relative price. For example, an increase in abundance of hake results in an
+the relative price (Equation~\ref{eqn:ppue}). For example, an increase in abundance of hake results in an
 increase in allocation of effort to métier D while an increase in abundance of
 \textit{Nephrops FU16} results in an increase in effort allocation to métier B
-(Figure \ref{fig:Grav_CR}). \\
+(Figure \ref{fig:Grav_CR}). For most species the effect of an increase in catch rate is for an increase in one métier and decrease in others or occassionally an increase in allocation to two métier (haddock and megrims in Figure~\ref{fig:Grav_CR}). \textit{Nephrops} catch rates had relatively large magnitude effects on proportional allocation to main métier associated with given functional units (Figure~\ref{fig:Grav_CR}). \\
 
-For the RUM we found that the model that included catch rates of anglerfishes,
+For the RUM, the model including catch rates of anglerfishes,
 cod, hake, \textit{Nephrops} FU19, \textit{Nephrops} FU22 and whiting along
-with a seasonal affect (Figure \ref{fig:RUM_Seas}) was best. Unlike the gravity
-model the influence of a stock catch rate (beyond the allocation determined by
-the intercept from the model) could be both negative when increasing as well as
-positive; for example we found that increasing abundance of anglerfishes led to
+with a seasonal affect (Figure \ref{fig:RUM_Seas}) fit best (lowest BIC of models trialled). Unlike the gravity
+model, the influence of a stock catch rate (beyond the allocation determined by
+the intercept from the model [EXPLAIN]) could be both negative when increasing as well as
+positive [UNCLEAR WHAT YOU MEAN HERE AS THERE ARE INCREASES AND DECREASES IN THE GRAVITY ALSO?]; for example we found that increasing abundance of anglerfishes led to
 more fishing effort being allocated to métier F and less to métier A, while the
 relationship with métier E was concave (Figure \ref{fig:RUM_CR}). \\
 
-For the Markov model (beyond the intercept) a sesaonal effect (Figure
+[WHY WOULD AN INCREASE IN NEP19 RESULT IN A DECREASE TO METIER D? SIMILARLY WHY WOULD AN INCREASE IN ANGLERFISH RESULT IN SUCH A BIG INCREASE TO METIER F WHICH HAS THE SMALLEST PROPORTION OF ANF FROM FIGURE 2]
+
+
+For the Markov model (beyond the intercept) a seasonal effect (Figure
 \ref{fig:Markov_Seas}) and increasing abundance of anglerfishes led to more
 effort allocated to métier C while increasing abundance of whiting led to more
-effort allocated to métier E (Figure \ref{fig:Markov_CR}).
+effort allocated to métier E (Figure \ref{fig:Markov_CR}) [EXPAND ON THIS AS THERE IS A LOT MORE GOING ON IN THAT FIGURE. WHY DOES EVERYTJING WANT TO GO TO C IN THIS PLOT?].
 
 \subsection{Effort allocations under different location choice assumptions}
 
 All of the models included seasonal differences in allocation of fishing effort
 to the different métier and (except for the base case) had differences
-dependent on the recruitment for the stocks and catchability variability
-(Figure \ref{fig:effort}). The influence of different catch rates was a product
-of changes in population dynamics which was present in all of the models except
-the base case which was determined only based on past allocations. We found
+reflecting recruitment and catchability variability
+(Figure \ref{fig:effort}). Changes in population dynamics influence catch rates and was present in all of the models except
+the base case where location was determined by past allocations alone. We found
 that prior to the closure of métier F the Gravity model allocated more effort
 to métier B and G than the base case or the other models, while the RUM
 allocated more effort to métiers E and F (Figure \ref{fig:effort_an}). The
 Markov model allocated more effort to métier D and A and less to and B than the
 rest of the models (Figure \ref{fig:effort_an}). The gravity-tradition model
-was a compromise between the base case and the pure gravity model, as to be
-expected. \\
+was a compromise between the base case and the pure gravity model and allocated effort as
+expected by their relative weighting in this model  . \\
 
 Following the closure of métier F differences can be seen in how the location
-choice models allocated the effort to other areas (Figure
-\ref{fig:effort_chg}). While the baseline run allocated effort proportionally
-to the existing allocations, the gravity model also reduced effort in métier B
-and allocated a greater proportion of the effort to métiers C, D and E. The RUM
-allocated a greater proportion of effort to métier E and C than the others,
-while the Markov showed the greatest variation in allocating a greater
-proportion of the effort to métier C followed by B and only a small part of the
-effort to métier D.
+choice models allocated effort to other open areas (Figure
+\ref{fig:effort_chg}). While the baseline run reallocated effort proportionally
+to the existing allocations, the gravity model reduced effort in métier B
+and allocated a greater proportion of the effort to métiers C, D and E [IS IT POSSIBLE TO SHOW THE ALLOCATION WITHOUT A CLOSURE IF WE HAVE IT STORED? I AM WONDERING AS SOME OF THESE LOOK TO HAVE BEEN INCREASING EVEN WITHOUT THE CLOSURE IN FIGURE 3. NO WORRIES IF NOT]. The RUM
+allocated a greater proportion of effort to métier E, C and g than the others with increased amplitude of seasonal differences apparent (Figure \ref{fig:effort}). The Markov model showed the greatest variation in allocating a greater
+proportion of the effort to métier C and B and decreasing allocation of effort to
+métier D and G (Figure~\ref{fig:effort_chg}).
 
-\subsection{Impact of choices on stock level indicators}
+\subsection{Impact of location choice models on stock level indicators}
 
 The impact at the stock level was limited by the fact that the fleet dynamics
 model was only implemented for the Irish otter trawl fleet, which only catches
-a proportion of the total catch for each of the stocks. Nonetheless, the
+a proportion of the total catch for each of the stocks [KEEP FOR DISCUSSION?]. Nonetheless, the
 location choice model led to differences in median catches of all stocks
 (Figure \ref{fig:OtterC}), with lower catches of cod and haddock under the
 gravity model and higher catches of megrims under both the gravity and RUM
-choice models. Higher catches of whiting and hake were observed with the Markov
-model.  In general, however, the scale of catches was more influences by the
-recruitment and within métier catchability variability than the location choice
-model. \\
+choice models [ADD LINES AFTER RIBBONS IN PLOT TO SHOW MEDIAN COLOURS BETTER]. Higher catches of hake were observed with the Markov
+model, reflecting an initial increase in allocation to area D, Figure~\ref{fig:effort}. In general, however, the scale of catches was more influenced by the recruitment and within métier catchability variability than the location choice
+model. [CAN WE SAY THAT WITHOUT SUBTRACTING A GIVEN MODEL FROM THE BASELINE BY ITERATION AND SUMMARISING THAT DIFFERENCE ACROSS ITERATIONS? HERE WE SEE A MIXTURE OF VARIABILITY CAUSED BY RECRUITMENT INTERACTING WITH THE MODEL]\\
 
 At the stock level the difference in catches under the different choice models,
 while again influenced more by recruitment for the different stocks, led to a
@@ -642,15 +644,13 @@ lower median fishing mortality on cod with the gravity model, while there was a
 higher fishing mortality on megrims with the markov and the gravity models and
 a lower fishing mortality with the RUM model. Conversely there was a higher
 fishing mortality on whiting with the RUM and Markov models (Figure
-\ref{fig:F}). These difference led to some differences in spawning stock
+\ref{fig:F}). Importantly, for some species these differences comprise different inferences regarding whether the stock is above or below the $F_{MSY}$ reference point (e.g., haddock and megrims in Figure~\ref{fig:F}). These difference led to some differences in spawning stock
 biomass development (Figure \ref{fig:SSB}) with cod rebuilding more quickly
 under the gravity model assumption and megrims SSB plateauing at a lower level
 under the gravity and markov models. \\
 
 While the differences among the location choice models for the main stock
-indicators was small, it did lead to an appreciate difference in the ability to
-meet the Fmsy objective for cod, haddock and megrims as well as some impact on
-the biomass based indicators (Figure \ref{fig:risk}). 
+indicators was comparatively small, it did lead to appreciable differences in the ris based indicators (Figure~\ref{fig:risk}). Risk to being above $F_{MSY}$ objective was lower for cod and haddock under the gravity model than the other models. Whereas for megrims the risk was greater under the gravity model than the others (except the Markov model). Interestingly the risk under the gravity-tradition model was less for megrims than either component (Figure \ref{fig:risk}). Relatively minor differences in risk to biomass-based indicators were observed under each model (Figure \ref{fig:risk}). 
 
 \section{Discussion}
 \label{dis}
@@ -794,12 +794,12 @@ WGMIXFISH-Methods for discussions on the approaches employed.
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/Final_Metier_catchcomp}
 \end{subfigure}
-\caption{The métier defined through spatial clustering of similar catch
+\caption{Métier defined through spatial clustering of similar catch
 	composition for Irish Otter trawlers modified by using knowledge of
-	fishing grounds to make coherent spatial units. The circles represent
+	fishing grounds to make coherent spatial units. Circles represent
 	relative fishing effort in each of the rectangles. Catch compositions
 	for the métier indicating the dominant stocks in catches for each of
-	the fishing grounds. Stock codes in Table \ref{tab:brp}.} 
+	the fishing grounds. Stock codes are presented in Table \ref{tab:brp}.} 
 	\label{fig:metier}
 
 \end{figure}	
@@ -810,7 +810,7 @@ WGMIXFISH-Methods for discussions on the approaches employed.
 	\centering
 	\includegraphics[width=1\linewidth]{figures/Effort_shares}
 	\caption{Quarterly fishing effort share (proportion) for each métier
-		and location choice model (2017 - 2032). Light shading
+		and location choice model in the Operating Model (2017 - 2032). Light shading
 		represents 5\% and 95\% variability due to recruitment and
 		catchability. Solid line indicates end of the data/start of
 		simulations and the dashed line the implementation of the
@@ -891,8 +891,12 @@ WGMIXFISH-Methods for discussions on the approaches employed.
 
 \clearpage
 
-\section{Appendices}
-
+\section{Supplementary material}
+%% Change figure labels
+\setcounter{figure}{0} \renewcommand{\thefigure}{A.\arabic{figure}}
+\makeatletter
+\renewcommand{\thefigure}{S\@arabic\c@figure} 
+\makeatletter
 \textbf{Appendix A}
 
 \begin{figure}[!ht]
@@ -933,7 +937,7 @@ WGMIXFISH-Methods for discussions on the approaches employed.
 	\label{fig:Markov_Seas}
 \end{figure}	
 
-
+\renewcommand{\thefigure}{\@arabic\c@figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
