@@ -295,7 +295,7 @@ col<- brewer.pal(n_clust, "Set3")
 size <- 0.5
 
 png(file.path("..", "plots", "Final_Metier_locations.png"), height = 1500, width = 1200, res = 400)
-par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(3,3,1,1))
 basemap(c(we, ea), c(so, no), bg = "grey95", cex.axis = size, mgp = c(1,0.3,0), cex.lab = size)
 #draw.rect()
 draw.barplot2D(p$x, p$y,p$z, width=1, height=0.5, col=col, 
@@ -307,6 +307,7 @@ draw.shape(coast, col = "white")
 #mtext(side=3,las=1,adj=0, line=-2,text=paste("  Defined Métier", sep = " "),cex=size,font=2)
 legend('bottomleft', LETTERS[1:n_clust], fill=col, bty='n', 
        ncol=3,cex= 0.7, title = "Métier")
+text(-18,56.5, label = "A", xpd = NA)
 dev.off()
 
 ## Catch comp
@@ -334,9 +335,12 @@ cols <- c(brewer.pal(13, "Set3"),"white")
 png(file.path("..", "plots", "Final_Metier_catchcomp.png"), 
     width = 2600, height = 1600, res = 400)
 
-par(mar=c(2,2,8,2))
-barplot(catch_avg, col = cols, mgp = c(1,0.3,0)) 
+par(mar=c(2,3,7,2))
+barplot(catch_avg, col = cols, mgp = c(1,0.3,0), ylab = "Proportion of landings by weight",
+	xlab = "Métier") 
 par(xpd = TRUE)
 legend(0.1,1.4, legend = spp, fill = cols, cex = 0.7, ncol = 5, pt.cex = 2)
+text(-0.5, 1.5, labels= "B", xpd = NA)
 dev.off()
+
 
