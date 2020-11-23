@@ -209,7 +209,7 @@ ggplot(filter(risk2,!stock %in% c("NEP16", "NEP17", "NEP19", "NEP2021", "NEP22",
 	geom_vline(aes(xintercept = 2018), colour = "grey") +
         geom_vline(aes(xintercept = 2021), linetype = "dashed", colour = "grey") + 
 	facet_grid(variable ~ stock) + 
-	scale_fill_gradient("stock risk",low = "#2dc937", high = "#cc3232") +
+	scale_fill_gradient("stock risk",low = "#1b9e77", high = "#d95f02") +
 	theme(axis.text.x = element_text(angle = -90), legend.position = "top") + 
 	ylab("Risk type")
 	
